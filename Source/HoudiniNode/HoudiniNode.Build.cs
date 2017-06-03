@@ -25,9 +25,24 @@ namespace UnrealBuildTool.Rules
 				new string[]
 				{
 					"Core",
-					"CoreUObject"
-				}
+					"CoreUObject",
+                    "Engine",
+                }
 			);
-		}
+
+            if(UEBuildConfiguration.bBuildEditor == true)
+            {
+                PublicDependencyModuleNames.AddRange(
+                    new string[]
+                    {
+                        "AssetTools",
+                        "UnrealEd",
+                        "TargetPlatform",
+                        "Settings",
+                    }
+                );
+            }
+
+        }
 	}
 }

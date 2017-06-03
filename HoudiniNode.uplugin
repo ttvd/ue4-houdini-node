@@ -5,7 +5,7 @@
 	"Version" : 1,
 	"VersionName" : "1.0",
 	"CreatedBy" : "Mykola Konyk.",
-	"CreatedByURL" : "http://www.github.com/ttvd"
+	"CreatedByURL" : "http://www.github.com/ttvd",
 	"Description" : "Houdini Node for Unreal Engine.",
 	"Category" : "Procedural.Content",
 	"EnabledByDefault" : true,

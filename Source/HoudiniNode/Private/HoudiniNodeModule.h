@@ -1,6 +1,7 @@
+#pragma once
 #include "HoudiniNodeModuleInterface.h"
 
-class FHoudiniNodeModule : public IHoudiniNodeModuleInterface
+class HOUDININODE_API FHoudiniNodeModule : public IHoudiniNodeModuleInterface
 {
 	public:
 

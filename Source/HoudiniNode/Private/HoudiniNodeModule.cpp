@@ -25,6 +25,7 @@ FHoudiniNode::StartupModule()
     UT_UndoManager::disableUndoCreation();
 
     Director = new MOT_Director("HoudiniNode");
+    ensure(Director);
     OPsetDirector(Director);
     PIcreateResourceManager();
 

@@ -3,6 +3,7 @@
 
 
 class OBJ_Node;
+class UHoudiniNodeAsset;
 
 
 UCLASS()
@@ -14,7 +15,7 @@ class HOUDININODE_API AHoudiniNodeActor : public AActor
 public:
 
     UPROPERTY(Category=HoudiniNode, EditAnywhere)
-    bool bSomething;
+    UHoudiniNodeAsset* HoudiniNodeAsset;
 
 protected:
 

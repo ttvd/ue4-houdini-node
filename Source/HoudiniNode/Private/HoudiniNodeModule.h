@@ -5,6 +5,8 @@
 class MOT_Director;
 class OP_Network;
 
+class UHoudiniNodeGenerator;
+
 
 class HOUDININODE_API FHoudiniNode : public IHoudiniNodeModuleInterface
 {
@@ -25,8 +27,18 @@ public:
 
 protected:
 
+	//! Create generators.
+	bool CreateGenerators();
+
+protected:
+
     //! MOT director.
     MOT_Director* Director;
+
+protected:
+
+	//! List of available generators.
+	TArray<UHoudiniNodeGenerator*> Generators;
 };
 
 

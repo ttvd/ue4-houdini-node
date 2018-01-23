@@ -1,5 +1,6 @@
 #include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeModule.h"
+#include "HoudiniNodeGenerator.h"
 
 
 FHoudiniNode*
@@ -30,6 +31,8 @@ FHoudiniNode::StartupModule()
     PIcreateResourceManager();
 
     GHoudiniNode = this;
+
+    CreateGenerators();
 }
 
 
@@ -55,6 +58,28 @@ FHoudiniNode::GetObjNetwork() const
     }
 
     return nullptr;
+}
+
+
+bool
+FHoudiniNode::CreateGenerators()
+{
+    Generators.Empty();
+
+    for(TObjectIterator<UClass> It; It; ++It)
+    {
+        if(It->HasAnyClassFlags(CLASS_Abstract))
+        {
+            continue;
+        }
+
+        if(It->IsChildOf(UHoudiniNodeGenerator::StaticClass()))
+        {
+
+        }
+    }
+
+    return Generators.Num() > 0;
 }
 
 

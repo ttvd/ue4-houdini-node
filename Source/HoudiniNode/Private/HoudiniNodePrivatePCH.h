@@ -21,6 +21,7 @@
 #include <MOT/MOT_Director.h>
 #include <PI/PI_ResourceManager.h>
 #include <OP/OP_Network.h>
+#include <OBJ/OBJ_Node.h>
 
 #pragma warning( pop )
 

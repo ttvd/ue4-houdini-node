@@ -91,6 +91,7 @@ namespace UnrealBuildTool.Rules
             PublicAdditionalLibraries.Add("libOP.a");
             PublicAdditionalLibraries.Add("libPI.a");
             PublicAdditionalLibraries.Add("libPRM.a");
+            PublicAdditionalLibraries.Add("libOBJ.a");
             PublicAdditionalLibraries.Add("boost_system-vc140-mt-1_55.lib");
 
 

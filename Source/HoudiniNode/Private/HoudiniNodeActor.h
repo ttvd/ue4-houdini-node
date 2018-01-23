@@ -2,6 +2,9 @@
 #include "HoudiniNodeActor.generated.h"
 
 
+class OBJ_Node;
+
+
 UCLASS()
 class HOUDININODE_API AHoudiniNodeActor : public AActor
 {
@@ -12,4 +15,9 @@ public:
 
     UPROPERTY(Category=HoudiniNode, EditAnywhere)
     bool bSomething;
+
+protected:
+
+    //! Corresponding Houdini object node.
+    OBJ_Node* Node;
 };

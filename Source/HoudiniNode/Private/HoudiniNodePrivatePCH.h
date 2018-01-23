@@ -23,3 +23,8 @@
 #include <OP/OP_Network.h>
 
 #pragma warning( pop )
+
+#ifndef LOCTEXT_NAMESPACE
+#define LOCTEXT_NAMESPACE "HoudiniNode"
+#endif
+

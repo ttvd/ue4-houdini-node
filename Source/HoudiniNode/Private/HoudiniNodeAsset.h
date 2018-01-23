@@ -15,5 +15,4 @@ public:
     UAssetImportData* AssetImportData;
 
 #endif
-
 };

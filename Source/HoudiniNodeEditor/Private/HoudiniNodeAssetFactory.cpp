@@ -1,5 +1,5 @@
 #include "HoudiniNodeEditorPrivatePCH.h"
-#include "HoudiniNodeEditorAssetFactory.h"
+#include "HoudiniNodeAssetFactory.h"
 #include "HoudiniNodeAsset.h"
 
 
@@ -39,18 +39,20 @@ UHoudiniNodeAssetFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent
     FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
 
     UHoudiniNodeAsset* HoudiniNodeAsset = NewObject<UHoudiniNodeAsset>(InParent, InName, Flags);
-    HoudiniNodeAsset->CreateAsset(Buffer, BufferEnd, UFactory::GetCurrentFilename());
+    const FString& CurrentFilename = UFactory::GetCurrentFilename();
 
-    UAssetImportData* AssetImportData = HoudiniNodeAsset->AssetImportData;
-    if(!AssetImportData)
     {
-        AssetImportData = NewObject<UAssetImportData>(HoudiniNodeAsset, UAssetImportData::StaticClass());
-        HoudiniNodeAsset->AssetImportData = AssetImportData;
+        UAssetImportData* AssetImportData = HoudiniNodeAsset->AssetImportData;
+        if(!AssetImportData)
+        {
+            AssetImportData = NewObject<UAssetImportData>(HoudiniNodeAsset, UAssetImportData::StaticClass());
+            HoudiniNodeAsset->AssetImportData = AssetImportData;
+        }
+
+        AssetImportData->Update(CurrentFilename);
     }
 
-    AssetImportData->Update(UFactory::GetCurrentFilename());
+    FEditorDelegates::OnAssetPostImport.Broadcast(this, HoudiniNodeAsset);
 
-    FEditorDelegates::OnAssetPostImport.Broadcast(this, HoudiniAsset);
-
-    return HoudiniAsset;
+    return HoudiniNodeAsset;
 }

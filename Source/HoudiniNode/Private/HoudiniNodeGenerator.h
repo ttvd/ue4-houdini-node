@@ -30,4 +30,3 @@ protected:
 
     TArray<UClass*> SupportedClasses;
 };
-

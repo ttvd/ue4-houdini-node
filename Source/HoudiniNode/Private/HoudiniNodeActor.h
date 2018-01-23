@@ -1,11 +1,15 @@
 #pragma once
 #include "HoudiniNodeActor.generated.h"
 
-class UHoudiniNodeComponent;
 
 UCLASS()
 class HOUDININODE_API AHoudiniNodeActor : public AActor
 {
-	GENERATED_UCLASS_BODY()
-	virtual ~AHoudiniNodeActor();
+    GENERATED_UCLASS_BODY()
+    virtual ~AHoudiniNodeActor();
+
+public:
+
+    UPROPERTY(Category=HoudiniNode, EditAnywhere)
+    bool bSomething;
 };

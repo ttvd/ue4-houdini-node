@@ -3,7 +3,7 @@
 
 
 UHoudiniNodeComponent::UHoudiniNodeComponent(const FObjectInitializer& ObjectInitializer) :
-	Super(ObjectInitializer)
+    Super(ObjectInitializer)
 {
 
 }

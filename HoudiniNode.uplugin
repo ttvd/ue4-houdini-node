@@ -16,6 +16,11 @@
 			"Name" : "HoudiniNode",
 			"Type" : "Runtime",
 			"WhitelistPlatforms" : [ "Win64" ]
+		},
+		{
+			"Name" : "HoudiniNodeEditor",
+			"Type" : "Editor",
+			"WhitelistPlatforms" : [ "Win64" ]
 		}
 	],
 

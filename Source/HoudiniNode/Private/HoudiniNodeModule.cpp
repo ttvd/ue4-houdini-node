@@ -2,17 +2,59 @@
 #include "HoudiniNodeModule.h"
 
 
+FHoudiniNode*
+GHoudiniNode = nullptr;
+
+
+FHoudiniNode::FHoudiniNode() :
+    Director(nullptr)
+{
+
+}
+
+
+FHoudiniNode::~FHoudiniNode()
+{
+    GHoudiniNode = nullptr;
+}
+
+
 void
-FHoudiniNodeModule::StartupModule()
+FHoudiniNode::StartupModule()
 {
-	FModuleManager::LoadModuleChecked<IHoudiniNodeModuleInterface>("HoudiniNode");
+    UT_UndoManager::disableUndoCreation();
+
+    Director = new MOT_Director("HoudiniNode");
+    OPsetDirector(Director);
+    PIcreateResourceManager();
+
+    GHoudiniNode = this;
 }
 
 
-FHoudiniNodeModule::~FHoudiniNodeModule()
+void
+FHoudiniNode::ShutdownModule()
 {
-	
+    if(Director)
+    {
+        Director->resetForNewFile();
+        Director->runPostNewScript();
+
+        Director = nullptr;
+    }
 }
 
 
-IMPLEMENT_MODULE(FHoudiniNodeModule, HoudiniNode);
+OP_Network*
+FHoudiniNode::GetObjNetwork() const
+{
+    if(Director)
+    {
+        return (OP_Network*) Director->getChild("obj");
+    }
+
+    return nullptr;
+}
+
+
+IMPLEMENT_MODULE(FHoudiniNode, HoudiniNode);

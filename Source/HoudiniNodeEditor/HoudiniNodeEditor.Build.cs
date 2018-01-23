@@ -3,9 +3,9 @@ using System.IO;
 
 namespace UnrealBuildTool.Rules
 {
-	public class HoudiniNode : ModuleRules
+	public class HoudiniNodeEditor : ModuleRules
 	{
-		public HoudiniNode(TargetInfo Target)
+		public HoudiniNodeEditor(TargetInfo Target)
 		{
             string HoudiniVersion = "16.0.557";
             string HFSPath = "C:/Program Files/Side Effects Software/Houdini " + HoudiniVersion;
@@ -72,15 +72,17 @@ namespace UnrealBuildTool.Rules
             PrivateIncludePaths.AddRange(
 				new string[]
 				{
-					"HoudiniNode/Private"
-				}
+					"HoudiniNodeEditor/Private",
+                    "HoudiniNode/Private"
+                }
 			);
 
 			PublicIncludePaths.AddRange(
 				new string[]
 				{
-					"HoudiniNode/Public"
-				}
+					"HoudiniNodeEditor/Public",
+                    "HoudiniNode/Public"
+                }
 			);
 
             PublicIncludePaths.Add(HDKIncludePath);
@@ -100,6 +102,7 @@ namespace UnrealBuildTool.Rules
 					"Core",
 					"CoreUObject",
                     "Engine",
+                    "HoudiniNode"
                 }
 			);
 

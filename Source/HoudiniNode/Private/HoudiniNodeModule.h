@@ -1,13 +1,33 @@
 #pragma once
 #include "HoudiniNodeModuleInterface.h"
 
-class HOUDININODE_API FHoudiniNodeModule : public IHoudiniNodeModuleInterface
+
+class MOT_Director;
+class OP_Network;
+
+
+class HOUDININODE_API FHoudiniNode : public IHoudiniNodeModuleInterface
 {
-	public:
+public:
 
-		~FHoudiniNodeModule();
-		
-	public:
+    FHoudiniNode();
+    ~FHoudiniNode();
 
-		virtual void StartupModule() override;
+public:
+
+    virtual void StartupModule() override;
+    virtual void ShutdownModule() override;
+
+public:
+
+    //! Return top level object network.
+    OP_Network* GetObjNetwork() const;
+
+protected:
+
+    //! MOT director.
+    MOT_Director* Director;
 };
+
+
+extern HOUDININODE_API FHoudiniNode* GHoudiniNode;

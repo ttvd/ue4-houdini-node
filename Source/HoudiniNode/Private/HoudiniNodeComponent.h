@@ -5,6 +5,6 @@
 UCLASS()
 class HOUDININODE_API UHoudiniNodeComponent : public USceneComponent
 {
-	GENERATED_UCLASS_BODY()
-	virtual ~UHoudiniNodeComponent();
+    GENERATED_UCLASS_BODY()
+    virtual ~UHoudiniNodeComponent();
 };

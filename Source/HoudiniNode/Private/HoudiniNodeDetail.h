@@ -29,6 +29,11 @@ public:
     //! Retrieve all points of this detail.
     bool GetAllPoints(TArray<GA_Offset>& Points) const;
 
+public:
+
+    //! Get all parts.
+    bool GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const;
+
 protected:
 
     //! Corresponding Houdini object node this detail is constructed from.

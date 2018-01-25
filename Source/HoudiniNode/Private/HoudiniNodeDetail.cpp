@@ -1,5 +1,7 @@
 #include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeDetail.h"
+#include "HoudiniNodeAttributePrimitive.h"
+
 
 #pragma warning(push)
 #pragma warning(disable : 4706)
@@ -98,6 +100,31 @@ FHoudiniNodeDetail::GetAllPoints(TArray<GA_Offset>& Points) const
     }
 
     return Points.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeDetail::GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const
+{
+    Parts.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
+    if(!Attribute.IsValid())
+    {
+        return false;
+    }
+
+    if(!Attribute.Group(Parts))
+    {
+        return false;
+    }
+
+    return true;
 }
 
 

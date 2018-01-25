@@ -15,6 +15,13 @@ FHoudiniNodeAttributePrimitive::FHoudiniNodeAttributePrimitive(GU_Detail* InDeta
 bool
 FHoudiniNodeAttributePrimitive::SelectNonZero(TArray<GA_Primitive*>& Prims) const
 {
+    Prims.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
     GA_RWHandleI AttributeHandle = FindAttributeHandle<GA_RWHandleI>(1);
     if(!AttributeHandle.isValid())
     {
@@ -46,6 +53,13 @@ FHoudiniNodeAttributePrimitive::SelectNonZero(TArray<GA_Primitive*>& Prims) cons
 bool
 FHoudiniNodeAttributePrimitive::Select(int32 Value, TArray<GA_Primitive*>& Prims) const
 {
+    Prims.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
     GA_RWHandleI AttributeHandle = FindAttributeHandle<GA_RWHandleI>(1);
     if(!AttributeHandle.isValid())
     {
@@ -78,6 +92,11 @@ bool
 FHoudiniNodeAttributePrimitive::Select(const FString& Value, TArray<GA_Primitive*>& Prims) const
 {
     Prims.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
 
     GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
     if(!AttributeHandle.isValid())
@@ -115,6 +134,11 @@ FHoudiniNodeAttributePrimitive::Select(UObject* Object, TArray<GA_Primitive*>& P
 {
     Prims.Empty();
 
+    if(!IsValid())
+    {
+        return false;
+    }
+
     FString ObjectPath(TEXT(""));
 
     if(Object)
@@ -130,6 +154,11 @@ bool
 FHoudiniNodeAttributePrimitive::Group(TMap<int32, TArray<GA_Primitive*> >& Prims) const
 {
     Prims.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
 
     GA_RWHandleI AttributeHandle = FindAttributeHandle<GA_RWHandleI>(1);
     if(!AttributeHandle.isValid())
@@ -173,6 +202,11 @@ FHoudiniNodeAttributePrimitive::Group(TMap<FString, TArray<GA_Primitive*> >& Pri
 {
     Prims.Empty();
 
+    if(!IsValid())
+    {
+        return false;
+    }
+
     GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
     if(!AttributeHandle.isValid())
     {
@@ -215,6 +249,11 @@ bool
 FHoudiniNodeAttributePrimitive::Group(TMap<UObject*, TArray<GA_Primitive*> >& Prims) const
 {
     Prims.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
 
     GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
     if(!AttributeHandle.isValid())
@@ -267,6 +306,11 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<i
 {
     Values.Empty();
 
+    if(!IsValid())
+    {
+        return false;
+    }
+
     GA_RWHandleI AttributeHandle = FindAttributeHandle<GA_RWHandleI>(1);
     if(!AttributeHandle.isValid())
     {
@@ -295,6 +339,11 @@ bool
 FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<FString>& Values) const
 {
     Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
 
     GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
     if(!AttributeHandle.isValid())
@@ -325,6 +374,11 @@ bool
 FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<UObject*>& Values) const
 {
     Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
 
     GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
     if(!AttributeHandle.isValid())
@@ -364,6 +418,11 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<int32>& Values) const
 {
     Values.Empty();
 
+    if(!IsValid())
+    {
+        return false;
+    }
+
     GA_RWHandleI AttributeHandle = FindAttributeHandle<GA_RWHandleI>(1);
     if(!AttributeHandle.isValid())
     {
@@ -393,6 +452,11 @@ bool
 FHoudiniNodeAttributePrimitive::GetAll(TArray<FString>& Values) const
 {
     Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
 
     GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
     if(!AttributeHandle.isValid())
@@ -424,6 +488,11 @@ bool
 FHoudiniNodeAttributePrimitive::GetAll(TArray<UObject*>& Values) const
 {
     Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
 
     GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
     if(!AttributeHandle.isValid())

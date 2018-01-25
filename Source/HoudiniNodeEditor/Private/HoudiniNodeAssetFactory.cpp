@@ -39,7 +39,7 @@ UHoudiniNodeAssetFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent
     FEditorDelegates::OnAssetPreImport.Broadcast(this, InClass, InParent, InName, Type);
 
     UHoudiniNodeAsset* HoudiniNodeAsset = NewObject<UHoudiniNodeAsset>(InParent, InName, Flags);
-    const FString& CurrentFilename = UFactory::GetCurrentFilename();
+    const FString& CurrentAssetFilename = UFactory::GetCurrentFilename();
 
     {
         UAssetImportData* AssetImportData = HoudiniNodeAsset->AssetImportData;
@@ -49,7 +49,7 @@ UHoudiniNodeAssetFactory::FactoryCreateBinary(UClass* InClass, UObject* InParent
             HoudiniNodeAsset->AssetImportData = AssetImportData;
         }
 
-        AssetImportData->Update(CurrentFilename);
+        AssetImportData->Update(CurrentAssetFilename);
     }
 
     FEditorDelegates::OnAssetPostImport.Broadcast(this, HoudiniNodeAsset);

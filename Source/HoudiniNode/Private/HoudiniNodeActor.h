@@ -14,6 +14,7 @@ class HOUDININODE_API AHoudiniNodeActor : public AActor
 
 public:
 
+    //! Assigned Houdini Node asset.
     UPROPERTY(Category=HoudiniNode, EditAnywhere)
     UHoudiniNodeAsset* HoudiniNodeAsset;
 

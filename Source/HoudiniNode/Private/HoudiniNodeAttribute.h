@@ -22,6 +22,11 @@ public:
 
 public:
 
+    //! Return tuple size, return 0 if attribute is invalid.
+    int32 GetTupleSize() const;
+
+public:
+
     //! Return the name of this attribute.
     const FString& GetName() const;
 

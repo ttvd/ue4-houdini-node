@@ -27,8 +27,8 @@ public:
 
 protected:
 
-	//! Create generators.
-	bool CreateGenerators();
+    //! Create generators.
+    bool CreateGenerators();
 
 protected:
 
@@ -37,8 +37,8 @@ protected:
 
 protected:
 
-	//! List of available generators.
-	TArray<UHoudiniNodeGenerator*> Generators;
+    //! List of available generators.
+    TArray<UHoudiniNodeGenerator*> Generators;
 };
 
 

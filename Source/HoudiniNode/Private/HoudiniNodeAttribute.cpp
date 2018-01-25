@@ -40,6 +40,19 @@ FHoudiniNodeAttribute::Exists() const
 }
 
 
+int32
+FHoudiniNodeAttribute::GetTupleSize() const
+{
+    GA_Attribute* Attribute = Detail->findAttribute(Owner, NameRaw);
+    if(!Attribute)
+    {
+        return -1;
+    }
+
+    return Attribute->getTupleSize();
+}
+
+
 bool
 FHoudiniNodeAttribute::IsValid() const
 {

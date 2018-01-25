@@ -67,10 +67,37 @@ FHoudiniNodeDetail::GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const
 
     GA_FOR_ALL_PRIMITIVES(Detail, Prim)
     {
-        Primitives.Add(Prim);
+        if(Prim)
+        {
+            Primitives.Add(Prim);
+        }
     }
 
     return Primitives.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeDetail::GetAllPoints(TArray<GA_Offset>& Points) const
+{
+    Points.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_Offset PointOffset = GA_INVALID_OFFSET;
+
+    GA_FOR_ALL_PTOFF(Detail, PointOffset)
+    {
+        if(GA_INVALID_OFFSET != PointOffset)
+        {
+            Points.Add(PointOffset);
+        }
+    }
+
+    return Points.Num() > 0;
 }
 
 

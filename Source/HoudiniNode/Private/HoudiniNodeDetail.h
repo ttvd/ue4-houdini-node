@@ -26,6 +26,9 @@ public:
     //! Retrieve all primitives of this detail.
     bool GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const;
 
+    //! Retrieve all points of this detail.
+    bool GetAllPoints(TArray<GA_Offset>& Points) const;
+
 protected:
 
     //! Corresponding Houdini object node this detail is constructed from.

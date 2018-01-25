@@ -41,4 +41,3 @@ protected:
     //! List of supported classes by this generator.
     TArray<UClass*> SupportedClasses;
 };
-

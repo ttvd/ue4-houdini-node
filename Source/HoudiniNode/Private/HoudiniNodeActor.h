@@ -3,7 +3,9 @@
 
 
 class OBJ_Node;
+
 class UHoudiniNodeAsset;
+class UHoudiniNodeComponent;
 
 
 UCLASS()
@@ -18,8 +20,21 @@ public:
     UPROPERTY(Category=HoudiniNode, EditAnywhere)
     UHoudiniNodeAsset* HoudiniNodeAsset;
 
+    //! Assigned Houdini Node component.
+    UPROPERTY(Category=HoudiniNode, VisibleAnywhere)
+    UHoudiniNodeComponent* HoudiniNodeComponent;
+
+public:
+
+    virtual void PostActorCreated() override;
+
 protected:
 
     //! Corresponding Houdini object node.
     OBJ_Node* Node;
+
+    //!
+    uint32 TempValue;
 };
+
+

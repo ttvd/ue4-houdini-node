@@ -31,7 +31,7 @@ public:
 protected:
 
     //! Scratch space buffer.
-    char ScratchSpaceBuffer[65536u];
+    char ScratchSpaceBuffer[HOUDINI_NODE_SCRATCH_SPACE_BUFFER_SIZE];
 
     //! Current scratch buffer offset.
     uint32 ScratchSpaceBufferOffset;

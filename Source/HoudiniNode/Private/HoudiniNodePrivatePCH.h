@@ -46,5 +46,7 @@
 #define LOCTEXT_NAMESPACE "HoudiniNode"
 #endif
 
+#define HOUDINI_NODE_SCRATCH_SPACE_BUFFER_SIZE      65536u
+
 #define HOUDINI_NODE_ATTRIBUTE_PART                 TEXT("houdini_node_part")
 

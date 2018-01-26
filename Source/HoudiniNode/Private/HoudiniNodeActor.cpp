@@ -72,11 +72,14 @@ AHoudiniNodeActor::PostActorCreated()
     }
 
     {
-        const int32 Offset = offsetof(UHoudiniNodeComponent, ScratchSpaceBuffer);
-        uint32* Ptr = (uint32*)(&HoudiniNodeComponent->ScratchSpaceBuffer[0]);
+        
+        uint32* Ptr = (uint32*) HoudiniNodeComponent->GetCurrentScratchSpacePosition();
         *Ptr = 42u;
 
+        const uint32 Offset = HoudiniNodeComponent->GetCurrentScratchSpaceOffset();
         *(int32*)((char*) &Property->RepNotifyFunc + sizeof(FName)) = Offset;
+
+        HoudiniNodeComponent->IncrementScratchSpaceBufferOffset<uint32>();
     }
 }
 

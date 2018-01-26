@@ -32,9 +32,6 @@ protected:
 
     //! Corresponding Houdini object node.
     OBJ_Node* Node;
-
-    //!
-    uint32 TempValue;
 };
 
 

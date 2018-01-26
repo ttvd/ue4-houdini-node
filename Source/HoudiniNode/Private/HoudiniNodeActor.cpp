@@ -8,9 +8,7 @@ AHoudiniNodeActor::AHoudiniNodeActor(const FObjectInitializer& ObjectInitializer
     Super(ObjectInitializer),
     HoudiniNodeAsset(nullptr),
     HoudiniNodeComponent(nullptr),
-    Node(nullptr),
-
-    TempValue(42)
+    Node(nullptr)
 {
 
 }

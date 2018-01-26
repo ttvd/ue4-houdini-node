@@ -2,6 +2,7 @@
 #include "HoudiniNodeActor.h"
 #include "HoudiniNodeAsset.h"
 #include "HoudiniNodeComponent.h"
+#include "HoudiniNodeClass.h"
 
 
 AHoudiniNodeActor::AHoudiniNodeActor(const FObjectInitializer& ObjectInitializer) :
@@ -26,7 +27,8 @@ AHoudiniNodeActor::PostActorCreated()
     FString ClassName(TEXT("HoudiniNodeComponentPatched"));
     UClass* ComponentClass = UHoudiniNodeComponent::StaticClass();
 
-    UDynamicClass* Class = NewObject<UDynamicClass>(GetOutermost(), *ClassName, RF_Public | RF_Transactional);
+    //UDynamicClass* Class = NewObject<UDynamicClass>(GetOutermost(), *ClassName, RF_Public | RF_Transactional);
+    UHoudiniNodeClass* Class = NewObject<UHoudiniNodeClass>(GetOutermost(), *ClassName, RF_Public | RF_Transactional);
     if(!Class)
     {
         return;
@@ -41,6 +43,17 @@ AHoudiniNodeActor::PostActorCreated()
 
     Class->ClassAddReferencedObjects = UHoudiniNodeComponent::AddReferencedObjects;
     Class->AssembleReferenceTokenStream();
+
+    //ChildClass->Bind();
+    //Class->StaticLink(true);
+
+    UObject* CreatedComponent = StaticConstructObject_Internal(Class, this, NAME_None, RF_Public | RF_Transactional);
+    HoudiniNodeComponent = Cast<UHoudiniNodeComponent>(CreatedComponent);
+    if(HoudiniNodeComponent)
+    {
+        SetRootComponent(HoudiniNodeComponent);
+        HoudiniNodeComponent->RegisterComponent();
+    }
 
     UIntProperty* Property = nullptr;
 
@@ -60,17 +73,6 @@ AHoudiniNodeActor::PostActorCreated()
         Class->AddCppProperty(Property);
     }
 
-    //ChildClass->Bind();
-    //Class->StaticLink(true);
-
-    UObject* CreatedComponent = StaticConstructObject_Internal(Class, this, NAME_None, RF_Public | RF_Transactional);
-    HoudiniNodeComponent = Cast<UHoudiniNodeComponent>(CreatedComponent);
-    if(HoudiniNodeComponent)
-    {
-        SetRootComponent(HoudiniNodeComponent);
-        HoudiniNodeComponent->RegisterComponent();
-    }
-
     {
         
         uint32* Ptr = (uint32*) HoudiniNodeComponent->GetCurrentScratchSpacePosition();
@@ -82,4 +84,26 @@ AHoudiniNodeActor::PostActorCreated()
         HoudiniNodeComponent->IncrementScratchSpaceBufferOffset<uint32>();
     }
 }
+
+
+#if WITH_EDITOR
+
+void
+AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+
+    UProperty* Property = PropertyChangedEvent.MemberProperty;
+    if(!Property)
+    {
+        return;
+    }
+
+    if(Property->GetName() == TEXT("HoudiniNodeAsset"))
+    {
+
+    }
+}
+
+#endif
 

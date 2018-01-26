@@ -19,7 +19,7 @@ UHoudiniNodeComponent::~UHoudiniNodeComponent()
 char*
 UHoudiniNodeComponent::GetCurrentScratchSpacePosition() const
 {
-    if(ScratchSpaceBufferOffset >= 65536u)
+    if(ScratchSpaceBufferOffset >= HOUDINI_NODE_SCRATCH_SPACE_BUFFER_SIZE)
     {
         return nullptr;
     }
@@ -40,7 +40,7 @@ UHoudiniNodeComponent::Serialize(FArchive& Ar)
 {
     Super::Serialize(Ar);
 
-    uint32 ScratchSpaceSize = 65536u;
+    uint32 ScratchSpaceSize = HOUDINI_NODE_SCRATCH_SPACE_BUFFER_SIZE;
     Ar << ScratchSpaceSize;
 
     Ar << ScratchSpaceBufferOffset;

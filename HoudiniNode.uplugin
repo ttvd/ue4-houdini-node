@@ -7,7 +7,7 @@
 	"CreatedBy" : "Mykola Konyk.",
 	"CreatedByURL" : "http://www.github.com/ttvd",
 	"Description" : "Houdini Node for Unreal Engine.",
-	"Category" : "Procedural.Content",
+	"Category" : "Procedural",
 	"EnabledByDefault" : true,
 
 	"Modules" :

@@ -10,6 +10,10 @@ class HOUDININODE_API UHoudiniNodeComponent : public USceneComponent
 
 public:
 
+    virtual void Serialize(FArchive& Ar) override;
+
+public:
+
     //! Scratch space buffer.
     char ScratchSpaceBuffer[65536];
 };

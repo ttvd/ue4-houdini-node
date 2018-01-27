@@ -117,12 +117,13 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
             HoudiniNodeComponentClass->ConditionalBeginDestroy();
         }
 
+        if(HoudiniNodeAsset)
         {
             UClass* OriginalComponentClass = UHoudiniNodeComponent::StaticClass();
 
             const FGuid& Guid = FGuid::NewGuid();
             const FString& GuidString = Guid.ToString();
-            FString ClassName = FString::Printf(TEXT("HoudiniNodeComponent_%s"), *GuidString);
+            const FString& ClassName = FString::Printf(TEXT("HoudiniNodeClass_%s"), *GuidString);
 
             UHoudiniNodeClass* Class = NewObject<UHoudiniNodeClass>(GetOutermost(), *ClassName, RF_Public | RF_Transactional);
 

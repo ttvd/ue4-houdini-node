@@ -2,8 +2,6 @@
 #include "HoudiniNodeActor.generated.h"
 
 
-class OBJ_Node;
-
 class UHoudiniNodeAsset;
 class UHoudiniNodeComponent;
 
@@ -26,20 +24,13 @@ public:
 
 public:
 
-    virtual void PostActorCreated() override;
-
-public:
-
 #if WITH_EDITOR
 
+    //! Called whenever a property on the actor changes.
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 #endif
 
-protected:
-
-    //! Corresponding Houdini object node.
-    OBJ_Node* Node;
 };
 
 

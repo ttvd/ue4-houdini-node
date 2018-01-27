@@ -125,17 +125,19 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
             const FString& GuidString = Guid.ToString();
             const FString& ClassName = FString::Printf(TEXT("HoudiniNodeClass_%s"), *GuidString);
 
-            UHoudiniNodeClass* Class = NewObject<UHoudiniNodeClass>(GetOutermost(), *ClassName, RF_Public | RF_Transactional);
+            UHoudiniNodeClass* HoudiniNodeClass = NewObject<UHoudiniNodeClass>(GetOutermost(), *ClassName, RF_Public | RF_Transactional);
 
-            Class->ClassGeneratedBy = this;
-            Class->SetSuperStruct(OriginalComponentClass);
-            Class->ClassConstructor = OriginalComponentClass->ClassConstructor;
-            Class->PropertiesSize = OriginalComponentClass->PropertiesSize;
+            HoudiniNodeClass->HoudiniNodeAsset = HoudiniNodeAsset;
 
-            Class->ClassAddReferencedObjects = UHoudiniNodeComponent::AddReferencedObjects;
-            Class->AssembleReferenceTokenStream();
+            HoudiniNodeClass->ClassGeneratedBy = this;
+            HoudiniNodeClass->SetSuperStruct(OriginalComponentClass);
+            HoudiniNodeClass->ClassConstructor = OriginalComponentClass->ClassConstructor;
+            HoudiniNodeClass->PropertiesSize = OriginalComponentClass->PropertiesSize;
 
-            UObject* CreatedComponent = StaticConstructObject_Internal(Class, this, NAME_None, RF_Public | RF_Transactional);
+            HoudiniNodeClass->ClassAddReferencedObjects = UHoudiniNodeComponent::AddReferencedObjects;
+            HoudiniNodeClass->AssembleReferenceTokenStream();
+
+            UObject* CreatedComponent = StaticConstructObject_Internal(HoudiniNodeClass, this, NAME_None, RF_Public | RF_Transactional);
             HoudiniNodeComponent = Cast<UHoudiniNodeComponent>(CreatedComponent);
             if(HoudiniNodeComponent)
             {

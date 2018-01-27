@@ -12,7 +12,7 @@ class HOUDININODE_API UHoudiniNodeClass : public UClass
     GENERATED_UCLASS_BODY()
     virtual ~UHoudiniNodeClass();
 
-protected:
+public:
 
     //! Associated Houdini node asset.
     UPROPERTY()

@@ -68,8 +68,13 @@ UHoudiniNodeActorFactory::PostSpawnActor(UObject* Asset, AActor* Actor)
 
     UHoudiniNodeAsset* HoudiniNodeAsset = Cast<UHoudiniNodeAsset>(Asset);
 
-    HoudiniNodeActor->PreEditChange(nullptr);
-    HoudiniNodeActor->HoudiniNodeAsset = HoudiniNodeAsset;
-    HoudiniNodeActor->PostEditChange();
+    UProperty* HoudiniNodeAssetProperty = FindField<UProperty>(AHoudiniNodeActor::StaticClass(), "HoudiniNodeAsset");
+    if(HoudiniNodeAssetProperty)
+    {
+        HoudiniNodeActor->PreEditChange(HoudiniNodeAssetProperty);
+        HoudiniNodeActor->HoudiniNodeAsset = HoudiniNodeAsset;
+        FPropertyChangedEvent HoudiniNodeActorChangedEvent(HoudiniNodeAssetProperty);
+        HoudiniNodeActor->PostEditChangeProperty(HoudiniNodeActorChangedEvent);
+    }
 }
 

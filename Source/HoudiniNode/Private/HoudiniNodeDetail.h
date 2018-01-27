@@ -39,6 +39,6 @@ protected:
     //! Corresponding Houdini object node this detail is constructed from.
     OBJ_Node* Node;
 
-    //! Corresponding Houdini detail.
+    //! Corresponding Houdini detail of the active display node.
     GU_Detail* Detail;
 };

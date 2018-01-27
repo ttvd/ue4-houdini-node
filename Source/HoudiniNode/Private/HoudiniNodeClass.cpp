@@ -3,7 +3,9 @@
 
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :
-    Super(ObjectInitializer)
+    Super(ObjectInitializer),
+    HoudiniNodeAsset(nullptr),
+    Node(nullptr)
 {
 
 }
@@ -13,3 +15,4 @@ UHoudiniNodeClass::~UHoudiniNodeClass()
 {
 
 }
+

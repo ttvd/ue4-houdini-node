@@ -2,12 +2,6 @@
 #include "HoudiniNodeActorFactory.generated.h"
 
 
-class FText;
-class AActor;
-class UObject;
-class FAssetData;
-
-
 UCLASS(config=Editor)
 class UHoudiniNodeActorFactory : public UActorFactory
 {
@@ -16,13 +10,13 @@ class UHoudiniNodeActorFactory : public UActorFactory
 
 public:
 
-    /** Return true if Actor can be created from a given Houdini node asset. */
+    //! Return true if Actor can be created from a given Houdini node asset.
     virtual bool CanCreateActorFrom(const FAssetData& AssetData, FText& OutErrorMsg) override;
 
-    /** Given an actor instance, return the corresponding original asset. */
+    //! Given an actor instance, return the corresponding original asset.
     virtual UObject* GetAssetFromActorInstance(AActor* Actor) override;
 
-    /** Invoked after after Houdini node actor it has been spawned to assign a Houdini node asset to it. */
+    //! Invoked after after Houdini node actor it has been spawned to assign a Houdini node asset to it.
     virtual void PostSpawnActor(UObject* Asset, AActor* Actor) override;
 };
 

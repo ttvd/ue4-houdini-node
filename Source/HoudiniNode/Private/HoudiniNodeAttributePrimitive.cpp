@@ -1,5 +1,5 @@
-#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeAttributePrimitive.h"
+#include "HoudiniNodePrivatePCH.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4706)
@@ -117,7 +117,7 @@ FHoudiniNodeAttributePrimitive::Select(const FString& Value, TArray<GA_Primitive
         }
 
         const GA_Offset PrimOffset = Prim->getMapOffset();
-        const UT_String& AttributeValue = AttributeHandle.get(PrimOffset);
+        UT_String AttributeValue = AttributeHandle.get(PrimOffset);
 
         if(AttributeValue.equal(RawValue, false))
         {

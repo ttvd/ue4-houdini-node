@@ -5,9 +5,9 @@ namespace UnrealBuildTool.Rules
 {
 	public class HoudiniNode : ModuleRules
 	{
-		public HoudiniNode(TargetInfo Target)
-		{
-            string HoudiniVersion = "16.0.557";
+		public HoudiniNode(ReadOnlyTargetRules Target) : base(Target)
+        {
+            string HoudiniVersion = "16.5.323";
             string HFSPath = "C:/Program Files/Side Effects Software/Houdini " + HoudiniVersion;
             string HDKIncludePath = HFSPath + "/toolkit/include";
             string HDKLibPath = HFSPath + "/custom/houdini/dsolib";
@@ -47,6 +47,9 @@ namespace UnrealBuildTool.Rules
             Definitions.Add("_USE_MATH_DEFINES");
             Definitions.Add("BOOST_ALL_NO_LIB");
             Definitions.Add("SESI_LITTLE_ENDIAN");
+
+            Definitions.Add("HOUDINI_NODE_SCRATCH_SPACE_BUFFER_SIZE=65536u");
+
             //Definitions.Add("AMD64");
             //Definitions.Add("I386");
             //Definitions.Add("WIN32");
@@ -133,7 +136,7 @@ C:\Program Files\Side Effects Software\Houdini 16.0.557\toolkit\samples\standalo
                 }
 			);
 
-            if(UEBuildConfiguration.bBuildEditor == true)
+            if(Target.bBuildEditor == true)
             {
                 PublicDependencyModuleNames.AddRange(
                     new string[]

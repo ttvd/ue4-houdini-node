@@ -1,5 +1,5 @@
-#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeAttributePoint.h"
+#include "HoudiniNodePrivatePCH.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4706)

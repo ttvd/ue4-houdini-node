@@ -1,5 +1,6 @@
-#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeClass.h"
+#include "HoudiniNodePrivatePCH.h"
+#include "HoudiniNodeModule.h"
 
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :
@@ -14,10 +15,7 @@ UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer
 
 UHoudiniNodeClass::~UHoudiniNodeClass()
 {
-    if(Library)
-    {
-
-    }
+    RemoveLibrary();
 }
 
 
@@ -90,7 +88,7 @@ UHoudiniNodeClass::HasLibrary() const
 
 
 bool
-UHoudiniNodeClass::GetAssetNames(TArray<FString>& AssetNames) const
+UHoudiniNodeClass::GetAssetNames(TArray<UT_String>& AssetNames) const
 {
     AssetNames.Empty();
 
@@ -103,10 +101,11 @@ UHoudiniNodeClass::GetAssetNames(TArray<FString>& AssetNames) const
     for(int32 Idx = 0; Idx < DefitionsNum; ++Idx)
     {
         const OP_OTLDefinition& Definition = Library->getDefinition(Idx);
-        const UT_String& RawAssetName = Definition.getName();
+        //const UT_String& RawAssetName = Definition.getName();
+        const UT_String& RawAssetName = Definition.getOpTableName();
 
-        FString AssetName = UTF8_TO_TCHAR(RawAssetName.c_str());
-        AssetNames.Add(AssetName);
+        //FString AssetName = UTF8_TO_TCHAR(RawAssetName.c_str());
+        AssetNames.Add(RawAssetName);
     }
 
     return AssetNames.Num() > 0;

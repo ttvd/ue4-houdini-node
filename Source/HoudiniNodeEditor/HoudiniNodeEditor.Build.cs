@@ -5,9 +5,9 @@ namespace UnrealBuildTool.Rules
 {
 	public class HoudiniNodeEditor : ModuleRules
 	{
-		public HoudiniNodeEditor(TargetInfo Target)
-		{
-            string HoudiniVersion = "16.0.557";
+		public HoudiniNodeEditor(ReadOnlyTargetRules Target) : base(Target)
+        {
+            string HoudiniVersion = "16.5.323";
             string HFSPath = "C:/Program Files/Side Effects Software/Houdini " + HoudiniVersion;
             string HDKIncludePath = HFSPath + "/toolkit/include";
             string HDKLibPath = HFSPath + "/custom/houdini/dsolib";
@@ -106,7 +106,7 @@ namespace UnrealBuildTool.Rules
                 }
 			);
 
-            if(UEBuildConfiguration.bBuildEditor == true)
+            if(Target.bBuildEditor == true)
             {
                 PublicDependencyModuleNames.AddRange(
                     new string[]

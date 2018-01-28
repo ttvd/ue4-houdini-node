@@ -1,9 +1,10 @@
-#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeAsset.h"
+#include "HoudiniNodePrivatePCH.h"
 
 
 UHoudiniNodeAsset::UHoudiniNodeAsset(const FObjectInitializer& ObjectInitializer) :
-    Super(ObjectInitializer)
+    Super(ObjectInitializer),
+	AssetImportData(nullptr)
 {
 
 }
@@ -12,7 +13,7 @@ UHoudiniNodeAsset::UHoudiniNodeAsset(const FObjectInitializer& ObjectInitializer
 bool
 UHoudiniNodeAsset::GetFilename(UT_String& RawFilename) const
 {
-    UT_String = "";
+    RawFilename = "";
 
 #if WITH_EDITORONLY_DATA
 

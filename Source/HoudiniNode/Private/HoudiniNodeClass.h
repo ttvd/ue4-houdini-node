@@ -4,6 +4,7 @@
 
 class OBJ_Node;
 class OP_OTLLibrary;
+class UT_String;
 
 class UHoudiniNodeAsset;
 
@@ -34,7 +35,7 @@ public:
 protected:
 
     //! Retrieve asset names for this Houdini node asset.
-    bool GetAssetNames(TArray<FString>& AssetNames) const;
+    bool GetAssetNames(TArray<UT_String>& AssetNames) const;
 
 protected:
 

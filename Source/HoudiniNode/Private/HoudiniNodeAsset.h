@@ -2,6 +2,9 @@
 #include "HoudiniNodeAsset.generated.h"
 
 
+class UT_String;
+
+
 UCLASS()
 class HOUDININODE_API UHoudiniNodeAsset : public UObject
 {

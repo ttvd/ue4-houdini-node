@@ -34,6 +34,7 @@
 #include <PI/PI_ResourceManager.h>
 
 #include <OP/OP_Network.h>
+#include <OP/OP_OTLLibrary.h>
 #include <OBJ/OBJ_Node.h>
 
 #include <GU/GU_Detail.h>
@@ -46,7 +47,6 @@
 #define LOCTEXT_NAMESPACE "HoudiniNode"
 #endif
 
-#define HOUDINI_NODE_SCRATCH_SPACE_BUFFER_SIZE      65536u
 
 #define HOUDINI_NODE_ATTRIBUTE_PART                 TEXT("houdini_node_part")
 

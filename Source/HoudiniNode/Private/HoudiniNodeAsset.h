@@ -9,10 +9,16 @@ class HOUDININODE_API UHoudiniNodeAsset : public UObject
 
 public:
 
+    //! Return the filename for this asset.
+    bool GetFilename(UT_String& RawFilename) const;
+
+public:
+
 #if WITH_EDITORONLY_DATA
 
     UPROPERTY(Category=ImportSettings, VisibleAnywhere, Instanced)
     UAssetImportData* AssetImportData;
 
 #endif
+
 };

@@ -3,6 +3,7 @@
 
 
 class UT_String;
+class UAssetImportData;
 
 
 UCLASS()

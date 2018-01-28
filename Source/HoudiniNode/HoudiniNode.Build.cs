@@ -144,7 +144,7 @@ C:\Program Files\Side Effects Software\Houdini 16.0.557\toolkit\samples\standalo
                         "AssetTools",
                         "UnrealEd",
                         "TargetPlatform",
-                        "Settings",
+                        "Settings"
                     }
                 );
             }

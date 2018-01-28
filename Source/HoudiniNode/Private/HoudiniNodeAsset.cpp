@@ -1,6 +1,10 @@
 #include "HoudiniNodeAsset.h"
 #include "HoudiniNodePrivatePCH.h"
 
+#if WITH_EDITOR
+#include "EditorFramework/AssetImportData.h"
+#endif
+
 
 UHoudiniNodeAsset::UHoudiniNodeAsset(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer),

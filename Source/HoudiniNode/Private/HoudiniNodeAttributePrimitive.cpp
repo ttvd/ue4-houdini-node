@@ -117,7 +117,8 @@ FHoudiniNodeAttributePrimitive::Select(const FString& Value, TArray<GA_Primitive
         }
 
         const GA_Offset PrimOffset = Prim->getMapOffset();
-        UT_String AttributeValue = AttributeHandle.get(PrimOffset);
+		UT_String AttributeValue = "";
+		AttributeValue = AttributeHandle.get(PrimOffset);
 
         if(AttributeValue.equal(RawValue, false))
         {

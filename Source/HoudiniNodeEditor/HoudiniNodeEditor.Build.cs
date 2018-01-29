@@ -5,7 +5,8 @@ namespace UnrealBuildTool.Rules
 {
 	public class HoudiniNodeEditor : ModuleRules
 	{
-		public HoudiniNodeEditor(ReadOnlyTargetRules Target) : base(Target)
+        //public HoudiniNodeEditor(ReadOnlyTargetRules Target) : base(Target)
+        public HoudiniNodeEditor(TargetInfo Target)
         {
             string HoudiniVersion = "16.5.323";
             string HFSPath = "C:/Program Files/Side Effects Software/Houdini " + HoudiniVersion;
@@ -42,9 +43,10 @@ namespace UnrealBuildTool.Rules
         */
 
             bUseRTTI = true;
+
             Definitions.Add("SIZEOF_VOID_P=8");
             Definitions.Add("_USE_MATH_DEFINES");
-            Definitions.Add("BOOST_ALL_NO_LIB");
+            Definitions.Add("HBOOST_ALL_NO_LIB");
             //Definitions.Add("/Ze");
 
             /*
@@ -87,14 +89,17 @@ namespace UnrealBuildTool.Rules
 
             PublicIncludePaths.Add(HDKIncludePath);
             PublicLibraryPaths.Add(HDKLibPath);
+            PublicLibraryPaths.Add(HDKBinPath);
 
-            PublicAdditionalLibraries.Add("libMOT.a");
-            PublicAdditionalLibraries.Add("libUT.a");
-            PublicAdditionalLibraries.Add("libOP.a");
-            PublicAdditionalLibraries.Add("libPI.a");
-            PublicAdditionalLibraries.Add("libPRM.a");
-            PublicAdditionalLibraries.Add("boost_system-vc140-mt-1_55.lib");
+            string[] HDKLibs = { "libMOT", "libUT", "libSYS", "libOP", "libPI", "libPRM", "libOBJ", "libSOP", "libGU", "libGA", "hboost_system-mt" };
+            foreach (string HDKLib in HDKLibs)
+            {
+                string HDKLibFile = HDKLib + ".lib";
+                PublicAdditionalLibraries.Add(HDKLibFile);
 
+                string HDKLibDll = HDKLibFile + ".dll";
+                PublicDelayLoadDLLs.Add(HDKLibDll);
+            }
 
             PrivateDependencyModuleNames.AddRange(
 				new string[]
@@ -106,7 +111,8 @@ namespace UnrealBuildTool.Rules
                 }
 			);
 
-            if(Target.bBuildEditor == true)
+            //if(Target.bBuildEditor == true)
+            if (UEBuildConfiguration.bBuildEditor == true)
             {
                 PublicDependencyModuleNames.AddRange(
                     new string[]

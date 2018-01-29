@@ -1,5 +1,5 @@
-#include "HoudiniNodeAttributePrimitive.h"
 #include "HoudiniNodePrivatePCH.h"
+#include "HoudiniNodeAttributePrimitive.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4706)
@@ -224,7 +224,8 @@ FHoudiniNodeAttributePrimitive::Group(TMap<FString, TArray<GA_Primitive*> >& Pri
         }
 
         const GA_Offset PrimOffset = Prim->getMapOffset();
-        const UT_String& AttributeValueRaw = AttributeHandle.get(PrimOffset);
+        UT_String AttributeValueRaw;
+        AttributeValueRaw = AttributeHandle.get(PrimOffset);
         FString AttributeValue = UTF8_TO_TCHAR(AttributeValueRaw.c_str());
 
         TArray<GA_Primitive*>* FoundPrimArray = Prims.Find(AttributeValue);
@@ -272,8 +273,8 @@ FHoudiniNodeAttributePrimitive::Group(TMap<UObject*, TArray<GA_Primitive*> >& Pr
         }
 
         const GA_Offset PrimOffset = Prim->getMapOffset();
-        const UT_String& AttributeValueRaw = AttributeHandle.get(PrimOffset);
-
+        UT_String AttributeValueRaw;
+        AttributeValueRaw = AttributeHandle.get(PrimOffset);
         FString AttributeValue = UTF8_TO_TCHAR(AttributeValueRaw.c_str());
 
         UObject* FoundObject = nullptr;
@@ -361,7 +362,8 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<F
         }
 
         const GA_Offset PrimOffset = Prim->getMapOffset();
-        const UT_String& AttributeValueRaw = AttributeHandle.get(PrimOffset);
+        UT_String AttributeValueRaw;
+        AttributeValueRaw = AttributeHandle.get(PrimOffset);
         FString AttributeValue = UTF8_TO_TCHAR(AttributeValueRaw.c_str());
 
         Values.Add(AttributeValue);
@@ -396,7 +398,8 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<U
         }
 
         const GA_Offset PrimOffset = Prim->getMapOffset();
-        const UT_String& AttributeValueRaw = AttributeHandle.get(PrimOffset);
+        UT_String AttributeValueRaw;
+        AttributeValueRaw = AttributeHandle.get(PrimOffset);
         FString AttributeValue = UTF8_TO_TCHAR(AttributeValueRaw.c_str());
 
         UObject* FoundObject = nullptr;
@@ -475,7 +478,8 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<FString>& Values) const
         }
 
         const GA_Offset PrimOffset = Prim->getMapOffset();
-        const UT_String& AttributeValueRaw = AttributeHandle.get(PrimOffset);
+        UT_String AttributeValueRaw;
+        AttributeValueRaw = AttributeHandle.get(PrimOffset);
         FString AttributeValue = UTF8_TO_TCHAR(AttributeValueRaw.c_str());
 
         Values.Add(AttributeValue);
@@ -511,7 +515,8 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<UObject*>& Values) const
         }
 
         const GA_Offset PrimOffset = Prim->getMapOffset();
-        const UT_String& AttributeValueRaw = AttributeHandle.get(PrimOffset);
+        UT_String AttributeValueRaw;
+        AttributeValueRaw = AttributeHandle.get(PrimOffset);
         FString AttributeValue = UTF8_TO_TCHAR(AttributeValueRaw.c_str());
 
         UObject* FoundObject = nullptr;

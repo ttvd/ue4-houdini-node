@@ -1,5 +1,6 @@
-#include "HoudiniNodeAsset.h"
 #include "HoudiniNodePrivatePCH.h"
+#include "HoudiniNodeAsset.h"
+
 
 #if WITH_EDITOR
 #include "EditorFramework/AssetImportData.h"
@@ -21,7 +22,7 @@ UHoudiniNodeAsset::GetFilename(UT_String& RawFilename) const
 
 #if WITH_EDITORONLY_DATA
 
-    const FString& Filename = AssetImportData->GetFirstFilename;
+    const FString& AssetFilename = AssetImportData->GetFirstFilename();
     if(!AssetFilename.IsEmpty())
     {
         RawFilename = TCHAR_TO_UTF8(*AssetFilename);

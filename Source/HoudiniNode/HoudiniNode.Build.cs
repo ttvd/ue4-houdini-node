@@ -5,14 +5,15 @@ namespace UnrealBuildTool.Rules
 {
 	public class HoudiniNode : ModuleRules
 	{
-		public HoudiniNode(ReadOnlyTargetRules Target) : base(Target)
+		//public HoudiniNode(ReadOnlyTargetRules Target) : base(Target)
+        public HoudiniNode(TargetInfo Target)
         {
             string HoudiniVersion = "16.5.323";
             string HFSPath = "C:/Program Files/Side Effects Software/Houdini " + HoudiniVersion;
             string HDKIncludePath = HFSPath + "/toolkit/include";
             string HDKLibPath = HFSPath + "/custom/houdini/dsolib";
             string HDKBinPath = HFSPath + "/bin";
-
+            string BinaryPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../Binaries/Win64"));
 
             /*
              * -DWIN32
@@ -45,7 +46,7 @@ namespace UnrealBuildTool.Rules
 
             Definitions.Add("SIZEOF_VOID_P=8");
             Definitions.Add("_USE_MATH_DEFINES");
-            Definitions.Add("BOOST_ALL_NO_LIB");
+            Definitions.Add("HBOOST_ALL_NO_LIB");
             Definitions.Add("SESI_LITTLE_ENDIAN");
 
             Definitions.Add("HOUDINI_NODE_SCRATCH_SPACE_BUFFER_SIZE=65536u");
@@ -113,19 +114,23 @@ C:\Program Files\Side Effects Software\Houdini 16.0.557\toolkit\samples\standalo
 
             PublicIncludePaths.Add(HDKIncludePath);
             PublicLibraryPaths.Add(HDKLibPath);
+            PublicLibraryPaths.Add(HDKBinPath);
 
-            PublicAdditionalLibraries.Add("libMOT.a");
-            PublicAdditionalLibraries.Add("libUT.a");
-            PublicAdditionalLibraries.Add("libSYS.a");
-            PublicAdditionalLibraries.Add("libOP.a");
-            PublicAdditionalLibraries.Add("libPI.a");
-            PublicAdditionalLibraries.Add("libPRM.a");
-            PublicAdditionalLibraries.Add("libOBJ.a");
-            PublicAdditionalLibraries.Add("libSOP.a");
-            PublicAdditionalLibraries.Add("libGU.a");
-            PublicAdditionalLibraries.Add("libGA.a");
-            PublicAdditionalLibraries.Add("boost_system-vc140-mt-1_55.lib");
+            string[] HDKLibs = { "libMOT", "libUT", "libSYS", "libOP", "libPI", "libPRM", "libOBJ", "libSOP", "libGU", "libGA", "hboost_system-mt" };
+            foreach(string HDKLib in HDKLibs)
+            {
+                string HDKLibFile = HDKLib + ".lib";
+                PublicAdditionalLibraries.Add(HDKLibFile);
 
+                string HDKLibDllFile = HDKLib + ".dll";
+                string HDKLibDllPath = HDKBinPath + "/" + HDKLibDllFile;
+                //PublicDelayLoadDLLs.Add(HDKLibDllFile);
+                RuntimeDependencies.Add(new RuntimeDependency(HDKLibDllPath));
+
+                //string HDKDllFile = HDKBinPath + "/" + HDKLib + ".dll";
+                //string HDKDllFileCopy = BinaryPath + "/" + HDKLib + ".dll";
+                //File.Copy(HDKDllFile, HDKDllFileCopy, true);
+            }
 
             PrivateDependencyModuleNames.AddRange(
 				new string[]
@@ -136,7 +141,8 @@ C:\Program Files\Side Effects Software\Houdini 16.0.557\toolkit\samples\standalo
                 }
 			);
 
-            if(Target.bBuildEditor == true)
+            //if(Target.bBuildEditor == true)
+            if(UEBuildConfiguration.bBuildEditor == true)
             {
                 PublicDependencyModuleNames.AddRange(
                     new string[]

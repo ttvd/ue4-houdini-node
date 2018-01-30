@@ -51,10 +51,11 @@ UHoudiniNodeClass::AddLibrary()
     {
         LibraryPath = Filename;
 
-        //TArray<UT_String> AssetNames;
-        //GetAssetNames(AssetNames);
-
-        return true;
+        TArray<UT_String> AssetNames;
+        if(GetAssetNames(AssetNames))
+		{
+			return true;
+		}
     }
 
     return false;

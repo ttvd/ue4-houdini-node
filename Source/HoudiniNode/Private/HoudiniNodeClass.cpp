@@ -50,6 +50,10 @@ UHoudiniNodeClass::AddLibrary()
     if(Library)
     {
         LibraryPath = Filename;
+
+        //TArray<UT_String> AssetNames;
+        //GetAssetNames(AssetNames);
+
         return true;
     }
 
@@ -114,9 +118,8 @@ UHoudiniNodeClass::GetAssetNames(TArray<UT_String>& AssetNames) const
     for(int32 Idx = 0; Idx < DefitionsNum; ++Idx)
     {
         const OP_OTLDefinition& Definition = Library->getDefinition(Idx);
-        //const UT_String& RawAssetName = Definition.getName();
-        const UT_String& RawAssetName = Definition.getOpTableName();
-
+        const UT_String& RawAssetName = Definition.getName();
+        //const UT_String& RawAssetName = Definition.getOpTableName();
         //FString AssetName = UTF8_TO_TCHAR(RawAssetName.c_str());
         AssetNames.Add(RawAssetName);
     }

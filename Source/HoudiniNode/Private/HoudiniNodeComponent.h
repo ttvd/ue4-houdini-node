@@ -28,6 +28,12 @@ public:
     //! Increment scratch buffer offset for a given type.
     template<typename TType> void IncrementScratchSpaceBufferOffset();
 
+#if WITH_EDITORONLY_DATA
+
+    //void AddReferencedObjects(UObject* InThis, FReferenceCollector& Collector);
+
+#endif
+
 protected:
 
     //! Scratch space buffer.

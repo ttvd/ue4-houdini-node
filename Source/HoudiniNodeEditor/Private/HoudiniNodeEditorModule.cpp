@@ -1,5 +1,5 @@
-#include "HoudiniNodeEditorPrivatePCH.h"
 #include "HoudiniNodeEditorModule.h"
+#include "HoudiniNodeEditorPrivatePCH.h"
 #include "HoudiniNodeActorFactory.h"
 
 

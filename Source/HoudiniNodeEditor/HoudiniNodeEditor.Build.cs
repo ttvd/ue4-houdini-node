@@ -3,10 +3,9 @@ using System.IO;
 
 namespace UnrealBuildTool.Rules
 {
-	public class HoudiniNodeEditor : ModuleRules
-	{
-        //public HoudiniNodeEditor(ReadOnlyTargetRules Target) : base(Target)
-        public HoudiniNodeEditor(TargetInfo Target)
+    public class HoudiniNodeEditor : ModuleRules
+    {
+        public HoudiniNodeEditor(ReadOnlyTargetRules Target) : base(Target)
         {
             string HoudiniVersion = "16.5.323";
             string HFSPath = "C:/Program Files/Side Effects Software/Houdini " + HoudiniVersion;
@@ -94,11 +93,11 @@ namespace UnrealBuildTool.Rules
             string[] HDKLibs = { "libMOT", "libUT", "libSYS", "libOP", "libPI", "libPRM", "libOBJ", "libSOP", "libGU", "libGA", "hboost_system-mt" };
             foreach (string HDKLib in HDKLibs)
             {
-                string HDKLibFile = HDKLib + ".lib";
-                PublicAdditionalLibraries.Add(HDKLibFile);
+                //string HDKLibFile = HDKLib + ".lib";
+                //PublicAdditionalLibraries.Add(HDKLibFile);
 
-                string HDKLibDll = HDKLibFile + ".dll";
-                PublicDelayLoadDLLs.Add(HDKLibDll);
+                //string HDKLibDll = HDKLibFile + ".dll";
+                //PublicDelayLoadDLLs.Add(HDKLibDll);
             }
 
             PrivateDependencyModuleNames.AddRange(
@@ -111,8 +110,8 @@ namespace UnrealBuildTool.Rules
                 }
 			);
 
-            //if(Target.bBuildEditor == true)
-            if (UEBuildConfiguration.bBuildEditor == true)
+            if(Target.bBuildEditor == true)
+            //if (UEBuildConfiguration.bBuildEditor == true)
             {
                 PublicDependencyModuleNames.AddRange(
                     new string[]

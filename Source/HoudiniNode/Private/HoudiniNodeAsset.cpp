@@ -1,5 +1,5 @@
-#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeAsset.h"
+#include "HoudiniNodePrivatePCH.h"
 
 
 #if WITH_EDITOR

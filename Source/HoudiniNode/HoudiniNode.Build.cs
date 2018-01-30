@@ -3,10 +3,10 @@ using System.IO;
 
 namespace UnrealBuildTool.Rules
 {
-	public class HoudiniNode : ModuleRules
-	{
-		//public HoudiniNode(ReadOnlyTargetRules Target) : base(Target)
-        public HoudiniNode(TargetInfo Target)
+    public class HoudiniNode : ModuleRules
+    {
+        public HoudiniNode(ReadOnlyTargetRules Target) : base(Target)
+
         {
             string HoudiniVersion = "16.5.323";
             string HFSPath = "C:/Program Files/Side Effects Software/Houdini " + HoudiniVersion;
@@ -123,9 +123,8 @@ C:\Program Files\Side Effects Software\Houdini 16.0.557\toolkit\samples\standalo
                 PublicAdditionalLibraries.Add(HDKLibFile);
 
                 string HDKLibDllFile = HDKLib + ".dll";
-                string HDKLibDllPath = HDKBinPath + "/" + HDKLibDllFile;
                 //PublicDelayLoadDLLs.Add(HDKLibDllFile);
-                RuntimeDependencies.Add(new RuntimeDependency(HDKLibDllPath));
+                RuntimeDependencies.Add(Path.Combine(HDKBinPath, HDKLibDllFile), StagedFileType.NonUFS);
 
                 //string HDKDllFile = HDKBinPath + "/" + HDKLib + ".dll";
                 //string HDKDllFileCopy = BinaryPath + "/" + HDKLib + ".dll";
@@ -137,12 +136,12 @@ C:\Program Files\Side Effects Software\Houdini 16.0.557\toolkit\samples\standalo
 				{
 					"Core",
 					"CoreUObject",
-                    "Engine",
+                    "Engine"
                 }
 			);
 
-            //if(Target.bBuildEditor == true)
-            if(UEBuildConfiguration.bBuildEditor == true)
+            if(Target.bBuildEditor == true)
+            //if(UEBuildConfiguration.bBuildEditor == true)
             {
                 PublicDependencyModuleNames.AddRange(
                     new string[]

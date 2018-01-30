@@ -25,6 +25,9 @@ public:
     //! Return top level object network.
     OP_Network* GetObjNetwork() const;
 
+    //! Return associated director.
+    MOT_Director* GetDirector() const;
+
 protected:
 
     //! Create generators.

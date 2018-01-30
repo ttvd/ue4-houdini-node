@@ -47,6 +47,9 @@ protected:
     //! Corresponding loaded library.
     OP_OTLLibrary* Library;
 
+    //! Path of the library file used to load the library.
+    FString LibraryPath;
+
     //! Corresponding Houdini object node.
     OBJ_Node* Node;
 };

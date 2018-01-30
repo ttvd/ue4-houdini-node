@@ -1,5 +1,5 @@
-#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeComponent.h"
+#include "HoudiniNodePrivatePCH.h"
 
 
 UHoudiniNodeComponent::UHoudiniNodeComponent(const FObjectInitializer& ObjectInitializer) :
@@ -57,4 +57,20 @@ UHoudiniNodeComponent::GetCurrentScratchSpaceOffset() const
 
     return Offset;
 }
+
+
+/*
+#if WITH_EDITORONLY_DATA
+void UHoudiniNodeComponent::AddReferencedObjects(UObject* InThis, FReferenceCollector& Collector)
+{
+    UHoudiniNodeComponent* This = CastChecked<UHoudiniNodeComponent>(InThis);
+    if(This)
+    {
+        Collector.AddReferencedObject(This->SpriteComponent);
+    }
+
+    UObject::AddReferencedObjects(InThis, Collector);
+}
+#endif
+*/
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "ActorFactories/ActorFactory.h"
 #include "HoudiniNodeActorFactory.generated.h"
 
 

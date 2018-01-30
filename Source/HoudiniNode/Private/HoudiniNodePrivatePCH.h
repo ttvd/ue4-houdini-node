@@ -22,6 +22,8 @@
 #pragma warning(disable : 4307)
 #pragma warning(disable : 4308)
 #pragma warning(disable : 4706)
+#pragma warning(disable : 4103)
+#pragma warning(disable : 4668)
 
 #include <SYS/SYS_Version.h>
 

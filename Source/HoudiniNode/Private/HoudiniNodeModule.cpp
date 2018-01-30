@@ -1,5 +1,5 @@
-#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeModule.h"
+#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeGenerator.h"
 
 
@@ -23,6 +23,37 @@ FHoudiniNode::~FHoudiniNode()
 void
 FHoudiniNode::StartupModule()
 {
+    /*
+    {
+        const int32 MaxPathSize = 32768;
+        FString Path = FString::ChrN(MaxPathSize, TEXT('\0'));
+        FPlatformMisc::GetEnvironmentVariable(TEXT("PATH"), Path.GetCharArray().GetData(), MaxPathSize);
+
+        const TCHAR* PathDelimiter = FPlatformMisc::GetPathVarDelimiter();
+
+        TArray<FString> PathVars;
+        Path.ParseIntoArray(PathVars, PathDelimiter, true);
+
+        TArray<FString> ModifiedPathVars;
+
+        for(int32 Idx = 0; Idx < PathVars.Num(); ++Idx)
+        {
+            // Blacklist anything Houdini, for now.
+
+            const FString& PathEntry = PathVars[Idx];
+            if(!PathEntry.Contains(TEXT("houdini"), ESearchCase::IgnoreCase))
+            {
+                ModifiedPathVars.Add(PathEntry);
+            }
+        }
+
+        ModifiedPathVars.Add(TEXT("C:\\Program Files\\Side Effects Software\\Houdini 16.5.323\\bin"));
+
+        FString ModifiedPath = FString::Join(ModifiedPathVars, PathDelimiter);
+        FPlatformMisc::SetEnvironmentVar(TEXT("PATH"), *ModifiedPath);
+    }
+    */
+
     UT_UndoManager::disableUndoCreation();
 
     Director = new MOT_Director("HoudiniNode");
@@ -41,9 +72,10 @@ FHoudiniNode::ShutdownModule()
 {
     if(Director)
     {
+        /*
         Director->resetForNewFile();
         Director->runPostNewScript();
-
+        */
         Director = nullptr;
     }
 }

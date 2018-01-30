@@ -1,5 +1,5 @@
-#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeAttribute.h"
+#include "HoudiniNodePrivatePCH.h"
 
 
 FHoudiniNodeAttribute::FHoudiniNodeAttribute(GU_Detail* InDetail, const FString& InName, GA_AttributeOwner InOwner) :

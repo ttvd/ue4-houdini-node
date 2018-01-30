@@ -1,6 +1,7 @@
 #include "HoudiniNodeClass.h"
 #include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeModule.h"
+#include "HoudiniNodeAsset.h"
 
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :

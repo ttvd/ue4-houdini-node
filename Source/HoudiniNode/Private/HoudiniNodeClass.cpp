@@ -7,6 +7,7 @@ UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer
     Super(ObjectInitializer),
     HoudiniNodeAsset(nullptr),
     Library(nullptr),
+    LibraryPath(TEXT("")),
     Node(nullptr)
 {
 
@@ -22,34 +23,48 @@ UHoudiniNodeClass::~UHoudiniNodeClass()
 bool
 UHoudiniNodeClass::AddLibrary()
 {
+    MOT_Director* Director = GHoudiniNode->GetDirector();
+    if(!Director)
+    {
+        return false;
+    }
+
     if(!HoudiniNodeAsset)
     {
         return false;
     }
 
-    UT_String RawFilename("");
-    if(!HoudiniNodeAsset->GetFilename(RawFilename))
+    FString Filename(TEXT(""));
+    if(!HoudiniNodeAsset->GetFilename(Filename))
     {
         return false;
     }
 
-    if(!OPgetDirector())
-    {
-        return false;
-    }
-
-    OP_OTLManager& Manager = OPgetDirector()->getOTLManager();
+    OP_OTLManager& Manager = Director->getOTLManager();
     UT_WorkBuffer WorkBuffer;
 
-    Library = Manager.addLibrary(RawFilename.c_str(), OTL_INTERNAL_META, true, false, WorkBuffer);
+    UT_String RawFilename = TCHAR_TO_UTF8(*Filename);
 
-    return Library != nullptr;
+    Library = Manager.addLibrary(RawFilename.c_str(), OTL_INTERNAL_META, true, false, WorkBuffer);
+    if(Library)
+    {
+        LibraryPath = Filename;
+        return true;
+    }
+
+    return false;
 }
 
 
 bool
 UHoudiniNodeClass::RemoveLibrary()
 {
+    MOT_Director* Director = GHoudiniNode->GetDirector();
+    if(!Director)
+    {
+        return false;
+    }
+
     if(!HoudiniNodeAsset)
     {
         return false;
@@ -60,21 +75,13 @@ UHoudiniNodeClass::RemoveLibrary()
         return false;
     }
 
-    UT_String RawFilename("");
-    if(!HoudiniNodeAsset->GetFilename(RawFilename))
-    {
-        return false;
-    }
+    OP_OTLManager& Manager = Director->getOTLManager();
 
-    if(!OPgetDirector())
-    {
-        return false;
-    }
-
-    OP_OTLManager& Manager = OPgetDirector()->getOTLManager();
+    UT_String RawFilename = TCHAR_TO_UTF8(*LibraryPath);
     Manager.removeLibrary(RawFilename.c_str(), "", false);
 
     Library = nullptr;
+    LibraryPath = TEXT("");
 
     return true;
 }
@@ -83,7 +90,12 @@ UHoudiniNodeClass::RemoveLibrary()
 bool
 UHoudiniNodeClass::HasLibrary() const
 {
-    return Library != nullptr;
+    if(Library && !LibraryPath.IsEmpty())
+    {
+        return true;
+    }
+
+    return false;
 }
 
 

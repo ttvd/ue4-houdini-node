@@ -9,23 +9,23 @@
 
 UHoudiniNodeAsset::UHoudiniNodeAsset(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer),
-	AssetImportData(nullptr)
+    AssetImportData(nullptr)
 {
 
 }
 
 
 bool
-UHoudiniNodeAsset::GetFilename(UT_String& RawFilename) const
+UHoudiniNodeAsset::GetFilename(FString& RawFilename) const
 {
-    RawFilename = "";
+    RawFilename = TEXT("");
 
 #if WITH_EDITORONLY_DATA
 
-    const FString& AssetFilename = AssetImportData->GetFirstFilename();
-    if(!AssetFilename.IsEmpty())
+    RawFilename = AssetImportData->GetFirstFilename();
+    if(!RawFilename.IsEmpty())
     {
-        RawFilename = TCHAR_TO_UTF8(*AssetFilename);
+        RawFilename.ReplaceInline(TEXT("/"), TEXT("\\"));
         return true;
     }
 

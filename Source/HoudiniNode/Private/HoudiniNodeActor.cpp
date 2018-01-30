@@ -42,12 +42,16 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
     {
         if(HoudiniNodeComponent)
         {
-            UClass* HoudiniNodeComponentClass = HoudiniNodeComponent->GetClass();
+            UHoudiniNodeClass* HoudiniNodeComponentClass = Cast<UHoudiniNodeClass>(HoudiniNodeComponent->GetClass());
 
             HoudiniNodeComponent->DestroyComponent();
             HoudiniNodeComponent = nullptr;
 
-            HoudiniNodeComponentClass->ConditionalBeginDestroy();
+            if(HoudiniNodeComponentClass)
+            {
+                HoudiniNodeComponentClass->RemoveLibrary();
+                HoudiniNodeComponentClass->ConditionalBeginDestroy();
+            }
         }
 
         if(HoudiniNodeAsset)
@@ -80,6 +84,8 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
                 SetRootComponent(HoudiniNodeComponent);
                 HoudiniNodeComponent->RegisterComponent();
             }
+
+            HoudiniNodeClass->AddLibrary();
         }
     }
 }

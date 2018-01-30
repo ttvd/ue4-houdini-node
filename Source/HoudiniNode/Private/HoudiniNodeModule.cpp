@@ -93,6 +93,13 @@ FHoudiniNode::GetObjNetwork() const
 }
 
 
+MOT_Director*
+FHoudiniNode::GetDirector() const
+{
+    return Director;
+}
+
+
 bool
 FHoudiniNode::CreateGenerators()
 {

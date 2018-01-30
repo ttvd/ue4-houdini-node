@@ -2,8 +2,8 @@
 #include "HoudiniNodeAsset.generated.h"
 
 
-class UT_String;
 class UAssetImportData;
+class FString;
 
 
 UCLASS()
@@ -14,7 +14,7 @@ class HOUDININODE_API UHoudiniNodeAsset : public UObject
 public:
 
     //! Return the filename for this asset.
-    bool GetFilename(UT_String& RawFilename) const;
+    bool GetFilename(FString& RawFilename) const;
 
 public:
 

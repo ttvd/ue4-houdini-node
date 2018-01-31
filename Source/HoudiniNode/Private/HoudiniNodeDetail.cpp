@@ -16,27 +16,27 @@ FHoudiniNodeDetail::FHoudiniNodeDetail(OBJ_Node* InNode) :
 
 FHoudiniNodeDetail::~FHoudiniNodeDetail()
 {
-	Reset();
+    Reset();
 }
 
 
 void
 FHoudiniNodeDetail::Reset()
 {
-	if(DetailHandle.isValid() && DetailHandle.hasActiveLock())
-	{
-		DetailHandle.unlock(Detail);
-	}
+    if(DetailHandle.isValid() && DetailHandle.hasActiveLock())
+    {
+        DetailHandle.unlock(Detail);
+    }
 
-	DetailHandle.clear();
-	Detail = nullptr;
+    DetailHandle.clear();
+    Detail = nullptr;
 }
 
 
 bool
 FHoudiniNodeDetail::Cook(float Time)
 {
-	Reset();
+    Reset();
 
     if(!Node)
     {
@@ -55,14 +55,14 @@ FHoudiniNodeDetail::Cook(float Time)
     DetailHandle = DisplaySop->getCookedGeoHandle(Context, ForcedCook);
     if(!DetailHandle.isValid())
     {
-		Reset();
+        Reset();
         return false;
     }
 
-	Detail = const_cast<GU_Detail*>(DetailHandle.readLock());
-	if(!Detail)
+    Detail = const_cast<GU_Detail*>(DetailHandle.readLock());
+    if(!Detail)
     {
-		Reset();
+        Reset();
         return false;
     }
 
@@ -73,15 +73,15 @@ FHoudiniNodeDetail::Cook(float Time)
 bool
 FHoudiniNodeDetail::IsValid() const
 {
-	if(DetailHandle.isValid() && DetailHandle.hasActiveLock())
-	{
-		if(Detail && Node)
-		{
-			return true;
-		}
-	}
+    if(DetailHandle.isValid() && DetailHandle.hasActiveLock())
+    {
+        if(Detail && Node)
+        {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 

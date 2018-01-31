@@ -34,19 +34,19 @@ public:
 
 public:
 
-	//! Create the underlying node.
-	bool CreateNode();
+    //! Create the underlying node.
+    bool CreateNode();
 
-	//! Destroy the underlying node.
-	bool DestroyNode();
+    //! Destroy the underlying node.
+    bool DestroyNode();
 
-	//! Return the underlying node.
-	OBJ_Node* GetNode() const;
+    //! Return the underlying node.
+    OBJ_Node* GetNode() const;
 
 protected:
 
-	//! Create the underlying node with a given name.
-	bool CreateNode(const UT_String& NodeName);
+    //! Create the underlying node with a given name.
+    bool CreateNode(const UT_String& NodeName);
 
     //! Retrieve asset names for this Houdini node asset.
     bool GetAssetNames(TArray<UT_String>& AssetNames) const;
@@ -58,12 +58,12 @@ protected:
 
 protected:
 
+    //! Corresponding Houdini object node.
+    OBJ_Node* Node;
+
     //! Corresponding loaded library.
     OP_OTLLibrary* Library;
 
     //! Path of the library file used to load the library.
     FString LibraryPath;
-
-    //! Corresponding Houdini object node.
-    OBJ_Node* Node;
 };

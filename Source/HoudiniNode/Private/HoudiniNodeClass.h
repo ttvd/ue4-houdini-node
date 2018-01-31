@@ -53,8 +53,8 @@ protected:
 
 protected:
 
-    //! List of generated properties.
-    //TMap<FString, UProperty*> Properties;
+    //! List of generated properties during the last cook.
+    TMap<FString, UProperty*> Properties;
 
 protected:
 

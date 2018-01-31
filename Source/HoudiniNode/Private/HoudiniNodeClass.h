@@ -34,16 +34,19 @@ public:
 
 public:
 
-	//! Create an underlying node.
-	bool CreateNode(const UT_String& NodeName);
+	//! Create the underlying node.
+	bool CreateNode();
 
-	//! Destroy an underlying node.
+	//! Destroy the underlying node.
 	bool DestroyNode();
 
-	//! Return an underlying node.
+	//! Return the underlying node.
 	OBJ_Node* GetNode() const;
 
 protected:
+
+	//! Create the underlying node with a given name.
+	bool CreateNode(const UT_String& NodeName);
 
     //! Retrieve asset names for this Houdini node asset.
     bool GetAssetNames(TArray<UT_String>& AssetNames) const;

@@ -51,16 +51,7 @@ UHoudiniNodeClass::AddLibrary()
     if(Library)
     {
         LibraryPath = Filename;
-
-        TArray<UT_String> AssetNames;
-        if(GetAssetNames(AssetNames))
-		{
-			const UT_String& AssetName = AssetNames[0];
-			if(CreateNode(AssetName))
-			{
-				return true; 
-			}
-		}
+		return true;
     }
 
     return false;
@@ -133,9 +124,28 @@ UHoudiniNodeClass::GetAssetNames(TArray<UT_String>& AssetNames) const
 
 
 bool
+UHoudiniNodeClass::CreateNode()
+{
+	TArray<UT_String> AssetNames;
+    if(GetAssetNames(AssetNames))
+	{
+		const UT_String& AssetName = AssetNames[0];
+		return CreateNode(AssetName);
+	}
+
+	return false;
+}
+
+
+bool
 UHoudiniNodeClass::CreateNode(const UT_String& NodeName)
 {
 	if(!NodeName.isstring())
+	{
+		return false;
+	}
+
+	if(Node)
 	{
 		return false;
 	}

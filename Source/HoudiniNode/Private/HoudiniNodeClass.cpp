@@ -9,7 +9,8 @@ UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer
     HoudiniNodeAsset(nullptr),
     Node(nullptr),
     Library(nullptr),
-    LibraryPath(TEXT(""))
+    LibraryPath(TEXT("")),
+    Time(0.0f)
 {
 
 }
@@ -194,3 +195,97 @@ UHoudiniNodeClass::GetNode() const
 {
     return Node;
 }
+
+
+bool
+UHoudiniNodeClass::CreateParameters()
+{
+    if(!Node)
+    {
+        return false;
+    }
+
+    OP_Operator* Op = Node->getOperator();
+    if(!Op)
+    {
+        return false;
+    }
+
+    const PRM_Template* Template = nullptr;
+
+    Template = Node->getSpareParmLayoutTemplates();
+    if(!Template)
+    {
+        Template = Op->getLayoutParmTemplates();
+    }
+
+    if(!Template)
+    {
+        Template = Op->getParmTemplates();
+    }
+
+    if(!Template)
+    {
+        return false;
+    }
+
+    while(Template && Template->getType() != PRM_LIST_TERMINATOR)
+    {
+        const PRM_Type& Type = Template->getType();
+        int32 Offset = 1;
+
+        if(Type.isVisible())
+        {
+            Offset = CreateParameter(Template);
+        }
+
+        Template += Offset;
+    }
+
+    return true;
+}
+
+
+int32
+UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
+{
+    if(!Template)
+    {
+        return 1;
+    }
+
+    const PRM_Type& Type = Template->getType();
+    int32 Offset = 1;
+
+    if(Type.isFloatType())
+    {
+        Offset = CreateParameterFloat(Template);
+    }
+
+    return Offset;
+}
+
+
+int32
+UHoudiniNodeClass::CreateParameterFloat(const PRM_Template* Template)
+{
+    const PRM_Name* TemplateName = Template->getNamePtr();
+    const PRM_Range* TemplateRange = Template->getRangePtr();
+
+    const UT_String& Name = TemplateName->getToken();
+    const UT_String& Label = TemplateName->getLabel();
+
+    const PRM_Type& Type = Template->getType();
+    const PRM_TypeExtended ExtendedType = Template->getTypeExtended();
+    const PRM_Type::PRM_FloatType FloatType = Type.getFloatType();
+
+    const int32 VectorSize = Template->getVectorSize();
+
+    for(int32 Idx = 0; Idx < VectorSize; ++Idx)
+    {
+        const float Value = Node->evalFloat(Name.c_str(), Idx, Time);
+    }
+
+    return 1;
+}
+

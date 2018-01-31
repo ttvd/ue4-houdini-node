@@ -19,10 +19,13 @@ public:
 public:
 
     //! Cook this detail at a given time.
-    bool Cook(float Time);
+    bool Cook(float InTime);
 
     //! Return true if this is a valid detail.
     bool IsValid() const;
+
+    //! Return cook time.
+    float GetCookTime() const;
 
 public:
 
@@ -52,4 +55,7 @@ protected:
 
     //! Corresponding Houdini detail of the active display node.
     GU_Detail* Detail;
+
+    //! Time of cook.
+    float Time;
 };

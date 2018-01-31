@@ -36,7 +36,12 @@
 #include <PI/PI_ResourceManager.h>
 
 #include <OP/OP_Network.h>
+#include <OP/OP_Operator.h>
 #include <OP/OP_OTLLibrary.h>
+
+#include <PRM/PRM_Name.h>
+#include <PRM/PRM_Template.h>
+
 #include <OBJ/OBJ_Node.h>
 
 #include <GU/GU_Detail.h>

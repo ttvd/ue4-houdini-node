@@ -199,6 +199,18 @@ UHoudiniNodeClass::GetNode() const
 }
 
 
+void
+UHoudiniNodeClass::AssignPropertyOffset(UProperty* Property, uint32 Offset) const
+{
+    if(!Property)
+    {
+        return;
+    }
+
+    *(int32*)((char*) &Property->RepNotifyFunc - sizeof(int32)) = (int32) Offset;
+}
+
+
 bool
 UHoudiniNodeClass::CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent)
 {
@@ -263,11 +275,53 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
     }
 
     const PRM_Type& Type = Template->getType();
+    const PRM_Type::PRM_BasicType& BasicType = Type.getBasicType();
+
     int32 Offset = 1;
 
-    if(Type.isFloatType())
+    if(Type.isBasicType(PRM_Type::PRM_BASIC_FLOAT))
     {
-        Offset = CreateParameterFloat(Template);
+        const PRM_Type::PRM_FloatType& TypeFloat = Type.getFloatType();
+
+        if(TypeFloat == PRM_Type::PRM_FLOAT_INTEGER)
+        {
+            // Make integer.
+            volatile int i = 5;
+        }
+        else if(TypeFloat == PRM_Type::PRM_FLOAT_RGBA)
+        {
+            // Make color.
+            volatile int i = 5;
+        }
+        else
+        {
+            Offset = CreateParameterFloat(Template);
+        }
+    }
+    else if(Type.isBasicType(PRM_Type::PRM_BASIC_ORDINAL))
+    {
+        const PRM_Type::PRM_OrdinalType& TypeOrdinal = Type.getOrdinalType();
+
+        if(TypeOrdinal == PRM_Type::PRM_ORD_CALLBACK)
+        {
+            // Menu.
+            volatile int i = 5;
+        }
+        else if(TypeOrdinal == PRM_Type::PRM_ORD_TOGGLE)
+        {
+            // Radio.
+            volatile int i = 5;
+        }
+        else
+        {
+            // Integer.
+            volatile int i = 5;
+        }
+    }
+    else if(Type.isBasicType(PRM_Type::PRM_BASIC_STRING))
+    {
+        // Paths, labels and separators.
+        volatile int i = 5;
     }
 
     return Offset;
@@ -320,13 +374,14 @@ UHoudiniNodeClass::CreateParameterFloat(const PRM_Template* Template)
 
         AddCppProperty(Property);
 
-        float *Ptr = (float*) Component->GetCurrentScratchSpacePosition();
-        FMemory::Memcpy(Ptr, &Values[0], VectorSizeBytes);
+        const uint32 PropertyValueOffset = Component->SetScratchSpaceValues(Values);
+        AssignPropertyOffset(Property, PropertyValueOffset);
 
-        const uint32 Offset = Component->GetCurrentScratchSpaceOffset();
-        *(int32*)((char*) &Property->RepNotifyFunc - sizeof(int32)) = Offset;
-
-        Component->IncrementScratchSpaceBufferOffset(VectorSizeBytes);
+        //float *Ptr = (float*) Component->GetCurrentScratchSpacePosition();
+        //FMemory::Memcpy(Ptr, &Values[0], VectorSizeBytes);
+        //const uint32 Offset = Component->GetCurrentScratchSpaceOffset();
+        //*(int32*)((char*) &Property->RepNotifyFunc - sizeof(int32)) = Offset;
+        //Component->IncrementScratchSpaceBufferOffset(VectorSizeBytes);
     }
 
     return 1;

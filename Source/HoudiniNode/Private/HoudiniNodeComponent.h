@@ -14,25 +14,10 @@ public:
 
 public:
 
-    //! Return current scratch buffer pointer.
-    char* GetCurrentScratchSpacePosition() const;
-
-    //! Return current offset.
-    uint32 GetCurrentScratchSpaceOffset() const;
-
-public:
-
-    //! Increment scratch buffer offset.
-    void IncrementScratchSpaceBufferOffset(uint32 Offset);
-
-    //! Increment scratch buffer offset for a given type.
-    template<typename TType> void IncrementScratchSpaceBufferOffset();
-
-#if WITH_EDITORONLY_DATA
-
-    //void AddReferencedObjects(UObject* InThis, FReferenceCollector& Collector);
-
-#endif
+    //! Set a value (with a proper alignment).
+    template<typename TType> uint32 SetScratchSpaceValues(TType* Values, uint32 Bytes);
+    template<typename TType> uint32 SetScratchSpaceValues(const TArray<TType>& Values);
+    template<typename TType> uint32 SetScratchSpaceValue(TType Value);
 
 protected:
 
@@ -45,9 +30,40 @@ protected:
 
 
 template<typename TType>
-void
-UHoudiniNodeComponent::IncrementScratchSpaceBufferOffset()
+uint32
+UHoudiniNodeComponent::SetScratchSpaceValues(TType* Values, uint32 Bytes)
 {
-    const uint32 TypeSize = sizeof(TType);
-    IncrementScratchSpaceBufferOffset(TypeSize);
+    char* ScratchSpaceBufferStart = (char*) &ScratchSpaceBuffer[0];
+
+    char* PositionNew = ScratchSpaceBufferStart + ScratchSpaceBufferOffset;
+    PositionNew = (char*) Align<TType*>((TType*) PositionNew, alignof(TType));
+
+    FMemory::Memcpy((void*) PositionNew, (const void*) Values, Bytes);
+
+    const uint32 ScratchSpaceOffset = offsetof(UHoudiniNodeComponent, ScratchSpaceBuffer);
+    const uint32 ScratchSpaceOffsetComputed = (uint32)(PositionNew - ScratchSpaceBufferStart);
+
+    ScratchSpaceBufferOffset = ScratchSpaceOffsetComputed + Bytes;
+    return ScratchSpaceOffset + ScratchSpaceOffsetComputed;
+}
+
+
+template<typename TType>
+uint32
+UHoudiniNodeComponent::SetScratchSpaceValues(const TArray<TType>& Values)
+{
+    if(Values.Num() > 0)
+    {
+        return SetScratchSpaceValues(&Values[0], sizeof(TType) * Values.Num());
+    }
+
+    return 0u;
+}
+
+
+template<typename TType>
+uint32
+UHoudiniNodeComponent::SetScratchSpaceValue(TType Value)
+{
+    return SetScratchSpaceValues(&Value, sizeof(TType));
 }

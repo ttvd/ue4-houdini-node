@@ -86,7 +86,11 @@ FHoudiniNode::GetObjNetwork() const
 {
     if(Director)
     {
-        return (OP_Network*) Director->getChild("obj");
+		OP_Node* Node = Director->getChild("obj");
+		if(Node && Node->isNetwork())
+		{
+			return (OP_Network*) Node;
+		}
     }
 
     return nullptr;

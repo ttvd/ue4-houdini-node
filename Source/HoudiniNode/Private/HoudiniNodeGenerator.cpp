@@ -92,7 +92,7 @@ UHoudiniNodeGenerator::Discard(UObject* Object) const
 
 
 bool
-UHoudiniNodeGenerator::Discard(TArray<UObject*>& Objects) const
+UHoudiniNodeGenerator::Discard(const TArray<UObject*>& Objects) const
 {
     bool Result = false;
 

@@ -32,6 +32,17 @@ public:
     //! Return true if the library for the underlying asset has been created.
     bool HasLibrary() const;
 
+public:
+
+	//! Create an underlying node.
+	bool CreateNode(const UT_String& NodeName);
+
+	//! Destroy an underlying node.
+	bool DestroyNode();
+
+	//! Return an underlying node.
+	OBJ_Node* GetNode() const;
+
 protected:
 
     //! Retrieve asset names for this Houdini node asset.
@@ -40,7 +51,7 @@ protected:
 protected:
 
     //! List of generated properties.
-    TMap<FString, UProperty*> Properties;
+    //TMap<FString, UProperty*> Properties;
 
 protected:
 

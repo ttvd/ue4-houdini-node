@@ -68,6 +68,11 @@ protected:
 
 protected:
 
+    //! Assign offset for a given property.
+    void AssignPropertyOffset(UProperty* Property, uint32 Offset) const;
+
+protected:
+
     //! List of generated properties during the last cook.
     TMap<FString, UProperty*> Properties;
 

@@ -17,6 +17,7 @@ UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer
 
 UHoudiniNodeClass::~UHoudiniNodeClass()
 {
+	DestroyNode();
     RemoveLibrary();
 }
 
@@ -54,7 +55,11 @@ UHoudiniNodeClass::AddLibrary()
         TArray<UT_String> AssetNames;
         if(GetAssetNames(AssetNames))
 		{
-			return true;
+			const UT_String& AssetName = AssetNames[0];
+			if(CreateNode(AssetName))
+			{
+				return true; 
+			}
 		}
     }
 
@@ -120,10 +125,62 @@ UHoudiniNodeClass::GetAssetNames(TArray<UT_String>& AssetNames) const
     {
         const OP_OTLDefinition& Definition = Library->getDefinition(Idx);
         const UT_String& RawAssetName = Definition.getName();
-        //const UT_String& RawAssetName = Definition.getOpTableName();
-        //FString AssetName = UTF8_TO_TCHAR(RawAssetName.c_str());
         AssetNames.Add(RawAssetName);
     }
 
     return AssetNames.Num() > 0;
+}
+
+
+bool
+UHoudiniNodeClass::CreateNode(const UT_String& NodeName)
+{
+	if(!NodeName.isstring())
+	{
+		return false;
+	}
+
+	OP_Network* ObjNetwork = GHoudiniNode->GetObjNetwork();
+	if(!ObjNetwork)
+	{
+		return false;
+	}
+
+	Node = (OBJ_Node*) ObjNetwork->createNode(NodeName.c_str());
+	if(!Node)
+	{
+		return false;
+	}
+
+	Node->runCreateScript();
+
+	return true;
+}
+
+
+bool
+UHoudiniNodeClass::DestroyNode()
+{
+	if(!Node)
+	{
+		return false;
+	}
+
+	OP_Network* ObjNetwork = GHoudiniNode->GetObjNetwork();
+	if(!ObjNetwork)
+	{
+		return false;
+	}
+
+	ObjNetwork->destroyNode(Node);
+	Node = nullptr;
+
+	return true;
+}
+
+
+OBJ_Node*
+UHoudiniNodeClass::GetNode() const
+{
+	return Node;
 }

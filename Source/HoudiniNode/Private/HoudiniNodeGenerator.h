@@ -29,7 +29,7 @@ public:
     virtual bool Discard(UObject* Object) const;
 
     //! Discard a list of objects, return true if at least one object is discarded.
-    virtual bool Discard(TArray<UObject*>& Objects) const;
+    virtual bool Discard(const TArray<UObject*>& Objects) const;
 
 public:
 

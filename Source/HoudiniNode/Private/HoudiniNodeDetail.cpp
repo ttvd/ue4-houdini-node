@@ -14,9 +14,30 @@ FHoudiniNodeDetail::FHoudiniNodeDetail(OBJ_Node* InNode) :
 }
 
 
+FHoudiniNodeDetail::~FHoudiniNodeDetail()
+{
+	Reset();
+}
+
+
+void
+FHoudiniNodeDetail::Reset()
+{
+	if(DetailHandle.isValid() && DetailHandle.hasActiveLock())
+	{
+		DetailHandle.unlock(Detail);
+	}
+
+	DetailHandle.clear();
+	Detail = nullptr;
+}
+
+
 bool
 FHoudiniNodeDetail::Cook(float Time)
 {
+	Reset();
+
     if(!Node)
     {
         return false;
@@ -31,16 +52,17 @@ FHoudiniNodeDetail::Cook(float Time)
     OP_Context Context(Time);
     const int32 ForcedCook = 1;
 
-    GU_DetailHandle DetailHandle = DisplaySop->getCookedGeoHandle(Context, ForcedCook);
+    DetailHandle = DisplaySop->getCookedGeoHandle(Context, ForcedCook);
     if(!DetailHandle.isValid())
     {
+		Reset();
         return false;
     }
 
-    GU_DetailHandleAutoReadLock DetailLock(DetailHandle);
-    Detail = const_cast<GU_Detail*>(DetailLock.getGdp());
-    if(!Detail)
+	Detail = const_cast<GU_Detail*>(DetailHandle.readLock());
+	if(!Detail)
     {
+		Reset();
         return false;
     }
 
@@ -51,7 +73,15 @@ FHoudiniNodeDetail::Cook(float Time)
 bool
 FHoudiniNodeDetail::IsValid() const
 {
-    return Detail != nullptr;
+	if(DetailHandle.isValid() && DetailHandle.hasActiveLock())
+	{
+		if(Detail && Node)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 

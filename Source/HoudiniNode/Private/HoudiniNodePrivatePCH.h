@@ -1,13 +1,11 @@
 #pragma once
 
-#if WITH_EDITOR
-#include "UnrealEd.h"
-#endif
-
-#include "Core.h"
-#include "CoreUObject.h"
 #include "GameFramework/Actor.h"
 #include "Components/SceneComponent.h"
+
+#if WITH_EDITOR
+#include "EditorFramework/AssetImportData.h"
+#endif
 
 #pragma warning(push)
 #pragma warning(disable : 4211)
@@ -38,15 +36,15 @@
 #include <OP/OP_Network.h>
 #include <OP/OP_Operator.h>
 #include <OP/OP_OTLLibrary.h>
+#include <OP/OP_Context.h>
 
 #include <PRM/PRM_Name.h>
 #include <PRM/PRM_Template.h>
 
 #include <OBJ/OBJ_Node.h>
+#include <SOP/SOP_Node.h>
 
 #include <GU/GU_Detail.h>
-#include <OP/OP_Context.h>
-#include <SOP/SOP_Node.h>
 
 #pragma warning(pop)
 

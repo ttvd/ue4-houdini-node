@@ -5,6 +5,7 @@
 class OBJ_Node;
 class OP_OTLLibrary;
 class UT_String;
+class PRM_Template;
 
 class UHoudiniNodeAsset;
 
@@ -43,6 +44,11 @@ public:
     //! Return the underlying node.
     OBJ_Node* GetNode() const;
 
+public:
+
+    //! Create parameters.
+    bool CreateParameters();
+
 protected:
 
     //! Create the underlying node with a given name.
@@ -50,6 +56,14 @@ protected:
 
     //! Retrieve asset names for this Houdini node asset.
     bool GetAssetNames(TArray<UT_String>& AssetNames) const;
+
+protected:
+
+    //! Create a parameter from a given template.
+    int32 CreateParameter(const PRM_Template* Template);
+
+    //! Create a float type parameter from a given template.
+    int32 CreateParameterFloat(const PRM_Template* Template);
 
 protected:
 
@@ -66,4 +80,7 @@ protected:
 
     //! Path of the library file used to load the library.
     FString LibraryPath;
+
+    //! Cook time.
+    float Time;
 };

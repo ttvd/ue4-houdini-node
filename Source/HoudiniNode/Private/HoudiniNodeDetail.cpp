@@ -30,13 +30,15 @@ FHoudiniNodeDetail::Reset()
 
     DetailHandle.clear();
     Detail = nullptr;
+    Time = 0.0f;
 }
 
 
 bool
-FHoudiniNodeDetail::Cook(float Time)
+FHoudiniNodeDetail::Cook(float InTime)
 {
     Reset();
+    Time = InTime;
 
     if(!Node)
     {
@@ -67,6 +69,13 @@ FHoudiniNodeDetail::Cook(float Time)
     }
 
     return true;
+}
+
+
+float
+FHoudiniNodeDetail::GetCookTime() const
+{
+    return Time;
 }
 
 

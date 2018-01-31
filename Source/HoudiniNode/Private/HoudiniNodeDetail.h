@@ -13,6 +13,9 @@ public:
     //! Create detail from a given object node.
     FHoudiniNodeDetail(OBJ_Node* InNode);
 
+	//! Destructor (resets the locks).
+	~FHoudiniNodeDetail();
+
 public:
 
     //! Cook this detail at a given time.
@@ -35,6 +38,14 @@ public:
     bool GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const;
 
 protected:
+
+	//! Reset this detail (release locks).
+	void Reset();
+
+protected:
+
+	//! Corresponding Houdini detail handle.
+	GU_DetailHandle DetailHandle;
 
     //! Corresponding Houdini object node this detail is constructed from.
     OBJ_Node* Node;

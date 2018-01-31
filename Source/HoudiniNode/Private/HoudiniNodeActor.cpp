@@ -87,7 +87,7 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 
             HoudiniNodeClass->AddLibrary();
             HoudiniNodeClass->CreateNode();
-            HoudiniNodeClass->CreateParameters();
+            HoudiniNodeClass->CreateParameters(HoudiniNodeComponent);
         }
     }
 }

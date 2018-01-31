@@ -8,6 +8,7 @@ class UT_String;
 class PRM_Template;
 
 class UHoudiniNodeAsset;
+class UHoudiniNodeComponent;
 
 
 UCLASS()
@@ -47,7 +48,7 @@ public:
 public:
 
     //! Create parameters.
-    bool CreateParameters();
+    bool CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent);
 
 protected:
 
@@ -77,6 +78,9 @@ protected:
 
     //! Corresponding loaded library.
     OP_OTLLibrary* Library;
+
+    //! Associated Houdini component.
+    UHoudiniNodeComponent* Component;
 
     //! Path of the library file used to load the library.
     FString LibraryPath;

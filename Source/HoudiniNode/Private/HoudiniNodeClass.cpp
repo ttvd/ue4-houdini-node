@@ -2,6 +2,7 @@
 #include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeModule.h"
 #include "HoudiniNodeAsset.h"
+#include "HoudiniNodeComponent.h"
 
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :
@@ -9,6 +10,7 @@ UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer
     HoudiniNodeAsset(nullptr),
     Node(nullptr),
     Library(nullptr),
+    Component(nullptr),
     LibraryPath(TEXT("")),
     Time(0.0f)
 {
@@ -198,9 +200,15 @@ UHoudiniNodeClass::GetNode() const
 
 
 bool
-UHoudiniNodeClass::CreateParameters()
+UHoudiniNodeClass::CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent)
 {
     if(!Node)
+    {
+        return false;
+    }
+
+    Component = HoudiniNodeComponent;
+    if(!Component)
     {
         return false;
     }
@@ -280,10 +288,45 @@ UHoudiniNodeClass::CreateParameterFloat(const PRM_Template* Template)
     const PRM_Type::PRM_FloatType FloatType = Type.getFloatType();
 
     const int32 VectorSize = Template->getVectorSize();
+    if(!VectorSize)
+    {
+        return 1;
+    }
+
+    const int32 VectorSizeBytes = sizeof(float) * VectorSize;
+
+    TArray<float> Values;
+    Values.SetNumZeroed(VectorSize);
 
     for(int32 Idx = 0; Idx < VectorSize; ++Idx)
     {
         const float Value = Node->evalFloat(Name.c_str(), Idx, Time);
+        Values[Idx] = Value;
+    }
+
+    static const EObjectFlags PropertyObjectFlags = RF_Public | RF_Transient;
+    FString PropertyName = UTF8_TO_TCHAR(Label.c_str());
+
+    UFloatProperty* Property = NewObject<UFloatProperty>(this, *PropertyName, PropertyObjectFlags);
+    if(Property)
+    {
+        Property->ArrayDim = VectorSize;
+        Property->PropertyFlags = UINT64_C(69793219077);
+        Property->PropertyLinkNext = nullptr;
+
+        Property->SetMetaData(TEXT("EditAnywhere"), TEXT("1"));
+        Property->SetMetaData(TEXT("BlueprintReadOnly"), TEXT("1"));
+        Property->SetMetaData(TEXT("Category"), TEXT("HoudiniProperties"));
+
+        AddCppProperty(Property);
+
+        float *Ptr = (float*) Component->GetCurrentScratchSpacePosition();
+        FMemory::Memcpy(Ptr, &Values[0], VectorSizeBytes);
+
+        const uint32 Offset = Component->GetCurrentScratchSpaceOffset();
+        *(int32*)((char*) &Property->RepNotifyFunc - sizeof(int32)) = Offset;
+
+        Component->IncrementScratchSpaceBufferOffset(VectorSizeBytes);
     }
 
     return 1;

@@ -376,12 +376,6 @@ UHoudiniNodeClass::CreateParameterFloat(const PRM_Template* Template)
 
         const uint32 PropertyValueOffset = Component->SetScratchSpaceValues(Values);
         AssignPropertyOffset(Property, PropertyValueOffset);
-
-        //float *Ptr = (float*) Component->GetCurrentScratchSpacePosition();
-        //FMemory::Memcpy(Ptr, &Values[0], VectorSizeBytes);
-        //const uint32 Offset = Component->GetCurrentScratchSpaceOffset();
-        //*(int32*)((char*) &Property->RepNotifyFunc - sizeof(int32)) = Offset;
-        //Component->IncrementScratchSpaceBufferOffset(VectorSizeBytes);
     }
 
     return 1;

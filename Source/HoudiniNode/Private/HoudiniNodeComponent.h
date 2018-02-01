@@ -33,6 +33,9 @@ template<typename TType>
 uint32
 UHoudiniNodeComponent::SetScratchSpaceValues(TType* Values, uint32 Bytes)
 {
+    check(Values);
+    check(Bytes > 0u);
+
     char* ScratchSpaceBufferStart = (char*) &ScratchSpaceBuffer[0];
 
     char* PositionNew = ScratchSpaceBufferStart + ScratchSpaceBufferOffset;
@@ -52,12 +55,8 @@ template<typename TType>
 uint32
 UHoudiniNodeComponent::SetScratchSpaceValues(const TArray<TType>& Values)
 {
-    if(Values.Num() > 0)
-    {
-        return SetScratchSpaceValues(&Values[0], sizeof(TType) * Values.Num());
-    }
-
-    return 0u;
+    check(Values.Num() > 0);
+    return SetScratchSpaceValues(&Values[0], sizeof(TType) * Values.Num());
 }
 
 

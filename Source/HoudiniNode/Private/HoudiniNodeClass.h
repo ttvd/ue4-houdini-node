@@ -114,6 +114,7 @@ UHoudiniNodeClass::CreateParameterCommon(const PRM_Template* Template, const TAr
     check(Template);
 
     const PRM_Name* TemplateName = Template->getNamePtr();
+    check(TemplateName);
 
     const UT_String& Name = TemplateName->getToken();
     const UT_String& Label = TemplateName->getLabel();

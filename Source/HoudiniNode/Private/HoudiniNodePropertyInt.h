@@ -1,5 +1,6 @@
 #pragma once
 #include "HoudiniNodePropertyCommon.h"
+#include "HoudiniNodePropertyInterface.h"
 #include "HoudiniNodePropertyInt.generated.h"
 
 
@@ -10,7 +11,7 @@ class UHoudiniNodeComponent;
 
 
 UCLASS()
-class HOUDININODE_API UHoudiniNodePropertyInt : public UIntProperty, public FHoudiniNodePropertyCommon
+class HOUDININODE_API UHoudiniNodePropertyInt : public UIntProperty, public FHoudiniNodePropertyCommon, public IHoudiniNodePropertyInterface
 {
     GENERATED_UCLASS_BODY()
     virtual ~UHoudiniNodePropertyInt();
@@ -18,6 +19,6 @@ class HOUDININODE_API UHoudiniNodePropertyInt : public UIntProperty, public FHou
 public:
 
     //! Construct float property from a given template.
-    bool Construct(OP_Node* Node, const PRM_Template* Template, UHoudiniNodeComponent* Component, float Time);
+    virtual bool Construct(OP_Node* Node, const PRM_Template* Template, UHoudiniNodeComponent* Component, float Time) override;
 };
 

@@ -66,8 +66,8 @@ public:
 
 public:
 
-    //! Called whenever a property of this class changes.
-    void OnParameterChanged(UProperty* Property);
+    //! Called whenever a property of this class changes. Return true if triggered cook was successful.
+    bool OnParameterChanged(UProperty* Property);
 
 protected:
 

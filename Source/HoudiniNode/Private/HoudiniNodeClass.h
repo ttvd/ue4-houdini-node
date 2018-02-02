@@ -112,20 +112,6 @@ protected:
 
 protected:
 
-    //! Common code to create a new property and set its parameters.
-    template <typename TPropertyType, typename TType> TPropertyType* CreateParameterCommon(const PRM_Template* Template, const TArray<TType>& Values);
-    template <typename TPropertyType, typename TType> TPropertyType* CreateParameterCommon(const PRM_Template* Template, TType Value);
-
-protected:
-
-    //! Assign offset for a given property.
-    void AssignPropertyOffset(UProperty* Property, uint32 Offset) const;
-
-    //! Assign meta tags for a given property.
-    void AssignPropertyMeta(UProperty* Property, const PRM_Template* Template) const;
-
-protected:
-
     //! List of generated properties during the last cook.
     TMap<FString, UProperty*> Properties;
 
@@ -157,92 +143,4 @@ protected:
     float Time;
 };
 
-
-template <typename TPropertyType, typename TType>
-TPropertyType*
-UHoudiniNodeClass::CreateParameterCommon(const PRM_Template* Template, const TArray<TType>& Values)
-{
-    check(Component);
-    check(Template);
-
-    const PRM_Name* TemplateName = Template->getNamePtr();
-    check(TemplateName);
-
-    const UT_String& Name = TemplateName->getToken();
-    const UT_String& Label = TemplateName->getLabel();
-
-    static const EObjectFlags PropertyObjectFlags = RF_Public | RF_Transient;
-
-    //FString PropertyName = UTF8_TO_TCHAR(Name.c_str());
-    FString PropertyName = UTF8_TO_TCHAR(Label.c_str());
-
-    TPropertyType* Property = NewObject<TPropertyType>(this, *PropertyName, PropertyObjectFlags);
-    if(Property)
-    {
-        Property->ArrayDim = Values.Num();
-        Property->PropertyFlags = UINT64_C(69793219077);
-        Property->PropertyLinkNext = nullptr;
-
-        AddCppProperty(Property);
-
-        const uint32 PropertyValueOffset = Component->SetScratchSpaceValues(Values);
-        AssignPropertyOffset(Property, PropertyValueOffset);
-
-        {
-            FString PropertyLabel = UTF8_TO_TCHAR(Label.c_str());
-            Property->SetMetaData(TEXT("DisplayName"), *PropertyLabel);
-        }
-
-        {
-            FString PropertyName = UTF8_TO_TCHAR(Name.c_str());
-            Property->SetMetaData(TEXT("HoudiniName"), *PropertyName);
-        }
-
-        Property->SetMetaData(TEXT("EditAnywhere"), TEXT("1"));
-        Property->SetMetaData(TEXT("BlueprintReadOnly"), TEXT("1"));
-        Property->SetMetaData(TEXT("Category"), TEXT("HoudiniProperties"));
-
-        const PRM_Range* Range = Template->getRangePtr();
-        if(Range)
-        {
-            if(Range->hasParmMin())
-            {
-                const float ParmMin = (float) Range->getParmMin();
-                Property->SetMetaData(TEXT("ClampMin"), *FString::SanitizeFloat(ParmMin));
-            }
-
-            if(Range->hasParmMax())
-            {
-                const float ParmMax = (float) Range->getParmMax();
-                Property->SetMetaData(TEXT("ClampMax"), *FString::SanitizeFloat(ParmMax));
-            }
-
-            if(Range->hasUIMin())
-            {
-                const float UIMin = (float) Range->getUIMin();
-                Property->SetMetaData(TEXT("UIMin"), *FString::SanitizeFloat(UIMin));
-            }
-
-            if(Range->hasUIMax())
-            {
-                const float UIMax = (float) Range->getUIMax();
-                Property->SetMetaData(TEXT("UIMax"), *FString::SanitizeFloat(UIMax));
-            }
-        }
-    }
-
-    return Property;
-}
-
-
-template <typename TPropertyType, typename TType>
-TPropertyType*
-UHoudiniNodeClass::CreateParameterCommon(const PRM_Template* Template, TType Value)
-{
-    TArray<TType> Values;
-    Values.Add(Value);
-
-    TPropertyType* Property = CreateParameterCommon<TPropertyType>(Template, Values);
-    return Property;
-}
 

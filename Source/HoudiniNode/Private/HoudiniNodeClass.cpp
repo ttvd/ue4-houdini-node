@@ -443,18 +443,6 @@ UHoudiniNodeClass::OnParameterChanged(UProperty* Property)
 }
 
 
-void
-UHoudiniNodeClass::AssignPropertyOffset(UProperty* Property, uint32 Offset) const
-{
-    if(!Property)
-    {
-        return;
-    }
-
-    *(int32*)((char*) &Property->RepNotifyFunc - sizeof(int32)) = (int32) Offset;
-}
-
-
 bool
 UHoudiniNodeClass::CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent)
 {

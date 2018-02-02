@@ -92,6 +92,7 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
             HoudiniNodeClass->CreateNode();
 
             HoudiniNodeClass->CreateParameters(HoudiniNodeComponent);
+            HoudiniNodeClass->CookDetail();
         }
     }
 }

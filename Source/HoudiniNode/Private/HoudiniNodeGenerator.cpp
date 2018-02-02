@@ -10,6 +10,20 @@ UHoudiniNodeGenerator::UHoudiniNodeGenerator(const FObjectInitializer& ObjectIni
 
 
 bool
+UHoudiniNodeGenerator::Generate(GU_Detail* Detail, TArray<AActor*>& GeneratedActors)
+{
+    GeneratedActors.Empty();
+
+    if(!Detail)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+bool
 UHoudiniNodeGenerator::DoesSupportClass(UClass* Class) const
 {
     for(int32 Idx = 0; Idx < SupportedClasses.Num(); ++Idx)

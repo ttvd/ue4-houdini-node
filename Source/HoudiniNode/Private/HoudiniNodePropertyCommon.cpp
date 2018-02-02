@@ -107,7 +107,7 @@ FHoudiniNodePropertyCommon::AssignPropertyRanges() const
 
         if(Range->hasUIMax())
         {
-            const float UIMax = (float) Range->getUIMax();
+            const float UIMax = (float)Range->getUIMax();
             Property->SetMetaData(TEXT("UIMax"), *FString::SanitizeFloat(UIMax));
         }
     }

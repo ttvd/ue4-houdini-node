@@ -534,7 +534,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
 
     int32 Offset = 1;
 
-    UProperty* Property = nullptr;
+    IHoudiniNodePropertyInterface* Property = nullptr;
 
     if(Type.isBasicType(PRM_Type::PRM_BASIC_FLOAT))
     {
@@ -542,13 +542,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
 
         if(TypeFloat == PRM_Type::PRM_FLOAT_INTEGER)
         {
-            /*
-            UHoudiniNodePropertyInt* Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
-            if(Property)
-            {
-                Property->Construct(Node, Template, Component, Time);
-            }
-            */
+            Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
         }
         else if(TypeFloat == PRM_Type::PRM_FLOAT_RGBA)
         {
@@ -557,11 +551,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
         }
         else
         {
-            UHoudiniNodePropertyFloat* Property = NewObject<UHoudiniNodePropertyFloat>(this, *PropertyName, PropertyObjectFlags);
-            if(Property)
-            {
-                Property->Construct(Node, Template, Component, Time);
-            }
+            Property = NewObject<UHoudiniNodePropertyFloat>(this, *PropertyName, PropertyObjectFlags);
         }
     }
     else if(Type.isBasicType(PRM_Type::PRM_BASIC_ORDINAL))
@@ -578,21 +568,25 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
             // Radio.
             volatile int i = 5;
         }
+        else if(TypeOrdinal == PRM_Type::PRM_ORD_SWITCHERLIST)
+        {
+            // Tabs.
+            volatile int i = 5;
+        }
         else
         {
-            /*
-            UHoudiniNodePropertyInt* Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
-            if(Property)
-            {
-                Property->Construct(Node, Template, Component, Time);
-            }
-            */
+            Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
         }
     }
     else if(Type.isBasicType(PRM_Type::PRM_BASIC_STRING))
     {
         // Paths, labels and separators.
         volatile int i = 5;
+    }
+
+    if(Property)
+    {
+        Property->Construct(Node, Template, Component, Time);
     }
 
     return Offset;

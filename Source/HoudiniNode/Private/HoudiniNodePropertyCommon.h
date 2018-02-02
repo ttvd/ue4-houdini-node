@@ -1,6 +1,5 @@
 #pragma once
 
-
 class OP_Node;
 class PRM_Template;
 

@@ -29,6 +29,9 @@ public:
 
 public:
 
+    //! Set cook time.
+    void SetCookTime(float InTime);
+
     //! Return cook time.
     float GetCookTime() const;
 
@@ -96,8 +99,8 @@ protected:
 
 protected:
 
-    //! Cook the detail at a given time.
-    bool CookDetail(float InTime);
+    //! Cook the detail at current time.
+    bool CookDetail();
 
     //! Reset cooked detail.
     void ResetDetail();
@@ -106,9 +109,6 @@ protected:
 
     //! Create a parameter from a given template.
     int32 CreateParameter(const PRM_Template* Template);
-
-    //! Create a float type parameter from a given template.
-    int32 CreateParameterFloat(const PRM_Template* Template);
 
 protected:
 

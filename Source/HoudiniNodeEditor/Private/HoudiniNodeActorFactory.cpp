@@ -48,7 +48,7 @@ UHoudiniNodeActorFactory::GetAssetFromActorInstance(AActor* Actor)
         return nullptr;
     }
 
-    return HoudiniNodeActor->HoudiniNodeAsset;
+    return HoudiniNodeActor->Asset;
 }
 
 
@@ -72,7 +72,7 @@ UHoudiniNodeActorFactory::PostSpawnActor(UObject* Asset, AActor* Actor)
     if(HoudiniNodeAssetProperty)
     {
         HoudiniNodeActor->PreEditChange(HoudiniNodeAssetProperty);
-        HoudiniNodeActor->HoudiniNodeAsset = HoudiniNodeAsset;
+        HoudiniNodeActor->Asset = HoudiniNodeAsset;
         FPropertyChangedEvent HoudiniNodeActorChangedEvent(HoudiniNodeAssetProperty);
         HoudiniNodeActor->PostEditChangeProperty(HoudiniNodeActorChangedEvent);
     }

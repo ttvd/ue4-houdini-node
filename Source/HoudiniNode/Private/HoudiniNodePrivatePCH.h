@@ -7,6 +7,7 @@
 
 #if WITH_EDITOR
 #include "EditorFramework/AssetImportData.h"
+#include "RawMesh.h"
 #endif
 
 #pragma warning(push)

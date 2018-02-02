@@ -1,24 +1,39 @@
 #include "HoudiniNodeGeneratorStaticMesh.h"
+#include "HoudiniNodeClass.h"
 #include "HoudiniNodePrivatePCH.h"
 
 
 UHoudiniNodeGeneratorStaticMesh::UHoudiniNodeGeneratorStaticMesh(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer)
 {
+    GeneratorName = TEXT("StaticMeshActor");
     SupportedClasses.Add(AStaticMeshActor::StaticClass());
 }
 
 
 bool
-UHoudiniNodeGeneratorStaticMesh::Generate(GU_Detail* Detail, TArray<AActor*>& GeneratedActors)
+UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<AActor*>& GeneratedActors)
 {
-    if(!Super::Generate(Detail, GeneratedActors))
+    if(!Super::Generate(NodeClass, GeneratedActors))
     {
         return false;
     }
 
+    TArray<GA_Primitive*> Primitives;
+    if(!NodeClass->GetAllPrimitives(Primitives))
+    {
+        return false;
+    }
 
+#if WITH_EDITOR
 
-    return true;
+    FRawMesh RawMesh;
+
+    //GA_Primitive* prim;
+    //prim->getPointOffset
+
+#endif
+
+    return GeneratedActors.Num() > 0;
 }
 

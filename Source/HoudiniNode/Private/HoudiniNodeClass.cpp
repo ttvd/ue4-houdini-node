@@ -3,6 +3,7 @@
 #include "HoudiniNodeModule.h"
 #include "HoudiniNodeAsset.h"
 #include "HoudiniNodeGenerator.h"
+#include "HoudiniNodeActor.h"
 #include "HoudiniNodeComponent.h"
 #include "HoudiniNodeAttributePrimitive.h"
 #include "HoudiniNodePropertyFloat.h"
@@ -20,7 +21,8 @@ UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer
     Detail(nullptr),
     Component(nullptr),
     LibraryPath(TEXT("")),
-    Time(0.0f)
+    Time(0.0f),
+    Scale(100.0f)
 {
 
 }
@@ -228,6 +230,20 @@ UHoudiniNodeClass::SetCookTime(float InTime)
 }
 
 
+void
+UHoudiniNodeClass::SetScale(float InScale)
+{
+    Scale = InScale;
+}
+
+
+float
+UHoudiniNodeClass::GetScale() const
+{
+    return Scale;
+}
+
+
 bool
 UHoudiniNodeClass::GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const
 {
@@ -429,7 +445,7 @@ UHoudiniNodeClass::OnCookComplete()
 {
     const TArray<UHoudiniNodeGenerator*>& Generators = GHoudiniNode->GetGenerators();
 
-    TArray<AActor*> AllGeneratedActors;
+    TMap<FString, TArray<AActor*> > AllGeneratedActors;
 
     for(int32 Idx = 0; Idx < Generators.Num(); ++Idx)
     {
@@ -442,15 +458,23 @@ UHoudiniNodeClass::OnCookComplete()
         Generator->Prepare();
 
         TArray<AActor*> GeneratedActors;
-        if(Generator->Generate(Detail, GeneratedActors))
+        if(Generator->Generate(this, GeneratedActors))
         {
-            AllGeneratedActors.Append(GeneratedActors);
+            const FString& GeneratorName = Generator->GetGeneratorName();
+            AllGeneratedActors.Add(GeneratorName, GeneratedActors);
         }
 
         Generator->CleanUp();
     }
 
-    return true;
+    if(AllGeneratedActors.Num() > 0)
+    {
+        AHoudiniNodeActor* HoudiniNodeActor = Cast<AHoudiniNodeActor>(Component->GetOwner());
+        if(HoudiniNodeActor)
+        {
+            HoudiniNodeActor->RegisterGeneratedActors(AllGeneratedActors);
+        }
+    }
 }
 
 
@@ -468,8 +492,6 @@ UHoudiniNodeClass::OnParameterChanged(UProperty* Property)
     {
         return false;
     }
-
-
 
     return true;
 }

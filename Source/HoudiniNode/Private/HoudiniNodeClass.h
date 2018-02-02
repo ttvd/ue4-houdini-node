@@ -39,6 +39,14 @@ public:
 
 public:
 
+    //! Set scale.
+    void SetScale(float InScale);
+
+    //! Get scale.
+    float GetScale() const;
+
+public:
+
     //! Create library for the underlying asset.
     bool AddLibrary();
 
@@ -118,7 +126,7 @@ protected:
 protected:
 
     //! List of generated properties during the last cook.
-    TMap<FString, UProperty*> Properties;
+    //TMap<FString, UProperty*> Properties;
 
 protected:
 
@@ -146,6 +154,9 @@ protected:
 
     //! Cook time.
     float Time;
+
+    //! Scale.
+    float Scale;
 };
 
 

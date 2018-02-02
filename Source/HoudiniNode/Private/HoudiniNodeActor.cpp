@@ -7,8 +7,9 @@
 
 AHoudiniNodeActor::AHoudiniNodeActor(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer),
-    HoudiniNodeAsset(nullptr),
-    HoudiniNodeCookTime(0.0f),
+    Asset(nullptr),
+    Time(0.0f),
+    Scale(100.0f),
     HoudiniNodeComponent(nullptr)
 {
 
@@ -16,6 +17,13 @@ AHoudiniNodeActor::AHoudiniNodeActor(const FObjectInitializer& ObjectInitializer
 
 
 AHoudiniNodeActor::~AHoudiniNodeActor()
+{
+
+}
+
+
+void
+AHoudiniNodeActor::RegisterGeneratedActors(const TMap<FString, TArray<AActor*> >& GeneratedActors)
 {
 
 }
@@ -39,7 +47,7 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
         return;
     }
 
-    if(Property->GetName() == TEXT("HoudiniNodeAsset"))
+    if(Property->GetName() == TEXT("Asset"))
     {
         if(HoudiniNodeComponent)
         {
@@ -55,7 +63,7 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
             }
         }
 
-        if(HoudiniNodeAsset)
+        if(Asset)
         {
             UClass* OriginalComponentClass = UHoudiniNodeComponent::StaticClass();
 
@@ -65,7 +73,7 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 
             UHoudiniNodeClass* HoudiniNodeClass = NewObject<UHoudiniNodeClass>(GetOutermost(), *ClassName, RF_Public | RF_Transactional);
 
-            HoudiniNodeClass->HoudiniNodeAsset = HoudiniNodeAsset;
+            HoudiniNodeClass->HoudiniNodeAsset = Asset;
 
             HoudiniNodeClass->ClassGeneratedBy = this;
             HoudiniNodeClass->SetSuperStruct(OriginalComponentClass);
@@ -86,13 +94,25 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
                 HoudiniNodeComponent->RegisterComponent();
             }
 
-            HoudiniNodeClass->SetCookTime(HoudiniNodeCookTime);
+            HoudiniNodeClass->SetCookTime(Time);
+            HoudiniNodeClass->SetScale(Scale);
 
             HoudiniNodeClass->AddLibrary();
             HoudiniNodeClass->CreateNode();
 
             HoudiniNodeClass->CreateParameters(HoudiniNodeComponent);
             HoudiniNodeClass->CookDetail();
+        }
+    }
+    else if(Property->GetName() == TEXT("Scale"))
+    {
+
+    }
+    else if(Property->GetName() == TEXT("Time"))
+    {
+        if(Time < FLT_MIN)
+        {
+            Time = 100.0f;
         }
     }
 }

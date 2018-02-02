@@ -42,6 +42,17 @@ public:
 
 public:
 
+    //! Group given primitives by an integer value.
+    bool Group(const TArray<GA_Primitive*>& Input, TMap<int32, TArray<GA_Primitive*> >& Prims) const;
+
+    //! Group given primitives by a string value.
+    bool Group(const TArray<GA_Primitive*>& Input, TMap<FString, TArray<GA_Primitive*> >& Prims) const;
+
+    //! Group given primitives by an object value.
+    bool Group(const TArray<GA_Primitive*>& Input, TMap<UObject*, TArray<GA_Primitive*> >& Prims) const;
+
+public:
+
     //! Given a list of primitives, get their integer attribute values.
     bool Get(const TArray<GA_Primitive*>& Prims, TArray<int32>& Values) const;
 

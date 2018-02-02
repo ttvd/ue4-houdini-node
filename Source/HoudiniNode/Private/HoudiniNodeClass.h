@@ -29,6 +29,11 @@ public:
 
 public:
 
+    //! Return cook time.
+    float GetCookTime() const;
+
+public:
+
     //! Create library for the underlying asset.
     bool AddLibrary();
 
@@ -56,8 +61,20 @@ public:
 
 public:
 
-    //! Return cook time.
-    float GetCookTime() const;
+    //! Retrieve all points of this detail.
+    bool GetAllPoints(TArray<GA_Offset>& Points) const;
+
+    //! Retrieve all primitives of this detail.
+    bool GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const;
+
+    //! Retrieve all primitives that are members of a given group.
+    bool GetGroupPrimitives(const FString& GroupName, TArray<GA_Primitive*>& Primitives) const;
+
+    //! Retrieve all primitives that are members of a given group and split by part.
+    bool GetGroupPrimitives(const FString& GroupName, TMap<int32, TArray<GA_Primitive*> >& Parts) const;
+
+    //! Get all parts.
+    bool GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const;
 
 public:
 
@@ -84,17 +101,6 @@ protected:
 
     //! Reset cooked detail.
     void ResetDetail();
-
-protected:
-
-    //! Retrieve all primitives of this detail.
-    bool GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const;
-
-    //! Retrieve all points of this detail.
-    bool GetAllPoints(TArray<GA_Offset>& Points) const;
-
-    //! Get all parts.
-    bool GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const;
 
 protected:
 

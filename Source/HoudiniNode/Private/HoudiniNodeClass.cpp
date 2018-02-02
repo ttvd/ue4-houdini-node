@@ -301,6 +301,67 @@ UHoudiniNodeClass::GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const
 }
 
 
+bool
+UHoudiniNodeClass::GetGroupPrimitives(const FString& GroupName, TArray<GA_Primitive*>& Primitives) const
+{
+    Primitives.Empty();
+
+    if(!Detail)
+    {
+        return false;
+    }
+
+    if(GroupName.IsEmpty())
+    {
+        return false;
+    }
+
+    std::string RawString = TCHAR_TO_UTF8(*GroupName);
+    UT_String RawValue(RawString);
+
+    GA_PrimitiveGroup* Group = Detail->findPrimitiveGroup(RawValue);
+    GA_Primitive* Prim = nullptr;
+
+    GA_FOR_ALL_GROUP_PRIMITIVES(Detail, Group, Prim)
+    {
+        if(Prim)
+        {
+            Primitives.Add(Prim);
+        }
+    }
+
+    return Primitives.Num() > 0;
+}
+
+
+bool
+UHoudiniNodeClass::GetGroupPrimitives(const FString& GroupName, TMap<int32, TArray<GA_Primitive*> >& Parts) const
+{
+    if(!Detail)
+    {
+        return false;
+    }
+
+    TArray<GA_Primitive*> Primitives;
+    if(!GetGroupPrimitives(GroupName, Primitives))
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
+    if(Attribute.IsValid())
+    {
+        if(Attribute.Group(Primitives, Parts))
+        {
+            return true;
+        }
+    }
+
+    Parts.Add(0, Primitives);
+    return true;
+}
+
+
 void
 UHoudiniNodeClass::ResetDetail()
 {

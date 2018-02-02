@@ -152,6 +152,52 @@ FHoudiniNodeAttributePrimitive::Select(UObject* Object, TArray<GA_Primitive*>& P
 
 
 bool
+FHoudiniNodeAttributePrimitive::Group(const TArray<GA_Primitive*>& Input, TMap<int32, TArray<GA_Primitive*> >& Prims) const
+{
+    Prims.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleI AttributeHandle = FindAttributeHandle<GA_RWHandleI>(1);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < Input.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = nullptr;
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        const int32 AttributeValue = AttributeHandle.get(PrimOffset);
+
+        TArray<GA_Primitive*>* FoundPrimArray = Prims.Find(AttributeValue);
+        if(FoundPrimArray)
+        {
+            TArray<GA_Primitive*>& PrimArray = *FoundPrimArray;
+            PrimArray.Add(Prim);
+        }
+        else
+        {
+            TArray<GA_Primitive*> PrimArray;
+            PrimArray.Add(Prim);
+
+            Prims.Add(AttributeValue, PrimArray);
+        }
+    }
+
+    return Prims.Num() > 0;
+}
+
+
+bool
 FHoudiniNodeAttributePrimitive::Group(TMap<int32, TArray<GA_Primitive*> >& Prims) const
 {
     Prims.Empty();
@@ -248,6 +294,54 @@ FHoudiniNodeAttributePrimitive::Group(TMap<FString, TArray<GA_Primitive*> >& Pri
 
 
 bool
+FHoudiniNodeAttributePrimitive::Group(const TArray<GA_Primitive*>& Input, TMap<FString, TArray<GA_Primitive*> >& Prims) const
+{
+    Prims.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < Input.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = nullptr;
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        UT_String AttributeValueRaw;
+        AttributeValueRaw = AttributeHandle.get(PrimOffset);
+        FString AttributeValue = UTF8_TO_TCHAR(AttributeValueRaw.c_str());
+
+        TArray<GA_Primitive*>* FoundPrimArray = Prims.Find(AttributeValue);
+        if(FoundPrimArray)
+        {
+            TArray<GA_Primitive*>& PrimArray = *FoundPrimArray;
+            PrimArray.Add(Prim);
+        }
+        else
+        {
+            TArray<GA_Primitive*> PrimArray;
+            PrimArray.Add(Prim);
+
+            Prims.Add(AttributeValue, PrimArray);
+        }
+    }
+
+    return Prims.Num() > 0;
+}
+
+
+bool
 FHoudiniNodeAttributePrimitive::Group(TMap<UObject*, TArray<GA_Primitive*> >& Prims) const
 {
     Prims.Empty();
@@ -267,6 +361,61 @@ FHoudiniNodeAttributePrimitive::Group(TMap<UObject*, TArray<GA_Primitive*> >& Pr
 
     GA_FOR_ALL_PRIMITIVES(Detail, Prim)
     {
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        UT_String AttributeValueRaw;
+        AttributeValueRaw = AttributeHandle.get(PrimOffset);
+        FString AttributeValue = UTF8_TO_TCHAR(AttributeValueRaw.c_str());
+
+        UObject* FoundObject = nullptr;
+        if(!AttributeValue.IsEmpty())
+        {
+            FoundObject = StaticLoadObject(UObject::StaticClass(), nullptr, *AttributeValue, nullptr,
+                LOAD_None, nullptr);
+        }
+
+        TArray<GA_Primitive*>* FoundPrimArray = Prims.Find(FoundObject);
+        if(FoundPrimArray)
+        {
+            TArray<GA_Primitive*>& PrimArray = *FoundPrimArray;
+            PrimArray.Add(Prim);
+        }
+        else
+        {
+            TArray<GA_Primitive*> PrimArray;
+            PrimArray.Add(Prim);
+
+            Prims.Add(FoundObject, PrimArray);
+        }
+    }
+
+    return Prims.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributePrimitive::Group(const TArray<GA_Primitive*>& Input, TMap<UObject*, TArray<GA_Primitive*> >& Prims) const
+{
+    Prims.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleS AttributeHandle = FindAttributeHandle<GA_RWHandleS>(1);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < Input.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = nullptr;
         if(!Prim)
         {
             continue;

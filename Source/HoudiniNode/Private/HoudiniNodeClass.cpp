@@ -3,6 +3,7 @@
 #include "HoudiniNodeModule.h"
 #include "HoudiniNodeAsset.h"
 #include "HoudiniNodeComponent.h"
+#include "HoudiniNodeAttributePrimitive.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4706)
@@ -275,18 +276,28 @@ UHoudiniNodeClass::GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const
         return false;
     }
 
+    const int32 NumPrims = Detail->getNumPrimitives();
+    if(!NumPrims)
+    {
+        return false;
+    }
+
     FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
-    if(!Attribute.IsValid())
+    if(Attribute.IsValid())
     {
-        return false;
+        if(Attribute.Group(Parts))
+        {
+            return true;
+        }
     }
 
-    if(!Attribute.Group(Parts))
+    TArray<GA_Primitive*> AllPrimitives;
+    if(GetAllPrimitives(AllPrimitives))
     {
-        return false;
+        Parts.Add(0, AllPrimitives);
     }
 
-    return true;
+    return false;
 }
 
 
@@ -344,16 +355,24 @@ UHoudiniNodeClass::CookDetail(float InTime)
 }
 
 
-void
+bool
 UHoudiniNodeClass::OnParameterChanged(UProperty* Property)
 {
     if(!Property)
     {
-        return;
+        return false;
     }
 
     const FString& PropertyName = Property->GetMetaData(TEXT("HoudiniName"));
-    CookDetail(0.0f);
+
+    if(!CookDetail(0.0f))
+    {
+        return false;
+    }
+
+
+
+    return true;
 }
 
 

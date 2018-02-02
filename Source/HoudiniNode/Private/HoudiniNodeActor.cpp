@@ -8,6 +8,7 @@
 AHoudiniNodeActor::AHoudiniNodeActor(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer),
     HoudiniNodeAsset(nullptr),
+    HoudiniNodeCookTime(0.0f),
     HoudiniNodeComponent(nullptr)
 {
 
@@ -85,8 +86,11 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
                 HoudiniNodeComponent->RegisterComponent();
             }
 
+            HoudiniNodeClass->SetCookTime(HoudiniNodeCookTime);
+
             HoudiniNodeClass->AddLibrary();
             HoudiniNodeClass->CreateNode();
+
             HoudiniNodeClass->CreateParameters(HoudiniNodeComponent);
         }
     }

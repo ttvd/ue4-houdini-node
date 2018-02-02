@@ -4,6 +4,8 @@
 #include "HoudiniNodeAsset.h"
 #include "HoudiniNodeComponent.h"
 #include "HoudiniNodeAttributePrimitive.h"
+#include "HoudiniNodePropertyFloat.h"
+#include "HoudiniNodePropertyInt.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4706)
@@ -204,6 +206,13 @@ UHoudiniNodeClass::GetNode() const
 }
 
 
+GU_Detail*
+UHoudiniNodeClass::GetDetail() const
+{
+    return Detail;
+}
+
+
 float
 UHoudiniNodeClass::GetCookTime() const
 {
@@ -211,10 +220,10 @@ UHoudiniNodeClass::GetCookTime() const
 }
 
 
-GU_Detail*
-UHoudiniNodeClass::GetDetail() const
+void
+UHoudiniNodeClass::SetCookTime(float InTime)
 {
-    return Detail;
+    Time = InTime;
 }
 
 
@@ -372,12 +381,11 @@ UHoudiniNodeClass::ResetDetail()
 
     DetailHandle.clear();
     Detail = nullptr;
-    Time = 0.0f;
 }
 
 
 bool
-UHoudiniNodeClass::CookDetail(float InTime)
+UHoudiniNodeClass::CookDetail()
 {
     ResetDetail();
 
@@ -385,8 +393,6 @@ UHoudiniNodeClass::CookDetail(float InTime)
     {
         return false;
     }
-
-    Time = InTime;
 
     SOP_Node* DisplaySop = Node->getDisplaySopPtr();
     if(!DisplaySop)
@@ -426,7 +432,7 @@ UHoudiniNodeClass::OnParameterChanged(UProperty* Property)
 
     const FString& PropertyName = Property->GetMetaData(TEXT("HoudiniName"));
 
-    if(!CookDetail(0.0f))
+    if(!CookDetail())
     {
         return false;
     }
@@ -515,7 +521,20 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
     const PRM_Type& Type = Template->getType();
     const PRM_Type::PRM_BasicType& BasicType = Type.getBasicType();
 
+    const PRM_Name* TemplateName = Template->getNamePtr();
+    if(!TemplateName)
+    {
+        return 1;
+    }
+
+    const UT_String& Label = TemplateName->getToken();
+    FString PropertyName = UTF8_TO_TCHAR(Label.c_str());
+
+    static const EObjectFlags PropertyObjectFlags = RF_Public | RF_Transient;
+
     int32 Offset = 1;
+
+    UProperty* Property = nullptr;
 
     if(Type.isBasicType(PRM_Type::PRM_BASIC_FLOAT))
     {
@@ -523,8 +542,13 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
 
         if(TypeFloat == PRM_Type::PRM_FLOAT_INTEGER)
         {
-            // Make integer.
-            volatile int i = 5;
+            /*
+            UHoudiniNodePropertyInt* Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+            if(Property)
+            {
+                Property->Construct(Node, Template, Component, Time);
+            }
+            */
         }
         else if(TypeFloat == PRM_Type::PRM_FLOAT_RGBA)
         {
@@ -533,7 +557,11 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
         }
         else
         {
-            Offset = CreateParameterFloat(Template);
+            UHoudiniNodePropertyFloat* Property = NewObject<UHoudiniNodePropertyFloat>(this, *PropertyName, PropertyObjectFlags);
+            if(Property)
+            {
+                Property->Construct(Node, Template, Component, Time);
+            }
         }
     }
     else if(Type.isBasicType(PRM_Type::PRM_BASIC_ORDINAL))
@@ -552,8 +580,13 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
         }
         else
         {
-            // Integer.
-            volatile int i = 5;
+            /*
+            UHoudiniNodePropertyInt* Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+            if(Property)
+            {
+                Property->Construct(Node, Template, Component, Time);
+            }
+            */
         }
     }
     else if(Type.isBasicType(PRM_Type::PRM_BASIC_STRING))
@@ -566,30 +599,6 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
 }
 
 
-int32
-UHoudiniNodeClass::CreateParameterFloat(const PRM_Template* Template)
-{
-    const PRM_Name* TemplateName = Template->getNamePtr();
-    const UT_String& Name = TemplateName->getToken();
-
-    const int32 VectorSize = Template->getVectorSize();
-    if(!VectorSize)
-    {
-        return 1;
-    }
-
-    TArray<float> Values;
-    Values.SetNumZeroed(VectorSize);
-
-    for(int32 Idx = 0; Idx < VectorSize; ++Idx)
-    {
-        const float Value = Node->evalFloat(Name.c_str(), Idx, Time);
-        Values[Idx] = Value;
-    }
-
-    UProperty* Property = CreateParameterCommon<UFloatProperty>(Template, Values);
-    return 1;
-}
 
 #pragma warning(pop)
 

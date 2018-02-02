@@ -18,6 +18,10 @@ public:
     UPROPERTY(Category=HoudiniNode, EditAnywhere)
     UHoudiniNodeAsset* HoudiniNodeAsset;
 
+    //! Asset cook time.
+    UPROPERTY(Category = HoudiniNode, EditAnywhere)
+    float HoudiniNodeCookTime;
+
     //! Assigned Houdini Node component.
     UPROPERTY(Category=HoudiniNode, VisibleAnywhere)
     UHoudiniNodeComponent* HoudiniNodeComponent;

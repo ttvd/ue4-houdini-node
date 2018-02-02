@@ -6,7 +6,6 @@ namespace UnrealBuildTool.Rules
     public class HoudiniNode : ModuleRules
     {
         public HoudiniNode(ReadOnlyTargetRules Target) : base(Target)
-
         {
             string HoudiniVersion = "16.5.323";
             string HFSPath = "C:/Program Files/Side Effects Software/Houdini " + HoudiniVersion;
@@ -14,6 +13,8 @@ namespace UnrealBuildTool.Rules
             string HDKLibPath = HFSPath + "/custom/houdini/dsolib";
             string HDKBinPath = HFSPath + "/bin";
             string BinaryPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../Binaries/Win64"));
+
+            OptimizeCode = CodeOptimization.Never;
 
             /*
              * -DWIN32

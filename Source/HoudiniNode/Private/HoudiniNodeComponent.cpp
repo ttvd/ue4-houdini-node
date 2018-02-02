@@ -1,5 +1,6 @@
 #include "HoudiniNodeComponent.h"
 #include "HoudiniNodePrivatePCH.h"
+#include "HoudiniNodeActor.h"
 
 
 UHoudiniNodeComponent::UHoudiniNodeComponent(const FObjectInitializer& ObjectInitializer) :
@@ -29,3 +30,30 @@ UHoudiniNodeComponent::Serialize(FArchive& Ar)
     Ar.Serialize(&ScratchSpaceBuffer[0], ScratchSpaceSize);
 }
 
+
+#if WITH_EDITOR
+
+void
+UHoudiniNodeComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+
+    UProperty* Property = PropertyChangedEvent.MemberProperty;
+    if(Property)
+    {
+        const FString& Category = Property->GetMetaData(TEXT("Category"));
+        if(Category.Equals(TEXT("HoudiniProperties"), ESearchCase::IgnoreCase))
+        {
+            if(EPropertyChangeType::ValueSet == PropertyChangedEvent.ChangeType)
+            {
+                UHoudiniNodeClass* HoudiniNodeClass = Cast<UHoudiniNodeClass>(GetClass());
+                if(HoudiniNodeClass)
+                {
+                    HoudiniNodeClass->OnParameterChanged(Property);
+                }
+            }
+        }
+    }
+}
+
+#endif

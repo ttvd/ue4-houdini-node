@@ -14,6 +14,15 @@ public:
 
 public:
 
+#if WITH_EDITOR
+
+    //! Called whenever a property on the actor changes.
+    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+#endif
+
+public:
+
     //! Set a value (with a proper alignment).
     template<typename TType> uint32 SetScratchSpaceValues(TType* Values, uint32 Bytes);
     template<typename TType> uint32 SetScratchSpaceValues(const TArray<TType>& Values);

@@ -2,6 +2,8 @@
 
 #include "GameFramework/Actor.h"
 #include "Components/SceneComponent.h"
+#include "Engine/StaticMeshActor.h"
+
 
 #if WITH_EDITOR
 #include "EditorFramework/AssetImportData.h"

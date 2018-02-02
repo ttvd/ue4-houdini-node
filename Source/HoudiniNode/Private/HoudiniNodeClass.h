@@ -21,6 +21,8 @@ class HOUDININODE_API UHoudiniNodeClass : public UClass
     GENERATED_UCLASS_BODY()
     virtual ~UHoudiniNodeClass();
 
+    friend class UHoudiniNodeComponent;
+
 public:
 
     //! Associated Houdini node asset.
@@ -84,10 +86,16 @@ public:
     //! Create parameters.
     bool CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent);
 
-public:
+    //! Cook the detail at present time.
+    bool CookDetail();
+
+protected:
 
     //! Called whenever a property of this class changes. Return true if triggered cook was successful.
     bool OnParameterChanged(UProperty* Property);
+
+    //! Called on successful cook. We generate geometry here.
+    void OnCookComplete();
 
 protected:
 
@@ -98,9 +106,6 @@ protected:
     bool GetAssetNames(TArray<UT_String>& AssetNames) const;
 
 protected:
-
-    //! Cook the detail at current time.
-    bool CookDetail();
 
     //! Reset cooked detail.
     void ResetDetail();

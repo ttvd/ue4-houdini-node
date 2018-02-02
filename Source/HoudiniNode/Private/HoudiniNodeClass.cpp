@@ -2,6 +2,7 @@
 #include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeModule.h"
 #include "HoudiniNodeAsset.h"
+#include "HoudiniNodeGenerator.h"
 #include "HoudiniNodeComponent.h"
 #include "HoudiniNodeAttributePrimitive.h"
 #include "HoudiniNodePropertyFloat.h"
@@ -416,6 +417,37 @@ UHoudiniNodeClass::CookDetail()
     {
         ResetDetail();
         return false;
+    }
+
+    OnCookComplete();
+    return true;
+}
+
+
+void
+UHoudiniNodeClass::OnCookComplete()
+{
+    const TArray<UHoudiniNodeGenerator*>& Generators = GHoudiniNode->GetGenerators();
+
+    TArray<AActor*> AllGeneratedActors;
+
+    for(int32 Idx = 0; Idx < Generators.Num(); ++Idx)
+    {
+        UHoudiniNodeGenerator* Generator = Generators[Idx];
+        if(!Generator)
+        {
+            continue;
+        }
+
+        Generator->Prepare();
+
+        TArray<AActor*> GeneratedActors;
+        if(Generator->Generate(Detail, GeneratedActors))
+        {
+            AllGeneratedActors.Append(GeneratedActors);
+        }
+
+        Generator->CleanUp();
     }
 
     return true;

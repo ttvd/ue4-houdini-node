@@ -23,37 +23,6 @@ FHoudiniNode::~FHoudiniNode()
 void
 FHoudiniNode::StartupModule()
 {
-    /*
-    {
-        const int32 MaxPathSize = 32768;
-        FString Path = FString::ChrN(MaxPathSize, TEXT('\0'));
-        FPlatformMisc::GetEnvironmentVariable(TEXT("PATH"), Path.GetCharArray().GetData(), MaxPathSize);
-
-        const TCHAR* PathDelimiter = FPlatformMisc::GetPathVarDelimiter();
-
-        TArray<FString> PathVars;
-        Path.ParseIntoArray(PathVars, PathDelimiter, true);
-
-        TArray<FString> ModifiedPathVars;
-
-        for(int32 Idx = 0; Idx < PathVars.Num(); ++Idx)
-        {
-            // Blacklist anything Houdini, for now.
-
-            const FString& PathEntry = PathVars[Idx];
-            if(!PathEntry.Contains(TEXT("houdini"), ESearchCase::IgnoreCase))
-            {
-                ModifiedPathVars.Add(PathEntry);
-            }
-        }
-
-        ModifiedPathVars.Add(TEXT("C:\\Program Files\\Side Effects Software\\Houdini 16.5.323\\bin"));
-
-        FString ModifiedPath = FString::Join(ModifiedPathVars, PathDelimiter);
-        FPlatformMisc::SetEnvironmentVar(TEXT("PATH"), *ModifiedPath);
-    }
-    */
-
     UT_UndoManager::disableUndoCreation();
 
     Director = new MOT_Director("HoudiniNode");
@@ -104,6 +73,17 @@ FHoudiniNode::GetDirector() const
 }
 
 
+void
+FHoudiniNode::AddReferencedObjects(FReferenceCollector& Collector)
+{
+    for(int32 Idx = 0; Idx < Generators.Num(); ++Idx)
+    {
+        UHoudiniNodeGenerator* Generator = Generators[Idx];
+        Collector.AddReferencedObject(Generator);
+    }
+}
+
+
 bool
 FHoudiniNode::CreateGenerators()
 {
@@ -111,18 +91,31 @@ FHoudiniNode::CreateGenerators()
 
     for(TObjectIterator<UClass> It; It; ++It)
     {
-        if(It->HasAnyClassFlags(CLASS_Abstract))
+        UClass* Class = *It;
+
+        if(Class->HasAnyClassFlags(CLASS_Abstract))
         {
             continue;
         }
 
-        if(It->IsChildOf(UHoudiniNodeGenerator::StaticClass()))
+        if(Class->IsChildOf(UHoudiniNodeGenerator::StaticClass()))
         {
-
+            UHoudiniNodeGenerator* Generator = NewObject<UHoudiniNodeGenerator>(GetTransientPackage(), Class, NAME_None, RF_Public | RF_Transactional);
+            if(Generator)
+            {
+                Generators.Add(Generator);
+            }
         }
     }
 
     return Generators.Num() > 0;
+}
+
+
+const TArray<UHoudiniNodeGenerator*>&
+FHoudiniNode::GetGenerators() const
+{
+    return Generators;
 }
 
 

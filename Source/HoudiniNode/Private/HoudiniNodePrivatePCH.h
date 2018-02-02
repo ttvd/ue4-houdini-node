@@ -17,9 +17,9 @@
 #pragma warning(disable : 4146)
 #pragma warning(disable : 4396)
 #pragma warning(disable : 4457)
+#pragma warning(disable : 4706)
 #pragma warning(disable : 4307)
 #pragma warning(disable : 4308)
-#pragma warning(disable : 4706)
 #pragma warning(disable : 4103)
 #pragma warning(disable : 4668)
 #pragma warning(disable : 4191)
@@ -46,6 +46,7 @@
 #include <SOP/SOP_Node.h>
 
 #include <GU/GU_Detail.h>
+#include <GU/GU_DetailHandle.h>
 
 #pragma warning(pop)
 

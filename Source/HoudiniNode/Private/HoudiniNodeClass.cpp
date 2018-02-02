@@ -4,12 +4,16 @@
 #include "HoudiniNodeAsset.h"
 #include "HoudiniNodeComponent.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4706)
+
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer),
     HoudiniNodeAsset(nullptr),
     Node(nullptr),
     Library(nullptr),
+    Detail(nullptr),
     Component(nullptr),
     LibraryPath(TEXT("")),
     Time(0.0f)
@@ -199,6 +203,160 @@ UHoudiniNodeClass::GetNode() const
 }
 
 
+float
+UHoudiniNodeClass::GetCookTime() const
+{
+    return Time;
+}
+
+
+GU_Detail*
+UHoudiniNodeClass::GetDetail() const
+{
+    return Detail;
+}
+
+
+bool
+UHoudiniNodeClass::GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const
+{
+    Primitives.Empty();
+
+    if(!Detail)
+    {
+        return false;
+    }
+
+    GA_Primitive* Prim = nullptr;
+
+    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    {
+        if(Prim)
+        {
+            Primitives.Add(Prim);
+        }
+    }
+
+    return Primitives.Num() > 0;
+}
+
+
+bool
+UHoudiniNodeClass::GetAllPoints(TArray<GA_Offset>& Points) const
+{
+    Points.Empty();
+
+    if(!Detail)
+    {
+        return false;
+    }
+
+    GA_Offset PointOffset = GA_INVALID_OFFSET;
+
+    GA_FOR_ALL_PTOFF(Detail, PointOffset)
+    {
+        if(GA_INVALID_OFFSET != PointOffset)
+        {
+            Points.Add(PointOffset);
+        }
+    }
+
+    return Points.Num() > 0;
+}
+
+
+bool
+UHoudiniNodeClass::GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const
+{
+    Parts.Empty();
+
+    if(!Detail)
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
+    if(!Attribute.IsValid())
+    {
+        return false;
+    }
+
+    if(!Attribute.Group(Parts))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+void
+UHoudiniNodeClass::ResetDetail()
+{
+    if(DetailHandle.isValid() && DetailHandle.hasActiveLock())
+    {
+        DetailHandle.unlock(Detail);
+    }
+
+    DetailHandle.clear();
+    Detail = nullptr;
+    Time = 0.0f;
+}
+
+
+bool
+UHoudiniNodeClass::CookDetail(float InTime)
+{
+    ResetDetail();
+
+    if(!Node)
+    {
+        return false;
+    }
+
+    Time = InTime;
+
+    SOP_Node* DisplaySop = Node->getDisplaySopPtr();
+    if(!DisplaySop)
+    {
+        ResetDetail();
+        return false;
+    }
+
+    OP_Context Context(Time);
+    const int32 ForcedCook = 1;
+
+    DetailHandle = DisplaySop->getCookedGeoHandle(Context, ForcedCook);
+    if(!DetailHandle.isValid())
+    {
+        ResetDetail();
+        return false;
+    }
+
+    Detail = const_cast<GU_Detail*>(DetailHandle.readLock());
+    if(!Detail)
+    {
+        ResetDetail();
+        return false;
+    }
+
+    return true;
+}
+
+
+void
+UHoudiniNodeClass::OnParameterChanged(UProperty* Property)
+{
+    if(!Property)
+    {
+        return;
+    }
+
+    const FString& PropertyName = Property->GetMetaData(TEXT("HoudiniName"));
+    CookDetail(0.0f);
+}
+
+
 void
 UHoudiniNodeClass::AssignPropertyOffset(UProperty* Property, uint32 Offset) const
 {
@@ -352,4 +510,6 @@ UHoudiniNodeClass::CreateParameterFloat(const PRM_Template* Template)
     UProperty* Property = CreateParameterCommon<UFloatProperty>(Template, Values);
     return 1;
 }
+
+#pragma warning(pop)
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeClass.generated.h"
 
 
@@ -7,6 +8,8 @@ class OP_OTLLibrary;
 class UT_String;
 class PRM_Template;
 class PRM_Range;
+class GU_Detail;
+class GA_Primitive;
 
 class UHoudiniNodeAsset;
 class UHoudiniNodeComponent;
@@ -48,8 +51,23 @@ public:
 
 public:
 
+    //! Return the underlying detail.
+    GU_Detail* GetDetail() const;
+
+public:
+
+    //! Return cook time.
+    float GetCookTime() const;
+
+public:
+
     //! Create parameters.
     bool CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent);
+
+public:
+
+    //! Called whenever a property of this class changes.
+    void OnParameterChanged(UProperty* Property);
 
 protected:
 
@@ -58,6 +76,25 @@ protected:
 
     //! Retrieve asset names for this Houdini node asset.
     bool GetAssetNames(TArray<UT_String>& AssetNames) const;
+
+protected:
+
+    //! Cook the detail at a given time.
+    bool CookDetail(float InTime);
+
+    //! Reset cooked detail.
+    void ResetDetail();
+
+protected:
+
+    //! Retrieve all primitives of this detail.
+    bool GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const;
+
+    //! Retrieve all points of this detail.
+    bool GetAllPoints(TArray<GA_Offset>& Points) const;
+
+    //! Get all parts.
+    bool GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const;
 
 protected:
 
@@ -72,7 +109,6 @@ protected:
     //! Common code to create a new property and set its parameters.
     template <typename TPropertyType, typename TType> TPropertyType* CreateParameterCommon(const PRM_Template* Template, const TArray<TType>& Values);
     template <typename TPropertyType, typename TType> TPropertyType* CreateParameterCommon(const PRM_Template* Template, TType Value);
-
 
 protected:
 
@@ -94,6 +130,16 @@ protected:
 
     //! Corresponding loaded library.
     OP_OTLLibrary* Library;
+
+protected:
+
+    //! Corresponding Houdini detail handle.
+    GU_DetailHandle DetailHandle;
+
+    //! Corresponding Houdini detail of the active display node.
+    GU_Detail* Detail;
+
+protected:
 
     //! Associated Houdini component.
     UHoudiniNodeComponent* Component;
@@ -120,7 +166,9 @@ UHoudiniNodeClass::CreateParameterCommon(const PRM_Template* Template, const TAr
     const UT_String& Label = TemplateName->getLabel();
 
     static const EObjectFlags PropertyObjectFlags = RF_Public | RF_Transient;
-    FString PropertyName = UTF8_TO_TCHAR(Name.c_str());
+
+    //FString PropertyName = UTF8_TO_TCHAR(Name.c_str());
+    FString PropertyName = UTF8_TO_TCHAR(Label.c_str());
 
     TPropertyType* Property = NewObject<TPropertyType>(this, *PropertyName, PropertyObjectFlags);
     if(Property)
@@ -137,6 +185,11 @@ UHoudiniNodeClass::CreateParameterCommon(const PRM_Template* Template, const TAr
         {
             FString PropertyLabel = UTF8_TO_TCHAR(Label.c_str());
             Property->SetMetaData(TEXT("DisplayName"), *PropertyLabel);
+        }
+
+        {
+            FString PropertyName = UTF8_TO_TCHAR(Name.c_str());
+            Property->SetMetaData(TEXT("HoudiniName"), *PropertyName);
         }
 
         Property->SetMetaData(TEXT("EditAnywhere"), TEXT("1"));

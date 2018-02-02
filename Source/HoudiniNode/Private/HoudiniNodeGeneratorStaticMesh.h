@@ -10,7 +10,7 @@ class HOUDININODE_API UHoudiniNodeGeneratorStaticMesh : public UHoudiniNodeGener
 
 public:
 
-    //! Invoke generator on the given detail. Return true if objects were generated.
-    virtual bool Generate(GU_Detail* Detail, TArray<AActor*>& GeneratedActors) override;
+    //! Invoke generator on the given Node. Return true if objects were generated.
+    virtual bool Generate(UHoudiniNodeClass* NodeClass, TArray<AActor*>& GeneratedActors) override;
 };
 

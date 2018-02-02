@@ -16,15 +16,24 @@ public:
 
     //! Assigned Houdini Node asset.
     UPROPERTY(Category=HoudiniNode, EditAnywhere)
-    UHoudiniNodeAsset* HoudiniNodeAsset;
+    UHoudiniNodeAsset* Asset;
 
     //! Asset cook time.
     UPROPERTY(Category = HoudiniNode, EditAnywhere)
-    float HoudiniNodeCookTime;
+    float Time;
+
+    //! Asset scale.
+    UPROPERTY(Category = HoudiniNode, EditAnywhere)
+    float Scale;
 
     //! Assigned Houdini Node component.
     UPROPERTY(Category=HoudiniNode, VisibleAnywhere)
     UHoudiniNodeComponent* HoudiniNodeComponent;
+
+public:
+
+    //! Register generated objects with this actor.
+    void RegisterGeneratedActors(const TMap<FString, TArray<AActor*> >& GeneratedActors);
 
 public:
 

@@ -1,20 +1,22 @@
 #include "HoudiniNodeGenerator.h"
+#include "HoudiniNodeClass.h"
 #include "HoudiniNodePrivatePCH.h"
 
 
 UHoudiniNodeGenerator::UHoudiniNodeGenerator(const FObjectInitializer& ObjectInitializer) :
-    Super(ObjectInitializer)
+    Super(ObjectInitializer),
+    GeneratorName(TEXT(""))
 {
 
 }
 
 
 bool
-UHoudiniNodeGenerator::Generate(GU_Detail* Detail, TArray<AActor*>& GeneratedActors)
+UHoudiniNodeGenerator::Generate(UHoudiniNodeClass* NodeClass, TArray<AActor*>& GeneratedActors)
 {
     GeneratedActors.Empty();
 
-    if(!Detail)
+    if(!NodeClass)
     {
         return false;
     }
@@ -55,6 +57,13 @@ const TArray<UClass*>&
 UHoudiniNodeGenerator::GetSupportedClasses() const
 {
     return SupportedClasses;
+}
+
+
+const FString&
+UHoudiniNodeGenerator::GetGeneratorName() const
+{
+    return GeneratorName;
 }
 
 

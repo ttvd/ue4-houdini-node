@@ -20,7 +20,7 @@ protected:
     void InitializeProperty(UProperty* InProperty, UHoudiniNodeComponent* InComponent, const PRM_Template* InTemplate);
 
     //! Construct the property.
-    template <typename TType> bool ConstructProperty(OP_Node* Node, float Time);
+    template <typename TType> bool ConstructProperty(OP_Node* Node, float Time, bool bAssign, bool bComputeOffset);
 
 protected:
 
@@ -33,15 +33,18 @@ protected:
 protected:
 
     //! Retrieve float values for a given property.
-    bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, TArray<float>& Values) const;
+    bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<float>& Values) const;
 
     //! Retrieve float integer for a given property.
-    bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, TArray<int32>& Values) const;
+    bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<int32>& Values) const;
 
 private:
 
     //! Assign property offset.
     void AssignPropertyOffset(uint32 Offset) const;
+
+    //! Retrieve property offset.
+    uint32 GetPropertyOffset() const;
 
 protected:
 
@@ -58,7 +61,7 @@ protected:
 
 template <typename TType>
 bool
-FHoudiniNodePropertyCommon::ConstructProperty(OP_Node* Node, float Time)
+FHoudiniNodePropertyCommon::ConstructProperty(OP_Node* Node, float Time, bool bAssign, bool bComputeOffset)
 {
     if(!Node || !Component)
     {
@@ -69,7 +72,7 @@ FHoudiniNodePropertyCommon::ConstructProperty(OP_Node* Node, float Time)
     AssignPropertyRanges();
 
     TArray<TType> Values;
-    if(!GetPropertyValues(Node, Component, Time, true, Values))
+    if(!GetPropertyValues(Node, Component, Time, bAssign, bComputeOffset, Values))
     {
         return false;
     }

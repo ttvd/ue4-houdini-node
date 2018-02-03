@@ -23,10 +23,17 @@ public:
 
 public:
 
-    //! Set a value (with a proper alignment).
+    //! Set a value (with a proper alignment) and return the offset.
     template<typename TType> uint32 SetScratchSpaceValues(TType* Values, uint32 Bytes);
     template<typename TType> uint32 SetScratchSpaceValues(const TArray<TType>& Values);
     template<typename TType> uint32 SetScratchSpaceValue(TType Value);
+
+public:
+
+    //! Set a value at the given offset.
+    template <typename TType> void SetScratchSpaceValuesAtOffset(TType* Values, uint32 Bytes, uint32 Offset);
+    template <typename TType> void SetScratchSpaceValuesAtOffset(const TArray<TType>& Values, uint32 Offset);
+    template <typename TType> void SetScratchSpaceValueAtOffset(TType Values, uint32 Offset);
 
 protected:
 
@@ -74,4 +81,35 @@ uint32
 UHoudiniNodeComponent::SetScratchSpaceValue(TType Value)
 {
     return SetScratchSpaceValues(&Value, sizeof(TType));
+}
+
+
+template <typename TType>
+void
+UHoudiniNodeComponent::SetScratchSpaceValuesAtOffset(TType* Values, uint32 Bytes, uint32 Offset)
+{
+    check(Values);
+    check(Bytes > 0u);
+
+    char* Position = (char*) this;
+    Position += Offset;
+
+    FMemory::Memcpy((void*) Position, (const void*) Values, Bytes);
+}
+
+
+template <typename TType>
+void
+UHoudiniNodeComponent::SetScratchSpaceValuesAtOffset(const TArray<TType>& Values, uint32 Offset)
+{
+    check(Values.Num() > 0);
+    SetScratchSpaceValuesAtOffset(&Values[0], sizeof(TType) * Values.Num(), Offset);
+}
+
+
+template <typename TType>
+void
+UHoudiniNodeComponent::SetScratchSpaceValueAtOffset(TType Values, uint32 Offset)
+{
+    SetScratchSpaceValueAtOffset(&Value, sizeof(TType), Offset);
 }

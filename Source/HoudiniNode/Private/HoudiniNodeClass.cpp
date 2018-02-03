@@ -629,7 +629,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
 
     if(Property)
     {
-        // Property exists, we need to reuse it.
+        Property->Update(Node, Time);
     }
     else
     {

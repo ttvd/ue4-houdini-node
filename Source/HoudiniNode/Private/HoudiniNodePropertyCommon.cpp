@@ -48,6 +48,13 @@ FHoudiniNodePropertyCommon::AssignPropertyOffset(uint32 Offset) const
 }
 
 
+uint32
+FHoudiniNodePropertyCommon::GetPropertyOffset() const
+{
+    return *(int32*)((char*) &Property->RepNotifyFunc - sizeof(int32));
+}
+
+
 void
 FHoudiniNodePropertyCommon::AssignPropertyMeta() const
 {
@@ -115,7 +122,7 @@ FHoudiniNodePropertyCommon::AssignPropertyRanges() const
 
 
 bool
-FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, TArray<float>& Values) const
+FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<float>& Values) const
 {
     Values.Empty();
 
@@ -149,8 +156,16 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
     {
         Property->ArrayDim = Values.Num();
 
-        const uint32 PropertyValueOffset = Component->SetScratchSpaceValues(Values);
-        AssignPropertyOffset(PropertyValueOffset);
+        if(bComputeOffset)
+        {
+            const uint32 PropertyValueOffset = Component->SetScratchSpaceValues(Values);
+            AssignPropertyOffset(PropertyValueOffset);
+        }
+        else
+        {
+            const uint32 PropertyValueOffset = GetPropertyOffset();
+            Component->SetScratchSpaceValuesAtOffset(Values, PropertyValueOffset);
+        }
     }
 
     return true;
@@ -158,7 +173,7 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
 
 
 bool
-FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, TArray<int32>& Values) const
+FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<int32>& Values) const
 {
     Values.Empty();
 
@@ -192,8 +207,16 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
     {
         Property->ArrayDim = Values.Num();
 
-        const uint32 PropertyValueOffset = Component->SetScratchSpaceValues(Values);
-        AssignPropertyOffset(PropertyValueOffset);
+        if(bComputeOffset)
+        {
+            const uint32 PropertyValueOffset = Component->SetScratchSpaceValues(Values);
+            AssignPropertyOffset(PropertyValueOffset);
+        }
+        else
+        {
+            const uint32 PropertyValueOffset = GetPropertyOffset();
+            Component->SetScratchSpaceValuesAtOffset(Values, PropertyValueOffset);
+        }
     }
 
     return true;

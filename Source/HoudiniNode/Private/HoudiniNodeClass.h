@@ -13,6 +13,7 @@ class GA_Primitive;
 
 class UHoudiniNodeAsset;
 class UHoudiniNodeComponent;
+class IHoudiniNodePropertyInterface;
 
 
 UCLASS()
@@ -134,7 +135,7 @@ protected:
 protected:
 
     //! List of generated properties during the last cook.
-    //TMap<FString, UProperty*> Properties;
+    TMap<FString, IHoudiniNodePropertyInterface*> Properties;
 
 protected:
 

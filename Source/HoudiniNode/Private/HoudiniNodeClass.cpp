@@ -617,60 +617,75 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
     static const EObjectFlags PropertyObjectFlags = RF_Public | RF_Transient;
 
     int32 Offset = 1;
-
     IHoudiniNodePropertyInterface* Property = nullptr;
 
-    if(Type.isBasicType(PRM_Type::PRM_BASIC_FLOAT))
     {
-        const PRM_Type::PRM_FloatType& TypeFloat = Type.getFloatType();
-
-        if(TypeFloat == PRM_Type::PRM_FLOAT_INTEGER)
+        IHoudiniNodePropertyInterface** FoundProperty = Properties.Find(PropertyName);
+        if(FoundProperty)
         {
-            Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+            Property = *FoundProperty;
         }
-        else if(TypeFloat == PRM_Type::PRM_FLOAT_RGBA)
-        {
-            // Make color.
-            volatile int i = 5;
-        }
-        else
-        {
-            Property = NewObject<UHoudiniNodePropertyFloat>(this, *PropertyName, PropertyObjectFlags);
-        }
-    }
-    else if(Type.isBasicType(PRM_Type::PRM_BASIC_ORDINAL))
-    {
-        const PRM_Type::PRM_OrdinalType& TypeOrdinal = Type.getOrdinalType();
-
-        if(TypeOrdinal == PRM_Type::PRM_ORD_CALLBACK)
-        {
-            // Menu.
-            volatile int i = 5;
-        }
-        else if(TypeOrdinal == PRM_Type::PRM_ORD_TOGGLE)
-        {
-            // Radio.
-            volatile int i = 5;
-        }
-        else if(TypeOrdinal == PRM_Type::PRM_ORD_SWITCHERLIST)
-        {
-            // Tabs.
-            volatile int i = 5;
-        }
-        else
-        {
-            Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
-        }
-    }
-    else if(Type.isBasicType(PRM_Type::PRM_BASIC_STRING))
-    {
-        // Paths, labels and separators.
-        volatile int i = 5;
     }
 
     if(Property)
     {
-        Property->Construct(Node, Template, Component, Time);
+        // Property exists, we need to reuse it.
+    }
+    else
+    {
+        if(Type.isBasicType(PRM_Type::PRM_BASIC_FLOAT))
+        {
+            const PRM_Type::PRM_FloatType& TypeFloat = Type.getFloatType();
+
+            if(TypeFloat == PRM_Type::PRM_FLOAT_INTEGER)
+            {
+                Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+            }
+            else if(TypeFloat == PRM_Type::PRM_FLOAT_RGBA)
+            {
+                // Make color.
+                volatile int i = 5;
+            }
+            else
+            {
+                Property = NewObject<UHoudiniNodePropertyFloat>(this, *PropertyName, PropertyObjectFlags);
+            }
+        }
+        else if(Type.isBasicType(PRM_Type::PRM_BASIC_ORDINAL))
+        {
+            const PRM_Type::PRM_OrdinalType& TypeOrdinal = Type.getOrdinalType();
+
+            if(TypeOrdinal == PRM_Type::PRM_ORD_CALLBACK)
+            {
+                // Menu.
+                volatile int i = 5;
+            }
+            else if(TypeOrdinal == PRM_Type::PRM_ORD_TOGGLE)
+            {
+                // Radio.
+                volatile int i = 5;
+            }
+            else if(TypeOrdinal == PRM_Type::PRM_ORD_SWITCHERLIST)
+            {
+                // Tabs.
+                volatile int i = 5;
+            }
+            else
+            {
+                Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+            }
+        }
+        else if(Type.isBasicType(PRM_Type::PRM_BASIC_STRING))
+        {
+            // Paths, labels and separators.
+            volatile int i = 5;
+        }
+
+        if(Property)
+        {
+            Property->Construct(Node, Template, Component, Time);
+            Properties.Add(PropertyName, Property);
+        }
     }
 
     return Offset;

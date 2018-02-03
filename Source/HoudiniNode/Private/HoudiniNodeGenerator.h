@@ -1,6 +1,7 @@
 #pragma once
 #include "HoudiniNodeGenerator.generated.h"
 
+class UWorld;
 class UHoudiniNodeClass;
 
 
@@ -45,6 +46,11 @@ public:
 
     //! Return the name of this generator.
     const FString& GetGeneratorName() const;
+
+protected:
+
+    //! Return current world.
+    UWorld* GetCurrentWorld(UHoudiniNodeClass* NodeClass);
 
 protected:
 

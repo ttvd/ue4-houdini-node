@@ -31,6 +31,11 @@ public:
 
 public:
 
+    //! Return the owner actor.
+    AHoudiniNodeActor* GetHoudiniNodeActor() const;
+
+public:
+
     //! Set cook time.
     void SetCookTime(float InTime);
 
@@ -76,6 +81,9 @@ public:
 
     //! Retrieve all points of this detail.
     bool GetAllPoints(TArray<GA_Offset>& Points) const;
+
+    //! Get positions for all points.
+    bool GetAllPointPositions(TArray<FVector>& Positions) const;
 
     //! Retrieve all primitives of this detail.
     bool GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const;

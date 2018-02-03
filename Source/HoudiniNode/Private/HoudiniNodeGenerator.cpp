@@ -1,5 +1,6 @@
 #include "HoudiniNodeGenerator.h"
 #include "HoudiniNodeClass.h"
+#include "HoudiniNodeActor.h"
 #include "HoudiniNodePrivatePCH.h"
 
 
@@ -21,7 +22,30 @@ UHoudiniNodeGenerator::Generate(UHoudiniNodeClass* NodeClass, TArray<AActor*>& G
         return false;
     }
 
+    if(!GetCurrentWorld(NodeClass))
+    {
+        return false;
+    }
+
     return true;
+}
+
+
+UWorld*
+UHoudiniNodeGenerator::GetCurrentWorld(UHoudiniNodeClass* NodeClass)
+{
+    if(!NodeClass)
+    {
+        return nullptr;
+    }
+
+    AHoudiniNodeActor* HoudiniNodeActor = NodeClass->GetHoudiniNodeActor();
+    if(!HoudiniNodeActor)
+    {
+        return nullptr;
+    }
+
+    return HoudiniNodeActor->GetWorld();
 }
 
 

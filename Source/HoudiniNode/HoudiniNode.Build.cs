@@ -151,7 +151,8 @@ C:\Program Files\Side Effects Software\Houdini 16.0.557\toolkit\samples\standalo
                         "UnrealEd",
                         "TargetPlatform",
                         "Settings",
-                        "RawMesh"
+                        "RawMesh",
+                        "TargetPlatform"
                     }
                 );
             }

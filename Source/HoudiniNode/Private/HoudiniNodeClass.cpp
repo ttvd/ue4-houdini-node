@@ -35,6 +35,18 @@ UHoudiniNodeClass::~UHoudiniNodeClass()
 }
 
 
+AHoudiniNodeActor*
+UHoudiniNodeClass::GetHoudiniNodeActor() const
+{
+    if(Component)
+    {
+        return Cast<AHoudiniNodeActor>(Component->GetOwner());
+    }
+
+    return nullptr;
+}
+
+
 bool
 UHoudiniNodeClass::AddLibrary()
 {
@@ -293,6 +305,36 @@ UHoudiniNodeClass::GetAllPoints(TArray<GA_Offset>& Points) const
 
 
 bool
+UHoudiniNodeClass::GetAllPointPositions(TArray<FVector>& Positions) const
+{
+    Positions.Empty();
+
+    if(!Detail)
+    {
+        return false;
+    }
+
+    GA_Offset PointOffset = GA_INVALID_OFFSET;
+
+    GA_FOR_ALL_PTOFF(Detail, PointOffset)
+    {
+        if(PointOffset == GA_INVALID_OFFSET)
+        {
+            continue;
+        }
+
+        const UT_Vector3& Position = Detail->getPos3(PointOffset);
+        FVector PointPosition(Position.x(), Position.z(), Position.y());
+        PointPosition *= Scale;
+
+        Positions.Add(PointPosition);
+    }
+
+    return Positions.Num() > 0;
+}
+
+
+bool
 UHoudiniNodeClass::GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const
 {
     Parts.Empty();
@@ -469,7 +511,7 @@ UHoudiniNodeClass::OnCookComplete()
 
     if(AllGeneratedActors.Num() > 0)
     {
-        AHoudiniNodeActor* HoudiniNodeActor = Cast<AHoudiniNodeActor>(Component->GetOwner());
+        AHoudiniNodeActor* HoudiniNodeActor = GetHoudiniNodeActor();
         if(HoudiniNodeActor)
         {
             HoudiniNodeActor->RegisterGeneratedActors(AllGeneratedActors);

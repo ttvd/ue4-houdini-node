@@ -2,11 +2,16 @@
 
 #include "GameFramework/Actor.h"
 #include "Components/SceneComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Materials/MaterialInterface.h"
 #include "Engine/StaticMeshActor.h"
-
+#include "AssetRegistryModule.h"
+#include "Misc/CoreMisc.h"
 
 #if WITH_EDITOR
 #include "EditorFramework/AssetImportData.h"
+#include "Interfaces/ITargetPlatform.h"
+#include "Interfaces/ITargetPlatformManagerModule.h"
 #include "RawMesh.h"
 #endif
 
@@ -59,4 +64,6 @@
 
 
 #define HOUDINI_NODE_ATTRIBUTE_PART                 TEXT("houdini_node_part")
+
+
 

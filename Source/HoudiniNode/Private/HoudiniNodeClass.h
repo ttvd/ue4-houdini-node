@@ -100,6 +100,14 @@ public:
 
 public:
 
+    //! Get parts groupped by generator name.
+    bool GetPartPrims(TMap<FString, TMap<int32, TArray<GA_Primitive*> > >& Parts) const;
+
+    //! Get points groupped by generator name.
+    bool GetPartPoints(TMap<FString, TMap<int32, TArray<GA_Offset> > >& Parts) const;
+
+public:
+
     //! Create parameters.
     bool CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent);
 

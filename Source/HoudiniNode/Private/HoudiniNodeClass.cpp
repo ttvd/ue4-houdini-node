@@ -430,6 +430,83 @@ UHoudiniNodeClass::GetGroupPrimitives(const FString& GroupName, TMap<int32, TArr
 }
 
 
+bool
+UHoudiniNodeClass::GetPartPrims(TMap<FString, TMap<int32, TArray<GA_Primitive*> > >& Parts) const
+{
+    Parts.Empty();
+
+    if(!Detail)
+    {
+        return false;
+    }
+
+    
+    const int32 NumPrims = Detail->getNumPrimitives();
+    if(!NumPrims)
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributePrimitive AttributeGenerator(Detail, HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM);
+    FHoudiniNodeAttributePrimitive AttributePart(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
+
+    TMap<FString, TArray<GA_Primitive*> > AllGeneratorPrimitives;
+
+    if(AttributeGenerator.IsValid() && AttributeGenerator.Group(AllGeneratorPrimitives))
+    {
+        for(TMap<FString, TArray<GA_Primitive*> >::TIterator Iter(AllGeneratorPrimitives); Iter; ++Iter)
+        {
+            const FString& GeneratorName = Iter.Key();
+            TArray<GA_Primitive*>& GeneratorPrims = Iter.Value();
+
+            if(AttributePart.IsValid())
+            {
+                TMap<int32, TArray<GA_Primitive*> > GeneratorParts;
+
+                if(AttributePart.Group(GeneratorPrims, GeneratorParts))
+                {
+                    Parts.Add(GeneratorName, GeneratorParts);
+                    continue;
+                }
+            }
+
+            TMap<int32, TArray<GA_Primitive*> > SingleGeneratorPart;
+            SingleGeneratorPart.Add(0, GeneratorPrims);
+            Parts.Add(GeneratorName, SingleGeneratorPart);
+        }
+    }
+    else
+    {
+        TArray<GA_Primitive*> AllPrimitives;
+        if(GetAllPrimitives(AllPrimitives))
+        {
+            TMap<int32, TArray<GA_Primitive*> > GeneratorParts;
+
+            if(AttributePart.IsValid() && AttributePart.Group(AllPrimitives, GeneratorParts))
+            {
+                Parts.Add(TEXT(""), GeneratorParts);
+            }
+            else
+            {
+                TMap<int32, TArray<GA_Primitive*> > SingleGeneratorPart;
+                SingleGeneratorPart.Add(0, AllPrimitives);
+                Parts.Add(TEXT(""), SingleGeneratorPart);
+            }
+        }
+    }
+
+    return Parts.Num() > 0;
+}
+
+
+bool
+UHoudiniNodeClass::GetPartPoints(TMap<FString, TMap<int32, TArray<GA_Offset> > >& Parts) const
+{
+    Parts.Empty();
+    return false;
+}
+
+
 void
 UHoudiniNodeClass::ResetDetail()
 {

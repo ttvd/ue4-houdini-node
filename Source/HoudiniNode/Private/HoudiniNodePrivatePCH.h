@@ -63,7 +63,9 @@
 #endif
 
 
-#define HOUDINI_NODE_ATTRIBUTE_PART                 TEXT("houdini_node_part")
+#define HOUDINI_NODE_ATTRIBUTE_PART                 TEXT("part")
+#define HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM       TEXT("generator_prim")
+#define HOUDINI_NODE_ATTRIBUTE_GENERATOR_POINT      TEXT("generator_point")
 
 
 

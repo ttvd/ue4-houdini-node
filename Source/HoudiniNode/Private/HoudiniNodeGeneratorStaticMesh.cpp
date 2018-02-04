@@ -183,7 +183,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
 
     FRawMesh RawMesh;
 
-    if(!Detail->GetAllPointPositions(RawMesh.VertexPositions))
+    if(!Detail->GetAllPointPositions(RawMesh.VertexPositions) || !RawMesh.VertexPositions.Num())
     {
         return nullptr;
     }

@@ -32,7 +32,7 @@ UHoudiniNodeGenerator::Generate(UHoudiniNodeClass* NodeClass, TArray<AActor*>& G
 
 
 UWorld*
-UHoudiniNodeGenerator::GetCurrentWorld(UHoudiniNodeClass* NodeClass)
+UHoudiniNodeGenerator::GetCurrentWorld(UHoudiniNodeClass* NodeClass) const
 {
     if(!NodeClass)
     {

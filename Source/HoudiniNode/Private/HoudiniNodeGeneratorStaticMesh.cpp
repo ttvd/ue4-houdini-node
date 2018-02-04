@@ -37,6 +37,18 @@ UHoudiniNodeGeneratorStaticMesh::UHoudiniNodeGeneratorStaticMesh(const FObjectIn
 
 
 bool
+UHoudiniNodeGeneratorStaticMesh::MatchName(const FString& InGeneratorName) const
+{
+    if(InGeneratorName.IsEmpty())
+    {
+        return true;
+    }
+
+    return Super::MatchName(InGeneratorName);
+}
+
+
+bool
 UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<AActor*>& GeneratedActors)
 {
     if(!Super::Generate(NodeClass, GeneratedActors))
@@ -55,7 +67,7 @@ UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<A
         const FString& GeneratorAttribName = Iter.Key();
         const TMap<int32, TArray<GA_Primitive*> >& Parts = Iter.Value();
 
-        if(GeneratorAttribName.IsEmpty() || GeneratorAttribName.Equals(GeneratorName, ESearchCase::IgnoreCase))
+        if(MatchName(GeneratorAttribName))
         {
             if(!Parts.Num())
             {

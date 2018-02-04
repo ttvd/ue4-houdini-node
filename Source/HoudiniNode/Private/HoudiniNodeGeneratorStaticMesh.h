@@ -16,15 +16,20 @@ class HOUDININODE_API UHoudiniNodeGeneratorStaticMesh : public UHoudiniNodeGener
 
 public:
 
-    //! Invoke generator on the given Node. Return true if objects were generated.
+    //! Invoke generator on the given node. Return true if objects were generated.
     virtual bool Generate(UHoudiniNodeClass* NodeClass, TArray<AActor*>& GeneratedActors) override;
+
+public:
+
+    //! Return true if generator name matches a given string.
+    virtual bool MatchName(const FString& InGeneratorName) const override;
 
 protected:
 
-    //! Create a static mesh actor for a given part and primitive set.
+    //! Create a static mesh actor for a given primitive set.
     AStaticMeshActor* CreateStaticMeshActor(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives) const;
 
-    //! Create a static mesh.
+    //! Create a static mesh from a given primitive set.
     UStaticMesh* CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer, const TArray<GA_Primitive*>& Primitives) const;
 };
 

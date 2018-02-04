@@ -41,6 +41,11 @@ public:
 
 public:
 
+    //! Return true if generator name matches a given string.
+    virtual bool MatchName(const FString& InGeneratorName) const;
+
+public:
+
     //! Return the list of supported classes by this generator.
     const TArray<UClass*>& GetSupportedClasses() const;
 
@@ -49,7 +54,7 @@ public:
 
 protected:
 
-    //! Return current world.
+    //! Return the current world.
     UWorld* GetCurrentWorld(UHoudiniNodeClass* NodeClass) const;
 
 protected:

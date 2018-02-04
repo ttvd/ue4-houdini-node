@@ -91,6 +91,18 @@ UHoudiniNodeGenerator::GetGeneratorName() const
 }
 
 
+bool
+UHoudiniNodeGenerator::MatchName(const FString& InGeneratorName) const
+{
+    if(InGeneratorName.Equals(GeneratorName, ESearchCase::IgnoreCase))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
 void
 UHoudiniNodeGenerator::Prepare()
 {

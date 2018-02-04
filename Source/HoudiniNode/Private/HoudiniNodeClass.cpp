@@ -9,16 +9,12 @@
 #include "HoudiniNodePropertyFloat.h"
 #include "HoudiniNodePropertyInt.h"
 
-#pragma warning(push)
-#pragma warning(disable : 4706)
-
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer),
     HoudiniNodeAsset(nullptr),
     Node(nullptr),
     Library(nullptr),
-    Detail(nullptr),
     Component(nullptr),
     LibraryPath(TEXT("")),
     Time(0.0f),
@@ -221,7 +217,7 @@ UHoudiniNodeClass::GetNode() const
 }
 
 
-GU_Detail*
+TSharedPtr<FHoudiniNodeDetail>
 UHoudiniNodeClass::GetDetail() const
 {
     return Detail;
@@ -256,267 +252,13 @@ UHoudiniNodeClass::GetScale() const
 }
 
 
-bool
-UHoudiniNodeClass::GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const
-{
-    Primitives.Empty();
-
-    if(!Detail)
-    {
-        return false;
-    }
-
-    GA_Primitive* Prim = nullptr;
-
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
-    {
-        if(Prim)
-        {
-            Primitives.Add(Prim);
-        }
-    }
-
-    return Primitives.Num() > 0;
-}
-
-
-bool
-UHoudiniNodeClass::GetAllPoints(TArray<GA_Offset>& Points) const
-{
-    Points.Empty();
-
-    if(!Detail)
-    {
-        return false;
-    }
-
-    GA_Offset PointOffset = GA_INVALID_OFFSET;
-
-    GA_FOR_ALL_PTOFF(Detail, PointOffset)
-    {
-        if(GA_INVALID_OFFSET != PointOffset)
-        {
-            Points.Add(PointOffset);
-        }
-    }
-
-    return Points.Num() > 0;
-}
-
-
-bool
-UHoudiniNodeClass::GetAllPointPositions(TArray<FVector>& Positions) const
-{
-    Positions.Empty();
-
-    if(!Detail)
-    {
-        return false;
-    }
-
-    GA_Offset PointOffset = GA_INVALID_OFFSET;
-
-    GA_FOR_ALL_PTOFF(Detail, PointOffset)
-    {
-        if(PointOffset == GA_INVALID_OFFSET)
-        {
-            continue;
-        }
-
-        const UT_Vector3& Position = Detail->getPos3(PointOffset);
-        FVector PointPosition(Position.x(), Position.z(), Position.y());
-        PointPosition *= Scale;
-
-        Positions.Add(PointPosition);
-    }
-
-    return Positions.Num() > 0;
-}
-
-
-bool
-UHoudiniNodeClass::GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const
-{
-    Parts.Empty();
-
-    if(!Detail)
-    {
-        return false;
-    }
-
-    const int32 NumPrims = Detail->getNumPrimitives();
-    if(!NumPrims)
-    {
-        return false;
-    }
-
-    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
-    if(Attribute.IsValid())
-    {
-        if(Attribute.Group(Parts))
-        {
-            return true;
-        }
-    }
-
-    TArray<GA_Primitive*> AllPrimitives;
-    if(GetAllPrimitives(AllPrimitives))
-    {
-        Parts.Add(0, AllPrimitives);
-    }
-
-    return false;
-}
-
-
-bool
-UHoudiniNodeClass::GetGroupPrimitives(const FString& GroupName, TArray<GA_Primitive*>& Primitives) const
-{
-    Primitives.Empty();
-
-    if(!Detail)
-    {
-        return false;
-    }
-
-    if(GroupName.IsEmpty())
-    {
-        return false;
-    }
-
-    std::string RawString = TCHAR_TO_UTF8(*GroupName);
-    UT_String RawValue(RawString);
-
-    GA_PrimitiveGroup* Group = Detail->findPrimitiveGroup(RawValue);
-    GA_Primitive* Prim = nullptr;
-
-    GA_FOR_ALL_GROUP_PRIMITIVES(Detail, Group, Prim)
-    {
-        if(Prim)
-        {
-            Primitives.Add(Prim);
-        }
-    }
-
-    return Primitives.Num() > 0;
-}
-
-
-bool
-UHoudiniNodeClass::GetGroupPrimitives(const FString& GroupName, TMap<int32, TArray<GA_Primitive*> >& Parts) const
-{
-    if(!Detail)
-    {
-        return false;
-    }
-
-    TArray<GA_Primitive*> Primitives;
-    if(!GetGroupPrimitives(GroupName, Primitives))
-    {
-        return false;
-    }
-
-    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
-    if(Attribute.IsValid())
-    {
-        if(Attribute.Group(Primitives, Parts))
-        {
-            return true;
-        }
-    }
-
-    Parts.Add(0, Primitives);
-    return true;
-}
-
-
-bool
-UHoudiniNodeClass::GetPartPrims(TMap<FString, TMap<int32, TArray<GA_Primitive*> > >& Parts) const
-{
-    Parts.Empty();
-
-    if(!Detail)
-    {
-        return false;
-    }
-
-    
-    const int32 NumPrims = Detail->getNumPrimitives();
-    if(!NumPrims)
-    {
-        return false;
-    }
-
-    FHoudiniNodeAttributePrimitive AttributeGenerator(Detail, HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM);
-    FHoudiniNodeAttributePrimitive AttributePart(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
-
-    TMap<FString, TArray<GA_Primitive*> > AllGeneratorPrimitives;
-
-    if(AttributeGenerator.IsValid() && AttributeGenerator.Group(AllGeneratorPrimitives))
-    {
-        for(TMap<FString, TArray<GA_Primitive*> >::TIterator Iter(AllGeneratorPrimitives); Iter; ++Iter)
-        {
-            const FString& GeneratorName = Iter.Key();
-            TArray<GA_Primitive*>& GeneratorPrims = Iter.Value();
-
-            if(AttributePart.IsValid())
-            {
-                TMap<int32, TArray<GA_Primitive*> > GeneratorParts;
-
-                if(AttributePart.Group(GeneratorPrims, GeneratorParts))
-                {
-                    Parts.Add(GeneratorName, GeneratorParts);
-                    continue;
-                }
-            }
-
-            TMap<int32, TArray<GA_Primitive*> > SingleGeneratorPart;
-            SingleGeneratorPart.Add(0, GeneratorPrims);
-            Parts.Add(GeneratorName, SingleGeneratorPart);
-        }
-    }
-    else
-    {
-        TArray<GA_Primitive*> AllPrimitives;
-        if(GetAllPrimitives(AllPrimitives))
-        {
-            TMap<int32, TArray<GA_Primitive*> > GeneratorParts;
-
-            if(AttributePart.IsValid() && AttributePart.Group(AllPrimitives, GeneratorParts))
-            {
-                Parts.Add(TEXT(""), GeneratorParts);
-            }
-            else
-            {
-                TMap<int32, TArray<GA_Primitive*> > SingleGeneratorPart;
-                SingleGeneratorPart.Add(0, AllPrimitives);
-                Parts.Add(TEXT(""), SingleGeneratorPart);
-            }
-        }
-    }
-
-    return Parts.Num() > 0;
-}
-
-
-bool
-UHoudiniNodeClass::GetPartPoints(TMap<FString, TMap<int32, TArray<GA_Offset> > >& Parts) const
-{
-    Parts.Empty();
-    return false;
-}
-
-
 void
 UHoudiniNodeClass::ResetDetail()
 {
-    if(DetailHandle.isValid() && DetailHandle.hasActiveLock())
+    if(Detail.IsValid())
     {
-        DetailHandle.unlock(Detail);
+        Detail.Reset();
     }
-
-    DetailHandle.clear();
-    Detail = nullptr;
 }
 
 
@@ -537,18 +279,8 @@ UHoudiniNodeClass::CookDetail()
         return false;
     }
 
-    OP_Context Context(Time);
-    const int32 ForcedCook = 1;
-
-    DetailHandle = DisplaySop->getCookedGeoHandle(Context, ForcedCook);
-    if(!DetailHandle.isValid())
-    {
-        ResetDetail();
-        return false;
-    }
-
-    Detail = const_cast<GU_Detail*>(DetailHandle.readLock());
-    if(!Detail)
+    Detail = MakeShareable(new FHoudiniNodeDetail(DisplaySop, Scale));
+    if(!Detail->Cook(Time))
     {
         ResetDetail();
         return false;
@@ -767,8 +499,4 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
 
     return Offset;
 }
-
-
-
-#pragma warning(pop)
 

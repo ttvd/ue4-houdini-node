@@ -1,5 +1,6 @@
 #pragma once
 #include "HoudiniNodePrivatePCH.h"
+#include "HoudiniNodeDetail.h"
 #include "HoudiniNodeClass.generated.h"
 
 
@@ -8,8 +9,6 @@ class OP_OTLLibrary;
 class UT_String;
 class PRM_Template;
 class PRM_Range;
-class GU_Detail;
-class GA_Primitive;
 
 class UHoudiniNodeAsset;
 class UHoudiniNodeComponent;
@@ -75,36 +74,8 @@ public:
 
 public:
 
-    //! Return the underlying detail.
-    GU_Detail* GetDetail() const;
-
-public:
-
-    //! Retrieve all points of this detail.
-    bool GetAllPoints(TArray<GA_Offset>& Points) const;
-
-    //! Get positions for all points.
-    bool GetAllPointPositions(TArray<FVector>& Positions) const;
-
-    //! Retrieve all primitives of this detail.
-    bool GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const;
-
-    //! Retrieve all primitives that are members of a given group.
-    bool GetGroupPrimitives(const FString& GroupName, TArray<GA_Primitive*>& Primitives) const;
-
-    //! Retrieve all primitives that are members of a given group and split by part.
-    bool GetGroupPrimitives(const FString& GroupName, TMap<int32, TArray<GA_Primitive*> >& Parts) const;
-
-    //! Get all parts.
-    bool GetParts(TMap<int32, TArray<GA_Primitive*> >& Parts) const;
-
-public:
-
-    //! Get parts groupped by generator name.
-    bool GetPartPrims(TMap<FString, TMap<int32, TArray<GA_Primitive*> > >& Parts) const;
-
-    //! Get points groupped by generator name.
-    bool GetPartPoints(TMap<FString, TMap<int32, TArray<GA_Offset> > >& Parts) const;
+    //! Return current detail.
+    TSharedPtr<FHoudiniNodeDetail> GetDetail() const;
 
 public:
 
@@ -155,11 +126,8 @@ protected:
 
 protected:
 
-    //! Corresponding Houdini detail handle.
-    GU_DetailHandle DetailHandle;
-
-    //! Corresponding Houdini detail of the active display node.
-    GU_Detail* Detail;
+    //! Detail for the display node.
+    TSharedPtr<FHoudiniNodeDetail> Detail;
 
 protected:
 

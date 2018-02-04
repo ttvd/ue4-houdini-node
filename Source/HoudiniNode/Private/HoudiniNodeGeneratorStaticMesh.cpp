@@ -56,8 +56,10 @@ UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<A
         return false;
     }
 
+    TSharedPtr<FHoudiniNodeDetail> Detail = NodeClass->GetDetail();
+
     TMap<FString, TMap<int32, TArray<GA_Primitive*> > > GeneratorParts;
-    if(!NodeClass->GetPartPrims(GeneratorParts))
+    if(!Detail->GetPartPrims(GeneratorParts))
     {
         return false;
     }
@@ -158,6 +160,12 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         return nullptr;
     }
 
+    TSharedPtr<FHoudiniNodeDetail> Detail = NodeClass->GetDetail();
+    if(!Detail.IsValid())
+    {
+        return nullptr;
+    }
+
     UStaticMesh* StaticMesh = nullptr;
 
     if(!Outer)
@@ -175,7 +183,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
 
     FRawMesh RawMesh;
 
-    if(!NodeClass->GetAllPointPositions(RawMesh.VertexPositions))
+    if(!Detail->GetAllPointPositions(RawMesh.VertexPositions))
     {
         return nullptr;
     }

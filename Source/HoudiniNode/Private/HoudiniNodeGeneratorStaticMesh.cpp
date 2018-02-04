@@ -69,12 +69,9 @@ UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<A
         const FString& GeneratorAttribName = Iter.Key();
         const TMap<int32, TArray<GA_Primitive*> >& Parts = Iter.Value();
 
-        if(MatchName(GeneratorAttribName))
+        if(!MatchName(GeneratorAttribName) || !Parts.Num())
         {
-            if(!Parts.Num())
-            {
-                continue;
-            }
+            continue;
         }
 
         for(TMap<int32, TArray<GA_Primitive*> >::TConstIterator IterParts(Parts); IterParts; ++IterParts)

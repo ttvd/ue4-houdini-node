@@ -4,6 +4,9 @@
 
 
 class UStaticMesh;
+class AStaticMeshActor;
+
+class GA_Primitive;
 
 
 UCLASS()
@@ -18,7 +21,10 @@ public:
 
 protected:
 
+    //! Create a static mesh actor for a given part and primitive set.
+    AStaticMeshActor* CreateStaticMeshActor(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives) const;
+
     //! Create a static mesh.
-    UStaticMesh* CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer) const;
+    UStaticMesh* CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer, const TArray<GA_Primitive*>& Primitives) const;
 };
 

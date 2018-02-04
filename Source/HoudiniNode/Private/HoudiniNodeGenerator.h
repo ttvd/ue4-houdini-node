@@ -50,7 +50,7 @@ public:
 protected:
 
     //! Return current world.
-    UWorld* GetCurrentWorld(UHoudiniNodeClass* NodeClass);
+    UWorld* GetCurrentWorld(UHoudiniNodeClass* NodeClass) const;
 
 protected:
 

@@ -44,9 +44,61 @@ UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<A
         return false;
     }
 
+    TMap<FString, TMap<int32, TArray<GA_Primitive*> > > GeneratorParts;
+    if(!NodeClass->GetPartPrims(GeneratorParts))
+    {
+        return false;
+    }
+
+    for(TMap<FString, TMap<int32, TArray<GA_Primitive*> > >::TIterator Iter(GeneratorParts); Iter; ++Iter)
+    {
+        const FString& GeneratorAttribName = Iter.Key();
+        const TMap<int32, TArray<GA_Primitive*> >& Parts = Iter.Value();
+
+        if(GeneratorAttribName.IsEmpty() || GeneratorAttribName.Equals(GeneratorName, ESearchCase::IgnoreCase))
+        {
+            if(!Parts.Num())
+            {
+                continue;
+            }
+        }
+
+        for(TMap<int32, TArray<GA_Primitive*> >::TConstIterator IterParts(Parts); IterParts; ++IterParts)
+        {
+            const int32 Part = IterParts.Key();
+            const TArray<GA_Primitive*>& Primitives = IterParts.Value();
+
+            if(!Primitives.Num())
+            {
+                continue;
+            }
+
+            AStaticMeshActor* Actor = CreateStaticMeshActor(NodeClass, Primitives);
+            if(Actor)
+            {
+                GeneratedActors.Add(Actor);
+            }
+        }
+    }
+
+    return GeneratedActors.Num() > 0;
+}
+
+
+AStaticMeshActor*
+UHoudiniNodeGeneratorStaticMesh::CreateStaticMeshActor(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives) const
+{
+    if(!NodeClass || !Primitives.Num())
+    {
+        return nullptr;
+    }
+
     UWorld* World = GetCurrentWorld(NodeClass);
 
     FTransform StaticMeshActorTransform = FTransform::Identity;
+    {
+    
+    }
 
     FActorSpawnParameters SpawnInfo;
 
@@ -61,34 +113,33 @@ UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<A
 
     if(!StaticMeshActor)
     {
-        return false;
+        return nullptr;
     }
 
     UStaticMeshComponent* StaticMeshComponent = StaticMeshActor->GetStaticMeshComponent();
     if(!StaticMeshComponent)
     {
         StaticMeshActor->ConditionalBeginDestroy();
-        return false;
+        return nullptr;
     }
 
-    UStaticMesh* StaticMesh = CreateStaticMesh(NodeClass, StaticMeshActor);
+    UStaticMesh* StaticMesh = CreateStaticMesh(NodeClass, StaticMeshActor, Primitives);
     if(!StaticMesh)
     {
         StaticMeshActor->ConditionalBeginDestroy();
-        return false;
+        return nullptr;
     }
 
     StaticMeshComponent->SetMobility(EComponentMobility::Movable);
     StaticMeshComponent->SetStaticMesh(StaticMesh);
     StaticMeshComponent->SetMobility(EComponentMobility::Static);
 
-    GeneratedActors.Add(StaticMeshActor);
-    return GeneratedActors.Num() > 0;
+    return StaticMeshActor;
 }
 
 
 UStaticMesh*
-UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer) const
+UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer, const TArray<GA_Primitive*>& Primitives) const
 {
     if(!NodeClass)
     {
@@ -117,12 +168,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         return nullptr;
     }
 
-    TArray<GA_Primitive*> Primitives;
-    if(!NodeClass->GetAllPrimitives(Primitives))
-    {
-        return nullptr;
-    }
-
+    /*
     const int32 FaceCount = Primitives.Num();
     const int32 VertexCount = FaceCount * 3;
 
@@ -213,6 +259,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
     }
 
     StaticMesh->MarkPackageDirty();
+    */
 
 #endif
 

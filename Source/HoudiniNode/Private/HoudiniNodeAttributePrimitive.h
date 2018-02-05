@@ -65,6 +65,15 @@ public:
     //! Given a list of primitives, get their vector values.
     bool Get(const TArray<GA_Primitive*>& Prims, bool bScale, TArray<FVector>& Values) const;
 
+    //! Given a list of primitives, get their quaternion values.
+    bool Get(const TArray<GA_Primitive*>& Prims, TArray<FQuat>& Values) const;
+
+    //! Given a list of primitives, get their vector2 values.
+    bool Get(const TArray<GA_Primitive*>& Prims, TArray<FVector2D>& Values) const;
+
+    //! Given a list of primitives, get their color values.
+    bool Get(const TArray<GA_Primitive*>& Prims, TArray<FLinearColor>& Values) const;
+
 public:
 
     //! Get integer attribute values for all primitives.
@@ -78,5 +87,14 @@ public:
 
     //! Given a list of primitives, get their vector values.
     bool GetAll(bool bScale, TArray<FVector>& Values) const;
+
+    //! Given a list of primitives, get their quaternion values.
+    bool GetAll(TArray<FQuat>& Values) const;
+
+    //! Given a list of primitives, get their vector2 values.
+    bool GetAll(TArray<FVector2D>& Values) const;
+
+    //! Given a list of primitives, get their color values.
+    bool GetAll(TArray<FLinearColor>& Values) const;
 };
 

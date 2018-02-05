@@ -617,6 +617,139 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, bool bSc
 }
 
 
+bool
+FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<FQuat>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleV4 AttributeHandle = FindAttributeHandle<GA_RWHandleV4>(4);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < Prims.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = Prims[Idx];
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        const UT_Quaternion& AttributeValue = AttributeHandle.get(PrimOffset);
+
+        FQuat Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z(), AttributeValue.w());
+        Swap(Value.Y, Value.Z);
+        Value.Y *= -1.0f;
+
+        Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<FVector2D>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleV2 AttributeHandle = FindAttributeHandle<GA_RWHandleV2>(2);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < Prims.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = Prims[Idx];
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        const UT_Vector2& AttributeValue = AttributeHandle.get(PrimOffset);
+
+        FVector2D Value(AttributeValue.x(), AttributeValue.y());
+        Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<FLinearColor>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    bool bSuccess = false;
+
+    {
+        GA_RWHandleV3 AttributeHandle = FindAttributeHandle<GA_RWHandleV3>(3);
+        if(AttributeHandle.isValid())
+        {
+            for(int32 Idx = 0; Idx < Prims.Num(); ++Idx)
+            {
+                GA_Primitive* Prim = Prims[Idx];
+                if(!Prim)
+                {
+                    continue;
+                }
+
+                const GA_Offset PrimOffset = Prim->getMapOffset();
+                const UT_Vector3& AttributeValue = AttributeHandle.get(PrimOffset);
+
+                FLinearColor Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z());
+                Values.Add(Value);
+            }
+
+            bSuccess = true;
+        }
+    }
+
+    if(!bSuccess)
+    {
+        GA_RWHandleV4 AttributeHandle = FindAttributeHandle<GA_RWHandleV4>(4);
+        if(AttributeHandle.isValid())
+        {
+            for(int32 Idx = 0; Idx < Prims.Num(); ++Idx)
+            {
+                GA_Primitive* Prim = Prims[Idx];
+                if(!Prim)
+                {
+                    continue;
+                }
+
+                const GA_Offset PrimOffset = Prim->getMapOffset();
+                const UT_Vector4& AttributeValue = AttributeHandle.get(PrimOffset);
+
+                FLinearColor Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z(), AttributeValue.w());
+                Values.Add(Value);
+            }
+        }
+    }
+
+    return Values.Num() > 0;
+}
+
 
 bool
 FHoudiniNodeAttributePrimitive::GetAll(TArray<int32>& Values) const
@@ -779,6 +912,145 @@ FHoudiniNodeAttributePrimitive::GetAll(bool bScale, TArray<FVector>& Values) con
         }
 
         Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributePrimitive::GetAll(TArray<FQuat>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleV4 AttributeHandle = FindAttributeHandle<GA_RWHandleV4>(4);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    GU_Detail* DetailPtr = Detail.GetDetail();
+    GA_Primitive* Prim = nullptr;
+
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
+    {
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        const UT_Quaternion& AttributeValue = AttributeHandle.get(PrimOffset);
+
+        FQuat Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z(), AttributeValue.w());
+        Swap(Value.Y, Value.Z);
+        Value.Z *= -1.0f;
+
+        Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributePrimitive::GetAll(TArray<FVector2D>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleV2 AttributeHandle = FindAttributeHandle<GA_RWHandleV2>(2);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    GU_Detail* DetailPtr = Detail.GetDetail();
+    GA_Primitive* Prim = nullptr;
+
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
+    {
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        const UT_Vector2& AttributeValue = AttributeHandle.get(PrimOffset);
+
+        FVector2D Value(AttributeValue.x(), AttributeValue.y());
+        Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributePrimitive::GetAll(TArray<FLinearColor>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GU_Detail* DetailPtr = Detail.GetDetail();
+    bool bSuccess = false;
+
+    {
+        GA_RWHandleV3 AttributeHandle = FindAttributeHandle<GA_RWHandleV3>(3);
+        if(AttributeHandle.isValid())
+        {
+            GA_Primitive* Prim = nullptr;
+            GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
+            {
+                if(!Prim)
+                {
+                    continue;
+                }
+
+                const GA_Offset PrimOffset = Prim->getMapOffset();
+                const UT_Vector3& AttributeValue = AttributeHandle.get(PrimOffset);
+
+                FLinearColor Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z());
+                Values.Add(Value);
+            }
+
+            bSuccess = true;
+        }
+    }
+
+    if(!bSuccess)
+    {
+        GA_RWHandleV4 AttributeHandle = FindAttributeHandle<GA_RWHandleV4>(4);
+        if(AttributeHandle.isValid())
+        {
+            GA_Primitive* Prim = nullptr;
+            GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
+            {
+                if(!Prim)
+                {
+                    continue;
+                }
+
+                const GA_Offset PrimOffset = Prim->getMapOffset();
+                const UT_Vector4& AttributeValue = AttributeHandle.get(PrimOffset);
+
+                FLinearColor Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z(), AttributeValue.w());
+                Values.Add(Value);
+            }
+        }
     }
 
     return Values.Num() > 0;

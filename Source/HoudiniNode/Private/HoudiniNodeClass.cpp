@@ -8,6 +8,7 @@
 #include "HoudiniNodeAttributePrimitive.h"
 #include "HoudiniNodePropertyFloat.h"
 #include "HoudiniNodePropertyInt.h"
+#include "HoudiniNodePropertyString.h"
 
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :
@@ -487,7 +488,25 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
         else if(Type.isBasicType(PRM_Type::PRM_BASIC_STRING))
         {
             // Paths, labels and separators.
-            volatile int i = 5;
+            
+            const PRM_Type::PRM_StringType& TypeString = Type.getStringType();
+
+            if(TypeString == PRM_Type::PRM_STR_SEPARATOR)
+            {
+                volatile int i = 5;
+            }
+            else if(TypeString == PRM_Type::PRM_STR_LABEL)
+            {
+                volatile int i = 5;
+            }
+            else if(TypeString == PRM_Type::PRM_STR_PATH)
+            {
+                volatile int i = 5;
+            }
+            else if(TypeString == PRM_Type::PRM_STR_NONE)
+            {
+                Property = NewObject<UHoudiniNodePropertyString>(this, *PropertyName, PropertyObjectFlags);
+            }
         }
 
         if(Property)

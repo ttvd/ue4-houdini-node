@@ -35,8 +35,11 @@ protected:
     //! Retrieve float values for a given property.
     bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<float>& Values) const;
 
-    //! Retrieve float integer for a given property.
+    //! Retrieve integer values for a given property.
     bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<int32>& Values) const;
+
+    //! Retrieve string values for a given property.
+    bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<FString>& Values) const;
 
 private:
 

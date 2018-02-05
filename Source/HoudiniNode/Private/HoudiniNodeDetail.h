@@ -32,6 +32,11 @@ public:
 
     //! Retrieve all points of this detail.
     bool GetAllPoints(TArray<GA_Offset>& Points) const;
+    bool GetAllPoints(TArray<uint32>& Points) const;
+
+    //! Given a list of primitives, return the corresponding list of points.
+    bool GetPrimitivePoints(const TArray<GA_Primitive*>& Primitives, TArray<GA_Offset>& Points) const;
+    bool GetPrimitivePoints(const TArray<GA_Primitive*>& Primitives, TArray<uint32>& Points) const;
 
 public:
 
@@ -40,6 +45,9 @@ public:
 
     //! Get positions for specified points.
     bool GetPointPositions(const TArray<GA_Offset>& Points, TArray<FVector>& Positions) const;
+
+    //! Get positions for points of specified primitives.
+    bool GetPrimitivePointPositions(const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Positions) const;
 
 public:
 
@@ -68,9 +76,9 @@ protected:
     //! Stored detail.
     GU_Detail* Detail;
 
-    //! Scale.
-    float Scale;
-
     //! Time of cooking.
     float Time;
+
+    //! Scale.
+    float Scale;
 };

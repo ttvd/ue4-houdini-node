@@ -9,8 +9,8 @@
 FHoudiniNodeDetail::FHoudiniNodeDetail(SOP_Node* InNode, float InScale) :
     Node(InNode),
     Detail(nullptr),
-    Scale(InScale),
-    Time(0.0f)
+    Time(0.0f),
+    Scale(InScale)
 {
 
 }
@@ -102,6 +102,30 @@ FHoudiniNodeDetail::GetAllPoints(TArray<GA_Offset>& Points) const
 
 
 bool
+FHoudiniNodeDetail::GetAllPoints(TArray<uint32>& Points) const
+{
+    Points.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_Offset PointOffset = GA_INVALID_OFFSET;
+
+    GA_FOR_ALL_PTOFF(Detail, PointOffset)
+    {
+        if(GA_INVALID_OFFSET != PointOffset)
+        {
+            Points.Add(PointOffset);
+        }
+    }
+
+    return Points.Num() > 0;
+}
+
+
+bool
 FHoudiniNodeDetail::GetAllPointPositions(TArray<FVector>& Positions) const
 {
     Positions.Empty();
@@ -158,6 +182,26 @@ FHoudiniNodeDetail::GetPointPositions(const TArray<GA_Offset>& Points, TArray<FV
     }
 
     return Positions.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeDetail::GetPrimitivePointPositions(const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Positions) const
+{
+    Positions.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    TArray<GA_Offset> Points;
+    if(!GetPrimitivePoints(Primitives, Points))
+    {
+        return false;
+    }
+
+    return GetPointPositions(Points, Positions);
 }
 
 
@@ -295,7 +339,79 @@ bool
 FHoudiniNodeDetail::GetPartPoints(TMap<FString, TMap<int32, TArray<GA_Offset> > >& Parts) const
 {
     Parts.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
     return false;
+}
+
+
+bool
+FHoudiniNodeDetail::GetPrimitivePoints(const TArray<GA_Primitive*>& Primitives, TArray<GA_Offset>& Points) const
+{
+    Points.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < Primitives.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = Primitives[Idx];
+        if(!Prim)
+        {
+            continue;
+        }
+
+        GA_Offset PointOffset0 = Prim->getPointOffset(0);
+        GA_Offset PointOffset1 = Prim->getPointOffset(1);
+        GA_Offset PointOffset2 = Prim->getPointOffset(2);
+
+        Swap(PointOffset1, PointOffset2);
+
+        Points.Add(PointOffset0);
+        Points.Add(PointOffset1);
+        Points.Add(PointOffset2);
+    }
+
+    return Points.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeDetail::GetPrimitivePoints(const TArray<GA_Primitive*>& Primitives, TArray<uint32>& Points) const
+{
+    Points.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < Primitives.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = Primitives[Idx];
+        if(!Prim)
+        {
+            continue;
+        }
+
+        GA_Offset PointOffset0 = Prim->getPointOffset(0);
+        GA_Offset PointOffset1 = Prim->getPointOffset(1);
+        GA_Offset PointOffset2 = Prim->getPointOffset(2);
+
+        Swap(PointOffset1, PointOffset2);
+
+        Points.Add(PointOffset0);
+        Points.Add(PointOffset1);
+        Points.Add(PointOffset2);
+    }
+
+    return Points.Num() > 0;
 }
 
 #pragma warning(pop)

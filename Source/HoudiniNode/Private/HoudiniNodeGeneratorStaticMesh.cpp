@@ -180,35 +180,25 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
 
     FRawMesh RawMesh;
 
-    if(!Detail->GetAllPointPositions(RawMesh.VertexPositions) || !RawMesh.VertexPositions.Num())
+    if(!Detail->GetPrimitivePointPositions(Primitives, RawMesh.VertexPositions))
     {
         return nullptr;
     }
 
-    /*
     const int32 FaceCount = Primitives.Num();
     const int32 VertexCount = FaceCount * 3;
 
     RawMesh.FaceSmoothingMasks.SetNumZeroed(FaceCount);
     RawMesh.FaceMaterialIndices.SetNumZeroed(FaceCount);
 
-    RawMesh.WedgeIndices.SetNumUninitialized(VertexCount);
-
-    for(int32 Idx = 0; Idx < FaceCount; ++Idx)
+    if(!Detail->GetPrimitivePoints(Primitives, RawMesh.WedgeIndices))
     {
-        GA_Primitive* Prim = Primitives[Idx];
-
-        GA_Offset PointOffset0 = Prim->getPointOffset(0);
-        GA_Offset PointOffset1 = Prim->getPointOffset(1);
-        GA_Offset PointOffset2 = Prim->getPointOffset(2);
-
-        Swap(PointOffset1, PointOffset2);
-
-        RawMesh.WedgeIndices[Idx * 3 + 0] = PointOffset0;
-        RawMesh.WedgeIndices[Idx * 3 + 1] = PointOffset1;
-        RawMesh.WedgeIndices[Idx * 3 + 2] = PointOffset2;
+        return nullptr;
     }
 
+
+
+    /*
     RawMesh.WedgeTangentZ.SetNumZeroed(VertexCount);
     RawMesh.WedgeColors.SetNumZeroed(VertexCount);
     RawMesh.WedgeTexCoords[0].SetNumZeroed(VertexCount);

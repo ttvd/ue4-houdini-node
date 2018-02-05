@@ -5,7 +5,7 @@
 #pragma warning(disable : 4706)
 
 
-FHoudiniNodeAttributePrimitive::FHoudiniNodeAttributePrimitive(GU_Detail* InDetail, const FString& InName) :
+FHoudiniNodeAttributePrimitive::FHoudiniNodeAttributePrimitive(const FHoudiniNodeDetail& InDetail, const FString& InName) :
     FHoudiniNodeAttribute(InDetail, InName, GA_ATTRIB_PRIMITIVE)
 {
 
@@ -28,9 +28,10 @@ FHoudiniNodeAttributePrimitive::SelectNonZero(TArray<GA_Primitive*>& Prims) cons
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {
@@ -66,9 +67,10 @@ FHoudiniNodeAttributePrimitive::Select(int32 Value, TArray<GA_Primitive*>& Prims
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {
@@ -107,9 +109,10 @@ FHoudiniNodeAttributePrimitive::Select(const FString& Value, TArray<GA_Primitive
     std::string RawString = TCHAR_TO_UTF8(*Value);
     UT_String RawValue(RawString);
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {
@@ -213,9 +216,10 @@ FHoudiniNodeAttributePrimitive::Group(TMap<int32, TArray<GA_Primitive*> >& Prims
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {
@@ -260,9 +264,10 @@ FHoudiniNodeAttributePrimitive::Group(TMap<FString, TArray<GA_Primitive*> >& Pri
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {
@@ -357,9 +362,10 @@ FHoudiniNodeAttributePrimitive::Group(TMap<UObject*, TArray<GA_Primitive*> >& Pr
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {
@@ -582,9 +588,10 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<int32>& Values) const
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {
@@ -617,9 +624,10 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<FString>& Values) const
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {
@@ -654,9 +662,10 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<UObject*>& Values) const
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
     GA_Primitive* Prim = nullptr;
 
-    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
     {
         if(!Prim)
         {

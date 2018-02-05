@@ -1,5 +1,5 @@
 #pragma once
-
+#include "HoudiniNodeDetail.h"
 
 class GU_Detail;
 class GA_Primitive;
@@ -10,7 +10,7 @@ class HOUDININODE_API FHoudiniNodeAttribute
 public:
 
     //! Create attribute object for a given detail.
-    FHoudiniNodeAttribute(GU_Detail* InDetail, const FString& InName, GA_AttributeOwner InOwner);
+    FHoudiniNodeAttribute(const FHoudiniNodeDetail& InDetail, const FString& InName, GA_AttributeOwner InOwner);
 
 public:
 
@@ -30,9 +30,6 @@ public:
     //! Return the name of this attribute.
     const FString& GetName() const;
 
-    //! Return the associated detail.
-    GU_Detail* GetDetail() const;
-
 public:
 
     //! Locate an attribute handle for reading.
@@ -41,7 +38,7 @@ public:
 protected:
 
     //! Detail associated with this attribute.
-    GU_Detail* Detail;
+    const FHoudiniNodeDetail& Detail;
 
     //! Owner of this attribute.
     GA_AttributeOwner Owner;
@@ -56,12 +53,12 @@ template<typename TAttribType>
 TAttribType
 FHoudiniNodeAttribute::FindAttributeHandle(int32 TupleSize) const
 {
-    if(!Detail)
+    if(!Detail.IsValid())
     {
         return TAttribType();
     }
 
-    GA_Attribute* Attribute = Detail->findAttribute(Owner, NameRaw);
+    GA_Attribute* Attribute = Detail.FindAttribute(NameRaw, Owner);
     if(!Attribute)
     {
         return TAttribType();

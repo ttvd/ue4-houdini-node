@@ -75,7 +75,7 @@ public:
 public:
 
     //! Return current detail.
-    TSharedPtr<FHoudiniNodeDetail> GetDetail() const;
+    FHoudiniNodeDetail& GetDetail() const;
 
 public:
 

@@ -3,6 +3,7 @@
 
 class GU_Detail;
 class GA_Primitive;
+class GA_Attribute;
 class SOP_Node;
 
 
@@ -59,11 +60,22 @@ public:
 
 public:
 
-    //! Get parts groupped by the generator name.
+    //! Get parts grouped by the generator name.
     bool GetPartPrims(TMap<FString, TMap<int32, TArray<GA_Primitive*> > >& Parts) const;
 
-    //! Get points groupped by the generator name.
+    //! Get points grouped by the generator name.
     bool GetPartPoints(TMap<FString, TMap<int32, TArray<GA_Offset> > >& Parts) const;
+
+public:
+
+    //! Locate an attribute.
+    GA_Attribute* FindAttribute(const FString& AttributeName, GA_AttributeOwner Owner) const;
+    GA_Attribute* FindAttribute(const UT_String& AttributeName, GA_AttributeOwner Owner) const;
+
+public:
+
+    //! Return the underlying detail.
+    GU_Detail* GetDetail() const;
 
 protected:
 

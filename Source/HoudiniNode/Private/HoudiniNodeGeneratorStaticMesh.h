@@ -31,5 +31,10 @@ protected:
 
     //! Create a static mesh from a given primitive set.
     UStaticMesh* CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer, const TArray<GA_Primitive*>& Primitives) const;
+
+protected:
+
+    //! Given a list of primitives, return vertex normals.
+    bool GetVertexNormals(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Normals) const;
 };
 

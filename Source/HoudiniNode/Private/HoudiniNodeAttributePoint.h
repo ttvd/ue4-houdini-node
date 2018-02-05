@@ -10,8 +10,8 @@ class HOUDININODE_API FHoudiniNodeAttributePoint : public FHoudiniNodeAttribute
 {
 public:
 
-    //! Create point attribute object for a given detail with a given name.
-    FHoudiniNodeAttributePoint(GU_Detail* InDetail, const FString& InName);
+    //! Create a point attribute object for a given detail with a given name.
+    FHoudiniNodeAttributePoint(const FHoudiniNodeDetail& InDetail, const FString& InName);
 
 public:
 

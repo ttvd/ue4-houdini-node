@@ -27,7 +27,7 @@ UHoudiniNodeGenerator::Generate(UHoudiniNodeClass* NodeClass, TArray<AActor*>& G
         return false;
     }
 
-    TSharedPtr<FHoudiniNodeDetail> Detail = NodeClass->GetDetail();
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
     if(!Detail.IsValid())
     {
         return false;

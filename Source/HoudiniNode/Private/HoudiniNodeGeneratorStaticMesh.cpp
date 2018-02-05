@@ -56,10 +56,10 @@ UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<A
         return false;
     }
 
-    TSharedPtr<FHoudiniNodeDetail> Detail = NodeClass->GetDetail();
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
 
     TMap<FString, TMap<int32, TArray<GA_Primitive*> > > GeneratorParts;
-    if(!Detail->GetPartPrims(GeneratorParts))
+    if(!Detail.GetPartPrims(GeneratorParts))
     {
         return false;
     }
@@ -157,7 +157,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         return nullptr;
     }
 
-    TSharedPtr<FHoudiniNodeDetail> Detail = NodeClass->GetDetail();
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
     if(!Detail.IsValid())
     {
         return nullptr;
@@ -180,7 +180,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
 
     FRawMesh RawMesh;
 
-    if(!Detail->GetPrimitivePointPositions(Primitives, RawMesh.VertexPositions))
+    if(!Detail.GetPrimitivePointPositions(Primitives, RawMesh.VertexPositions))
     {
         return nullptr;
     }
@@ -191,7 +191,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
     RawMesh.FaceSmoothingMasks.SetNumZeroed(FaceCount);
     RawMesh.FaceMaterialIndices.SetNumZeroed(FaceCount);
 
-    if(!Detail->GetPrimitivePoints(Primitives, RawMesh.WedgeIndices))
+    if(!Detail.GetPrimitivePoints(Primitives, RawMesh.WedgeIndices))
     {
         return nullptr;
     }
@@ -273,3 +273,24 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
     return StaticMesh;
 }
 
+
+bool
+UHoudiniNodeGeneratorStaticMesh::GetVertexNormals(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Normals) const
+{
+    Normals.Empty();
+
+    if(!NodeClass)
+    {
+        return false;
+    }
+
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
+    if(!Detail.IsValid())
+    {
+        return false;
+    }
+
+
+
+    return true;
+}

@@ -371,6 +371,8 @@ UHoudiniNodeClass::CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent)
 
     const PRM_Template* Template = nullptr;
 
+    TArray<IHoudiniNodePropertyInterface*> CreatedProperties;
+
     Template = Node->getSpareParmLayoutTemplates();
     if(!Template)
     {
@@ -394,10 +396,24 @@ UHoudiniNodeClass::CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent)
 
         if(Type.isVisible())
         {
-            Offset = CreateParameter(Template);
+            Offset = CreateParameter(Template, CreatedProperties);
         }
 
         Template += Offset;
+    }
+
+    {
+        Children = nullptr;
+        Algo::Reverse(CreatedProperties);
+
+        for(int32 Idx = 0; Idx < CreatedProperties.Num(); ++Idx)
+        {
+            FHoudiniNodePropertyCommon* Property = dynamic_cast<FHoudiniNodePropertyCommon*>(CreatedProperties[Idx]);
+            if(Property)
+            {
+                Property->AssignClass();
+            }
+        }
     }
 
     return true;
@@ -405,7 +421,7 @@ UHoudiniNodeClass::CreateParameters(UHoudiniNodeComponent* HoudiniNodeComponent)
 
 
 int32
-UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
+UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudiniNodePropertyInterface*>& CreatedProperties)
 {
     if(!Template)
     {
@@ -512,6 +528,8 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template)
         if(Property)
         {
             Property->Construct(Node, Template, Component, Time);
+
+            CreatedProperties.Add(Property);
             Properties.Add(PropertyName, Property);
         }
     }

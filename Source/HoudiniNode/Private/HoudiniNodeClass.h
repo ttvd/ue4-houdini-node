@@ -12,6 +12,7 @@ class PRM_Range;
 
 class UHoudiniNodeAsset;
 class UHoudiniNodeComponent;
+class FHoudiniNodePropertyCommon;
 class IHoudiniNodePropertyInterface;
 
 
@@ -109,7 +110,7 @@ protected:
 protected:
 
     //! Create a parameter from a given template.
-    int32 CreateParameter(const PRM_Template* Template);
+    int32 CreateParameter(const PRM_Template* Template, TArray<IHoudiniNodePropertyInterface*>& CreatedProperties);
 
 protected:
 

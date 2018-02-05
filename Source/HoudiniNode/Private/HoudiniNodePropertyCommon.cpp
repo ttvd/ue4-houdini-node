@@ -1,5 +1,6 @@
 #include "HoudiniNodePropertyCommon.h"
 #include "HoudiniNodeComponent.h"
+#include "HoudiniNodeClass.h"
 #include "HoudiniNodePrivatePCH.h"
 
 
@@ -31,7 +32,28 @@ FHoudiniNodePropertyCommon::InitializeProperty(UProperty* InProperty, UHoudiniNo
         Property->PropertyLinkNext = nullptr;
     }
 
+    /*
     UClass* Class = Cast<UClass>(Property->GetOuter());
+    Class->AddCppProperty(Property);
+    */
+}
+
+
+void
+FHoudiniNodePropertyCommon::AssignClass()
+{
+    if(!Property)
+    {
+        return;
+    }
+
+    UClass* Class = Cast<UClass>(Property->GetOuter());
+    if(!Class)
+    {
+        return;
+    }
+
+    Property->Next = nullptr;
     Class->AddCppProperty(Property);
 }
 

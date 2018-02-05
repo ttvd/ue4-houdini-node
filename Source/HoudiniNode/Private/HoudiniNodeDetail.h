@@ -38,9 +38,15 @@ public:
     bool GetAllPoints(TArray<GA_Offset>& Points) const;
     bool GetAllPoints(TArray<uint32>& Points) const;
 
+    //! Retrieve all vertices of this detail.
+    bool GetAllVertices(TArray<GA_Offset>& Vertices) const;
+
     //! Given a list of primitives, return the corresponding list of points.
     bool GetPrimitivePoints(const TArray<GA_Primitive*>& Primitives, TArray<GA_Offset>& Points) const;
     bool GetPrimitivePoints(const TArray<GA_Primitive*>& Primitives, TArray<uint32>& Points) const;
+
+    //! Given a list of primitives, return the corresponding list of vertices.
+    bool GetPrimitiveVertices(const TArray<GA_Primitive*>& Primitives, TArray<GA_Offset>& Vertices) const;
 
 public:
 

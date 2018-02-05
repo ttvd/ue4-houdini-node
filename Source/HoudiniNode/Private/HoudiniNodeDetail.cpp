@@ -169,6 +169,37 @@ FHoudiniNodeDetail::GetAllPoints(TArray<uint32>& Points) const
 
 
 bool
+FHoudiniNodeDetail::GetAllVertices(TArray<GA_Offset>& Vertices) const
+{
+    Vertices.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_Primitive* Prim = nullptr;
+
+    GA_FOR_ALL_PRIMITIVES(Detail, Prim)
+    {
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const int32 VertexCount = Prim->getVertexCount();
+        for(int32 Idx = 0; Idx < VertexCount; ++Idx)
+        {
+            GA_Offset VertexOffset = Prim->getVertexOffset(Idx);
+            Vertices.Add(VertexOffset);
+        }
+    }
+
+    return Vertices.Num() > 0;
+}
+
+
+bool
 FHoudiniNodeDetail::GetAllPointPositions(TArray<FVector>& Positions) const
 {
     Positions.Empty();
@@ -455,6 +486,36 @@ FHoudiniNodeDetail::GetPrimitivePoints(const TArray<GA_Primitive*>& Primitives, 
     }
 
     return Points.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeDetail::GetPrimitiveVertices(const TArray<GA_Primitive*>& Primitives, TArray<GA_Offset>& Vertices) const
+{
+    Vertices.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < Primitives.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = Primitives[Idx];
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const int32 VertexCount = Prim->getVertexCount();
+        for(int32 Idv = 0; Idv < VertexCount; ++Idv)
+        {
+            GA_Offset VertexOffset = Prim->getVertexOffset(Idv);
+            Vertices.Add(VertexOffset);
+        }
+    }
+
+    return Vertices.Num() > 0;
 }
 
 #pragma warning(pop)

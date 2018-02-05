@@ -85,16 +85,16 @@ public:
     //! Get object attribute values for all primitives.
     bool GetAll(TArray<UObject*>& Values) const;
 
-    //! Given a list of primitives, get their vector values.
+    //! Get vector values of all primitives.
     bool GetAll(bool bScale, TArray<FVector>& Values) const;
 
-    //! Given a list of primitives, get their quaternion values.
+    //! Get quaternion values of all primitives.
     bool GetAll(TArray<FQuat>& Values) const;
 
-    //! Given a list of primitives, get their vector2 values.
+    //! Get vector2 values of all primitives.
     bool GetAll(TArray<FVector2D>& Values) const;
 
-    //! Given a list of primitives, get their color values.
+    //! Get color values of all primitives.
     bool GetAll(TArray<FLinearColor>& Values) const;
 };
 

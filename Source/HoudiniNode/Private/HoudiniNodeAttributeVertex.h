@@ -15,5 +15,8 @@ public:
 
 public:
 
+    //! Given a list of primitives return vector values.
+    bool Get(const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Values) const;
+
 };
 

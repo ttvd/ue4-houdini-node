@@ -20,6 +20,5 @@ public:
 
     //! Get positions for given points.
     bool GetPositions(const TArray<GA_Offset>& Points, TArray<FVector>& Positions) const;
-
 };
 

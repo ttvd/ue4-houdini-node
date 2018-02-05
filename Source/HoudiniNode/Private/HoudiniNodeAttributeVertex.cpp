@@ -11,4 +11,21 @@ FHoudiniNodeAttributeVertex::FHoudiniNodeAttributeVertex(const FHoudiniNodeDetai
 
 }
 
+
+bool
+FHoudiniNodeAttributeVertex::Get(const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+
+
+    return true;
+}
+
+
 #pragma warning(pop)

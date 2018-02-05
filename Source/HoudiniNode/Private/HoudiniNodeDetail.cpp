@@ -27,6 +27,13 @@ FHoudiniNodeDetail::~FHoudiniNodeDetail()
 }
 
 
+GU_Detail*
+FHoudiniNodeDetail::GetDetail() const
+{
+    return Detail;
+}
+
+
 bool
 FHoudiniNodeDetail::IsValid() const
 {
@@ -62,6 +69,35 @@ FHoudiniNodeDetail::Cook(float InTime)
 
     return true;
 }
+
+
+GA_Attribute*
+FHoudiniNodeDetail::FindAttribute(const FString& AttributeName, GA_AttributeOwner Owner) const
+{
+    if(!Detail)
+    {
+        return nullptr;
+    }
+
+    std::string RawString = TCHAR_TO_UTF8(*AttributeName);
+    UT_String RawValue(RawString);
+
+    return FindAttribute(RawValue, Owner);
+}
+
+
+GA_Attribute*
+FHoudiniNodeDetail::FindAttribute(const UT_String& AttributeName, GA_AttributeOwner Owner) const
+{
+    if(!Detail)
+    {
+        return nullptr;
+    }
+
+    GA_Attribute* Attribute = Detail->findAttribute(Owner, AttributeName);
+    return Attribute;
+}
+
 
 
 int32
@@ -283,8 +319,8 @@ FHoudiniNodeDetail::GetPartPrims(TMap<FString, TMap<int32, TArray<GA_Primitive*>
         return false;
     }
 
-    FHoudiniNodeAttributePrimitive AttributeGenerator(Detail, HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM);
-    FHoudiniNodeAttributePrimitive AttributePart(Detail, HOUDINI_NODE_ATTRIBUTE_PART);
+    FHoudiniNodeAttributePrimitive AttributeGenerator(*this, HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM);
+    FHoudiniNodeAttributePrimitive AttributePart(*this, HOUDINI_NODE_ATTRIBUTE_PART);
 
     TMap<FString, TArray<GA_Primitive*> > AllGeneratorPrimitives;
 

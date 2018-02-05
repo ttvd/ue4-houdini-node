@@ -217,10 +217,10 @@ UHoudiniNodeClass::GetNode() const
 }
 
 
-TSharedPtr<FHoudiniNodeDetail>
+FHoudiniNodeDetail&
 UHoudiniNodeClass::GetDetail() const
 {
-    return Detail;
+    return *(Detail.Get());
 }
 
 

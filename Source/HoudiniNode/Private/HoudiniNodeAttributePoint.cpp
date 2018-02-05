@@ -5,7 +5,7 @@
 #pragma warning(disable : 4706)
 
 
-FHoudiniNodeAttributePoint::FHoudiniNodeAttributePoint(GU_Detail* InDetail, const FString& InName) :
+FHoudiniNodeAttributePoint::FHoudiniNodeAttributePoint(const FHoudiniNodeDetail& InDetail, const FString& InName) :
     FHoudiniNodeAttribute(InDetail, InName, GA_ATTRIB_POINT)
 {
 
@@ -24,14 +24,15 @@ FHoudiniNodeAttributePoint::GetAllPositions(TArray<FVector>& Positions) const
 
     GA_Offset PointOffset = GA_INVALID_OFFSET;
 
-    GA_FOR_ALL_PTOFF(Detail, PointOffset)
+    GU_Detail* DetailPtr = Detail.GetDetail();
+    GA_FOR_ALL_PTOFF(DetailPtr, PointOffset)
     {
         if(PointOffset == GA_INVALID_OFFSET)
         {
             continue;
         }
 
-        const UT_Vector3& Position = Detail->getPos3(PointOffset);
+        const UT_Vector3& Position = DetailPtr->getPos3(PointOffset);
         FVector PointPosition(Position.x(), Position.z(), Position.y());
         PointPosition *= 100.0f;
 
@@ -52,6 +53,8 @@ FHoudiniNodeAttributePoint::GetPositions(const TArray<GA_Offset>& Points, TArray
         return false;
     }
 
+    GU_Detail* DetailPtr = Detail.GetDetail();
+
     for(int32 Idx = 0; Idx < Points.Num(); ++Idx)
     {
         GA_Offset PointOffset = Points[Idx];
@@ -61,7 +64,7 @@ FHoudiniNodeAttributePoint::GetPositions(const TArray<GA_Offset>& Points, TArray
             continue;
         }
 
-        const UT_Vector3& Position = Detail->getPos3(PointOffset);
+        const UT_Vector3& Position = DetailPtr->getPos3(PointOffset);
         FVector PointPosition(Position.x(), Position.z(), Position.y());
         PointPosition *= 100.0f;
 

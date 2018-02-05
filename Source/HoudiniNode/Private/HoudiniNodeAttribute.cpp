@@ -2,7 +2,7 @@
 #include "HoudiniNodePrivatePCH.h"
 
 
-FHoudiniNodeAttribute::FHoudiniNodeAttribute(GU_Detail* InDetail, const FString& InName, GA_AttributeOwner InOwner) :
+FHoudiniNodeAttribute::FHoudiniNodeAttribute(const FHoudiniNodeDetail& InDetail, const FString& InName, GA_AttributeOwner InOwner) :
     Detail(InDetail),
     Owner(InOwner),
     Name(InName),
@@ -20,17 +20,10 @@ FHoudiniNodeAttribute::GetName() const
 }
 
 
-GU_Detail*
-FHoudiniNodeAttribute::GetDetail() const
-{
-    return Detail;
-}
-
-
 bool
 FHoudiniNodeAttribute::Exists() const
 {
-    GA_Attribute* Attribute = Detail->findAttribute(Owner, NameRaw);
+    GA_Attribute* Attribute = Detail.FindAttribute(NameRaw, Owner);
     if(!Attribute)
     {
         return false;
@@ -43,7 +36,7 @@ FHoudiniNodeAttribute::Exists() const
 int32
 FHoudiniNodeAttribute::GetTupleSize() const
 {
-    GA_Attribute* Attribute = Detail->findAttribute(Owner, NameRaw);
+    GA_Attribute* Attribute = Detail.FindAttribute(NameRaw, Owner);
     if(!Attribute)
     {
         return -1;
@@ -56,7 +49,7 @@ FHoudiniNodeAttribute::GetTupleSize() const
 bool
 FHoudiniNodeAttribute::IsValid() const
 {
-    if(!Detail)
+    if(!Detail.IsValid())
     {
         return false;
     }

@@ -10,8 +10,8 @@ class HOUDININODE_API FHoudiniNodeAttributePrimitive : public FHoudiniNodeAttrib
 {
 public:
 
-    //! Create primitive attribute object for a given detail with a given name.
-    FHoudiniNodeAttributePrimitive(GU_Detail* InDetail, const FString& InName);
+    //! Create a primitive attribute object for a given detail with a given name.
+    FHoudiniNodeAttributePrimitive(const FHoudiniNodeDetail& InDetail, const FString& InName);
 
 public:
 

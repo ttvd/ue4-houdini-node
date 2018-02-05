@@ -14,6 +14,8 @@ public:
     FHoudiniNodePropertyCommon();
     virtual ~FHoudiniNodePropertyCommon();
 
+    friend class UHoudiniNodeClass;
+
 protected:
 
     //! Initialize the property.
@@ -21,6 +23,9 @@ protected:
 
     //! Construct the property.
     template <typename TType> bool ConstructProperty(OP_Node* Node, float Time, bool bAssign, bool bComputeOffset);
+
+    //! Assign this property to a class.
+    void AssignClass();
 
 protected:
 

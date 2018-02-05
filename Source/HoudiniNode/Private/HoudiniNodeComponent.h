@@ -57,39 +57,29 @@ UHoudiniNodeComponent::SetScratchSpaceValues(TType* Values, uint32 Bytes)
     char* PositionNew = ScratchSpaceBufferStart + ScratchSpaceBufferOffset;
     PositionNew = (char*) Align<TType*>((TType*) PositionNew, alignof(TType));
 
-    FMemory::Memcpy((void*) PositionNew, (const void*) Values, Bytes);
+    const uint32 EntrySize = sizeof(TType);
 
-    const uint32 ScratchSpaceOffset = offsetof(UHoudiniNodeComponent, ScratchSpaceBuffer);
-    const uint32 ScratchSpaceOffsetComputed = (uint32)(PositionNew - ScratchSpaceBufferStart);
-
-    ScratchSpaceBufferOffset = ScratchSpaceOffsetComputed + Bytes;
-    return ScratchSpaceOffset + ScratchSpaceOffsetComputed;
-}
-
-
-template<>
-inline
-uint32
-UHoudiniNodeComponent::SetScratchSpaceValues<FString>(const TArray<FString>& Values)
-{
-    check(Values.Num() > 0);
-
-    char* ScratchSpaceBufferStart = (char*) &ScratchSpaceBuffer[0];
-
-    char* PositionNew = ScratchSpaceBufferStart + ScratchSpaceBufferOffset;
-    PositionNew = (char*) Align<FString*>((FString*) PositionNew, alignof(FString));
-
-    for(int32 Idx = 0; Idx < Values.Num(); ++Idx)
+    if(EntrySize <= 4)
     {
-        const FString& Value = Values[Idx];
-        new(PositionNew) FString(Value);
-        PositionNew += sizeof(FString);
+        FMemory::Memcpy((void*) PositionNew, (const void*) Values, Bytes);
+    }
+    else
+    {
+        const int32 NumEntries = Bytes / EntrySize;
+        char* PositionElement = PositionNew;
+
+        for(int32 Idx = 0; Idx < NumEntries; ++Idx)
+        {
+            const TType& Value = *(Values + Idx);
+            new(PositionElement) TType(Value);
+            PositionElement += sizeof(TType);
+        }
     }
 
     const uint32 ScratchSpaceOffset = offsetof(UHoudiniNodeComponent, ScratchSpaceBuffer);
     const uint32 ScratchSpaceOffsetComputed = (uint32)(PositionNew - ScratchSpaceBufferStart);
 
-    ScratchSpaceBufferOffset = ScratchSpaceOffsetComputed + sizeof(FString) * Values.Num();
+    ScratchSpaceBufferOffset = ScratchSpaceOffsetComputed + Bytes;
     return ScratchSpaceOffset + ScratchSpaceOffsetComputed;
 }
 
@@ -121,25 +111,22 @@ UHoudiniNodeComponent::SetScratchSpaceValuesAtOffset(TType* Values, uint32 Bytes
     char* Position = (char*) this;
     Position += Offset;
 
-    FMemory::Memcpy((void*) Position, (const void*) Values, Bytes);
-}
+    const int32 EntrySize = sizeof(TType);
 
-
-template <>
-inline
-void
-UHoudiniNodeComponent::SetScratchSpaceValuesAtOffset<FString>(const TArray<FString>& Values, uint32 Offset)
-{
-    check(Values.Num() > 0);
-
-    char* Position = (char*) this;
-    Position += Offset;
-
-    for(int32 Idx = 0; Idx < Values.Num(); ++Idx)
+    if(EntrySize <= 4)
     {
-        const FString& Value = Values[Idx];
-        new(Position) FString(Value);
-        Position += sizeof(FString);
+        FMemory::Memcpy((void*) Position, (const void*) Values, Bytes);
+    }
+    else
+    {
+        const int32 NumEntries = Bytes / EntrySize;
+
+        for(int32 Idx = 0; Idx < NumEntries; ++Idx)
+        {
+            const TType& Value = *(Values + Idx);
+            new(Position) TType(Value);
+            Position += sizeof(TType);
+        }
     }
 }
 

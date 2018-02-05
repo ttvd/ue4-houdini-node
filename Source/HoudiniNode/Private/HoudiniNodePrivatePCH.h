@@ -7,6 +7,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "AssetRegistryModule.h"
 #include "Misc/CoreMisc.h"
+#include "Algo/Reverse.h"
 
 #if WITH_EDITOR
 #include "EditorFramework/AssetImportData.h"

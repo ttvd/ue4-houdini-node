@@ -222,3 +222,57 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
     return true;
 }
 
+
+bool
+FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<FString>& Values) const
+{
+    Values.Empty();
+
+    if(!Node || !Template || !Property || !Component)
+    {
+        return false;
+    }
+
+    const PRM_Name* TemplateName = Template->getNamePtr();
+    if(!TemplateName)
+    {
+        return false;
+    }
+
+    const UT_String& Name = TemplateName->getToken();
+
+    const int32 VectorSize = Template->getVectorSize();
+    if(!VectorSize)
+    {
+        return false;
+    }
+
+    Values.SetNumZeroed(VectorSize);
+    for(int32 Idx = 0; Idx < VectorSize; ++Idx)
+    {
+        UT_String RawValue("");
+        Node->evalString(RawValue, Name.c_str(), Idx, Time);
+
+        FString AttributeValue = UTF8_TO_TCHAR(RawValue.c_str());
+        Values[Idx] = AttributeValue;
+    }
+
+    if(bAssign)
+    {
+        Property->ArrayDim = Values.Num();
+
+        if(bComputeOffset)
+        {
+            const uint32 PropertyValueOffset = Component->SetScratchSpaceValues(Values);
+            AssignPropertyOffset(PropertyValueOffset);
+        }
+        else
+        {
+            const uint32 PropertyValueOffset = GetPropertyOffset();
+            Component->SetScratchSpaceValuesAtOffset(Values, PropertyValueOffset);
+        }
+    }
+
+    return true;
+}
+

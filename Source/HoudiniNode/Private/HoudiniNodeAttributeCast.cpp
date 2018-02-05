@@ -32,7 +32,7 @@ FHoudiniNodeAttributeCast::IsValid() const
 
 
 bool
-FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Values) const
+FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, bool bScale, TArray<FVector>& Values) const
 {
     {
         FHoudiniNodeAttributeVertex Attribute(Detail, Name);
@@ -54,7 +54,26 @@ FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, 
         FHoudiniNodeAttributePrimitive Attribute(Detail, Name);
         if(Attribute.Exists())
         {
-        
+            TArray<FVector> Vectors;
+            if(Attribute.Get(Primitives, bScale, Vectors))
+            {
+                for(int32 Idx = 0; Idx < Primitives.Num(); ++Idx)
+                {
+                    GA_Primitive* Prim = Primitives[Idx];
+                    if(Prim)
+                    {
+                        const FVector& Value = Vectors[Idx];
+                        const int32 VertexCount = Prim->getVertexCount();
+
+                        for(int32 Idv = 0; Idv < VertexCount; ++Idv)
+                        {
+                            Values.Add(Value);
+                        }
+                    }
+                }
+
+                return true;
+            }
         }
     }
 

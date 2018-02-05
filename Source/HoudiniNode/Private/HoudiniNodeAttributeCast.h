@@ -21,7 +21,7 @@ public:
 public:
 
     //! Retrieve vector type as vertex attribute.
-    bool GetAsVertex(const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Values) const;
+    bool GetAsVertex(const TArray<GA_Primitive*>& Primitives, bool bScale, TArray<FVector>& Values) const;
 
 protected:
 

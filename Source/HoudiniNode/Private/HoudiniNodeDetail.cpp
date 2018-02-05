@@ -34,6 +34,13 @@ FHoudiniNodeDetail::GetDetail() const
 }
 
 
+float
+FHoudiniNodeDetail::GetScale() const
+{
+    return Scale;
+}
+
+
 bool
 FHoudiniNodeDetail::IsValid() const
 {

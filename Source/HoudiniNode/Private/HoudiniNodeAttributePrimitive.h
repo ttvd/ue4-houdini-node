@@ -62,6 +62,9 @@ public:
     //! Given a list of primitives, get their object attribute values.
     bool Get(const TArray<GA_Primitive*>& Prims, TArray<UObject*>& Values) const;
 
+    //! Given a list of primitives, get their vector values.
+    bool Get(const TArray<GA_Primitive*>& Prims, bool bScale, TArray<FVector>& Values) const;
+
 public:
 
     //! Get integer attribute values for all primitives.
@@ -72,5 +75,8 @@ public:
 
     //! Get object attribute values for all primitives.
     bool GetAll(TArray<UObject*>& Values) const;
+
+    //! Given a list of primitives, get their vector values.
+    bool GetAll(bool bScale, TArray<FVector>& Values) const;
 };
 

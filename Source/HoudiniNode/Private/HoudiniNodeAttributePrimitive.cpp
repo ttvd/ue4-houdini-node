@@ -573,6 +573,52 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<U
 
 
 bool
+FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, bool bScale, TArray<FVector>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleV3 AttributeHandle = FindAttributeHandle<GA_RWHandleV3>(3);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    const float Scale = Detail.GetScale();
+
+    for(int32 Idx = 0; Idx < Prims.Num(); ++Idx)
+    {
+        GA_Primitive* Prim = Prims[Idx];
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        const UT_Vector3& AttributeValue = AttributeHandle.get(PrimOffset);
+
+        FVector Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z());
+        Swap(Value.Y, Value.Z);
+
+        if(bScale)
+        {
+
+            Value *= Scale;
+        }
+
+        Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+
+bool
 FHoudiniNodeAttributePrimitive::GetAll(TArray<int32>& Values) const
 {
     Values.Empty();
@@ -690,6 +736,55 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<UObject*>& Values) const
 
     return Values.Num() > 0;
 }
+
+
+bool
+FHoudiniNodeAttributePrimitive::GetAll(bool bScale, TArray<FVector>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    GA_RWHandleV3 AttributeHandle = FindAttributeHandle<GA_RWHandleV3>(3);
+    if(!AttributeHandle.isValid())
+    {
+        return false;
+    }
+
+    const float Scale = Detail.GetScale();
+    GU_Detail* DetailPtr = Detail.GetDetail();
+
+    GA_Primitive* Prim = nullptr;
+
+    GA_FOR_ALL_PRIMITIVES(DetailPtr, Prim)
+    {
+        if(!Prim)
+        {
+            continue;
+        }
+
+        const GA_Offset PrimOffset = Prim->getMapOffset();
+        const UT_Vector3& AttributeValue = AttributeHandle.get(PrimOffset);
+
+        FVector Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z());
+        Swap(Value.Y, Value.Z);
+
+        if(bScale)
+        {
+
+            Value *= Scale;
+        }
+
+        Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
 
 #pragma warning(pop)
 

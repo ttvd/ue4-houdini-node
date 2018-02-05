@@ -29,6 +29,9 @@ public:
     //! Return number of primitives in this detail.
     int32 GetPrimitiveCount() const;
 
+    //! Return scale.
+    float GetScale() const;
+
 public:
 
     //! Retrieve all points of this detail.

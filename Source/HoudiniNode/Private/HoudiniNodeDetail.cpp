@@ -280,6 +280,78 @@ FHoudiniNodeDetail::GetPrimitivePointPositions(const TArray<GA_Primitive*>& Prim
 
 
 bool
+FHoudiniNodeDetail::GetPrimitivePartTransforms(const TArray<GA_Primitive*>& Primitives,
+    TArray<FTransform>& Transforms) const
+{
+    Transforms.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributePrimitive AttributeXformTranslation(*this, HOUDINI_NODE_ATTRIBUTE_PART_XFORM_T);
+    FHoudiniNodeAttributePrimitive AttributeXformRotation(*this, HOUDINI_NODE_ATTRIBUTE_PART_XFORM_R);
+    FHoudiniNodeAttributePrimitive AttributeXformScale(*this, HOUDINI_NODE_ATTRIBUTE_PART_XFORM_S);
+
+    TArray<FVector> PrimitiveTranslations;
+    TArray<FQuat> PrimitiveRotations;
+    TArray<FVector> PrimitiveScales;
+
+    bool bFoundTranslation = false;
+    bool bFoundRotation = false;
+    bool bFoundScale = false;
+
+    if(AttributeXformTranslation.IsValid())
+    {
+        bFoundTranslation = AttributeXformTranslation.Get(Primitives, true, PrimitiveTranslations);
+    }
+
+    if(AttributeXformRotation.IsValid())
+    {
+        bFoundRotation = AttributeXformRotation.Get(Primitives, PrimitiveRotations);
+    }
+
+    if(AttributeXformScale.IsValid())
+    {
+        bFoundScale = AttributeXformScale.Get(Primitives, false, PrimitiveScales);
+    }
+
+    if(!bFoundTranslation || !bFoundRotation || !bFoundScale)
+    {
+        return false;
+    }
+
+    const int32 PrimNum = PrimitiveTranslations.Num();
+    for(int32 Idx = 0; Idx < PrimNum; ++Idx)
+    {
+        FVector Translation = FVector::ZeroVector;
+        if(bFoundTranslation)
+        {
+            Translation = PrimitiveTranslations[Idx];
+        }
+
+        FQuat Rotation = FQuat::Identity;
+        if(bFoundRotation)
+        {
+            Rotation = PrimitiveRotations[Idx];
+        }
+
+        FVector Scale(1.0f, 1.0f, 1.0f);
+        if(bFoundScale)
+        {
+            Scale = PrimitiveScales[Idx];
+        }
+
+        FTransform Transform(Rotation, Translation, Scale);
+        Transforms.Add(Transform);
+    }
+
+    return Transforms.Num() > 0;
+}
+
+
+bool
 FHoudiniNodeDetail::GetAllPrimitives(TArray<GA_Primitive*>& Primitives) const
 {
     Primitives.Empty();

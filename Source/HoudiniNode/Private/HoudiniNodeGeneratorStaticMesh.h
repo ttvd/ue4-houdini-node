@@ -28,10 +28,23 @@ public:
 protected:
 
     //! Create a static mesh actor for a given primitive set.
-    AStaticMeshActor* CreateStaticMeshActor(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives) const;
+    AStaticMeshActor* CreateStaticMeshActor(UHoudiniNodeClass* NodeClass,
+        const TArray<GA_Primitive*>& Primitives) const;
 
     //! Create a static mesh from a given primitive set.
-    UStaticMesh* CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer, const TArray<GA_Primitive*>& Primitives) const;
+    UStaticMesh* CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer,
+        const TArray<GA_Primitive*>& Primitives) const;
+
+protected:
+
+    //! Assign static mesh collision.
+    bool AssignStaticMeshCollision(UHoudiniNodeClass* NodeClass, UStaticMesh* StaticMesh,
+        const TArray<GA_Primitive*>& Primitives) const;
+
+    //! Assign static mesh component collision profile.
+    bool AssignStaticMeshComponentCollisionProfile(UHoudiniNodeClass* NodeClass,
+        UStaticMeshComponent* StaticMeshComponent, UStaticMesh* StaticMesh,
+        const TArray<GA_Primitive*>& Primitives) const;
 
 protected:
 
@@ -48,8 +61,8 @@ protected:
         uint32 Channel, TArray<FVector2D>& UVs) const;
 
     //! Given a list of primitives, return face material indices.
-    bool GetFaceMaterials(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, TArray<int32>& FaceMaterialIndices,
-        TArray<FStaticMaterial>& Materials) const;
+    bool GetFaceMaterials(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives,
+        TArray<int32>& FaceMaterialIndices, TArray<FStaticMaterial>& Materials) const;
 
 protected:
 

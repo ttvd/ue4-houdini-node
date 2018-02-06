@@ -144,6 +144,8 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMeshActor(UHoudiniNodeClass* NodeCl
         return nullptr;
     }
 
+    AssignStaticMeshComponentCollisionProfile(NodeClass, StaticMeshComponent, StaticMesh, Primitives);
+
     StaticMeshComponent->SetMobility(EComponentMobility::Movable);
     StaticMeshComponent->SetStaticMesh(StaticMesh);
     StaticMeshComponent->SetMobility(EComponentMobility::Static);
@@ -153,7 +155,8 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMeshActor(UHoudiniNodeClass* NodeCl
 
 
 UStaticMesh*
-UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer, const TArray<GA_Primitive*>& Primitives) const
+UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, UObject* Outer,
+    const TArray<GA_Primitive*>& Primitives) const
 {
     if(!NodeClass)
     {
@@ -288,6 +291,8 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         }
     }
 
+    AssignStaticMeshCollision(NodeClass, StaticMesh, Primitives);
+
     {
         FHoudiniNodeGeneratorStaticMeshGlobalSilence HoudiniNodeGeneratorStaticMeshGlobalSilence;
         StaticMesh->Build(true);
@@ -298,6 +303,130 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
 #endif
 
     return StaticMesh;
+}
+
+
+bool
+UHoudiniNodeGeneratorStaticMesh::AssignStaticMeshCollision(UHoudiniNodeClass* NodeClass, UStaticMesh* StaticMesh,
+    const TArray<GA_Primitive*>& Primitives) const
+{
+    if(!NodeClass || !StaticMesh)
+    {
+        return false;
+    }
+
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
+    if(!Detail.IsValid())
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION);
+    if(Attribute.Exists())
+    {
+        TArray<FString> Values;
+        if(Attribute.Get(Primitives, Values))
+        {
+            const FString& GenerateCollisionValue = Values[0];
+
+            UBodySetup* BodySetup = StaticMesh->BodySetup;
+            if(!BodySetup)
+            {
+                StaticMesh->CreateBodySetup();
+                BodySetup = StaticMesh->BodySetup;
+            }
+
+            if(BodySetup)
+            {
+                BodySetup->CollisionTraceFlag = ECollisionTraceFlag::CTF_UseDefault;
+
+                if(GenerateCollisionValue.Equals(HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_SIMPLE_AND_COMPLEX,
+                    ESearchCase::IgnoreCase))
+                {
+                    BodySetup->CollisionTraceFlag = ECollisionTraceFlag::CTF_UseSimpleAndComplex;
+                }
+                else if(GenerateCollisionValue.Equals(HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_SIMPLE_AS_COMPLEX,
+                    ESearchCase::IgnoreCase))
+                {
+                    BodySetup->CollisionTraceFlag = ECollisionTraceFlag::CTF_UseSimpleAsComplex;
+                }
+                else if(GenerateCollisionValue.Equals(HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_COMPLEX_AS_SIMPLE,
+                    ESearchCase::IgnoreCase))
+                {
+                    BodySetup->CollisionTraceFlag = ECollisionTraceFlag::CTF_UseComplexAsSimple;
+                }
+
+                BodySetup->bMeshCollideAll = true;
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+
+bool
+UHoudiniNodeGeneratorStaticMesh::AssignStaticMeshComponentCollisionProfile(UHoudiniNodeClass* NodeClass,
+    UStaticMeshComponent* StaticMeshComponent, UStaticMesh* StaticMesh, const TArray<GA_Primitive*>& Primitives) const
+{
+    if(!NodeClass || !StaticMesh || !StaticMeshComponent)
+    {
+        return false;
+    }
+
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
+    if(!Detail.IsValid())
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION);
+    if(Attribute.Exists())
+    {
+        TArray<FString> Values;
+        if(Attribute.Get(Primitives, Values))
+        {
+            const FString& CollisionProfile = Values[0];
+
+            TArray<TSharedPtr<FName> > ValidCollisionProfiles;
+            UCollisionProfile::GetProfileNames(ValidCollisionProfiles);
+
+            for(int32 ValidProfileIdx = 0; ValidProfileIdx < ValidCollisionProfiles.Num(); ++ValidProfileIdx)
+            {
+                TSharedPtr<FName> ValidProfileName = ValidCollisionProfiles[ValidProfileIdx];
+                if(ValidProfileName.IsValid())
+                {
+                    const FString& ProfileNameString = ValidProfileName.Get()->ToString();
+                    if(ProfileNameString.Equals(CollisionProfile, ESearchCase::IgnoreCase))
+                    {
+                        StaticMeshComponent->SetCollisionProfileName(*ProfileNameString);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    UBodySetup* BodySetup = StaticMesh->BodySetup;
+    if(BodySetup)
+    {
+        if(BodySetup->CollisionTraceFlag != ECollisionTraceFlag::CTF_UseDefault)
+        {
+            StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+        }
+        else
+        {
+            StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+        }
+    }
+    else
+    {
+        StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+    }
+
+    return true;
 }
 
 

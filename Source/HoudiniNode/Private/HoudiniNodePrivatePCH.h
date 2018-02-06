@@ -8,6 +8,9 @@
 #include "AssetRegistryModule.h"
 #include "Misc/CoreMisc.h"
 #include "Algo/Reverse.h"
+#include "Engine/CollisionProfile.h"
+#include "PhysicsEngine/BodyInstance.h"
+#include "PhysicsEngine/BodySetup.h"
 
 #if WITH_EDITOR
 #include "EditorFramework/AssetImportData.h"
@@ -63,16 +66,23 @@
 #define LOCTEXT_NAMESPACE "HoudiniNode"
 #endif
 
-#define HOUDINI_NODE_DEFAULT_MATERIAL               TEXT("Material'/Engine/EngineMaterials/DefaultMaterial.DefaultMaterial'")
+#define HOUDINI_NODE_DEFAULT_MATERIAL                                   TEXT("Material'/Engine/EngineMaterials/DefaultMaterial.DefaultMaterial'")
 
-#define HOUDINI_NODE_ATTRIBUTE_NORMAL               TEXT("N")
-#define HOUDINI_NODE_ATTRIBUTE_COLOR                TEXT("Cd")
-#define HOUDINI_NODE_ATTRIBUTE_UV                   TEXT("uv")
-#define HOUDINI_NODE_ATTRIBUTE_MATERIAL             TEXT("material")
+#define HOUDINI_NODE_ATTRIBUTE_NORMAL                                   TEXT("N")
+#define HOUDINI_NODE_ATTRIBUTE_COLOR                                    TEXT("Cd")
+#define HOUDINI_NODE_ATTRIBUTE_UV                                       TEXT("uv")
+#define HOUDINI_NODE_ATTRIBUTE_MATERIAL                                 TEXT("material")
 
-#define HOUDINI_NODE_ATTRIBUTE_PART                 TEXT("part")
-#define HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM       TEXT("generator_prim")
-#define HOUDINI_NODE_ATTRIBUTE_GENERATOR_POINT      TEXT("generator_point")
+#define HOUDINI_NODE_ATTRIBUTE_PART                                     TEXT("part")
+#define HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM                           TEXT("generator_prim")
+#define HOUDINI_NODE_ATTRIBUTE_GENERATOR_POINT                          TEXT("generator_point")
 
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION                       TEXT("assign_collision")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_DEFAULT               TEXT("UseDefault")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_SIMPLE_AND_COMPLEX    TEXT("UseSimpleAndComplex")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_SIMPLE_AS_COMPLEX     TEXT("UseSimpleAsComplex")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_COMPLEX_AS_SIMPLE     TEXT("UseComplexAsSimple")
+
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_PROFILE               TEXT("assign_collision_profile")
 
 

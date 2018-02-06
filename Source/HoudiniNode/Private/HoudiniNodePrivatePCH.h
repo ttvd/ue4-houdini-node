@@ -74,15 +74,19 @@
 #define HOUDINI_NODE_ATTRIBUTE_MATERIAL                                 TEXT("material")
 
 #define HOUDINI_NODE_ATTRIBUTE_PART                                     TEXT("part")
+#define HOUDINI_NODE_ATTRIBUTE_PART_XFORM_T                             TEXT("part_xform_t")
+#define HOUDINI_NODE_ATTRIBUTE_PART_XFORM_S                             TEXT("part_xform_s")
+#define HOUDINI_NODE_ATTRIBUTE_PART_XFORM_R                             TEXT("part_xform_r")
 #define HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM                           TEXT("generator_prim")
 #define HOUDINI_NODE_ATTRIBUTE_GENERATOR_POINT                          TEXT("generator_point")
 
-#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION                       TEXT("assign_collision")
-#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_DEFAULT               TEXT("UseDefault")
-#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_SIMPLE_AND_COMPLEX    TEXT("UseSimpleAndComplex")
-#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_SIMPLE_AS_COMPLEX     TEXT("UseSimpleAsComplex")
-#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_COMPLEX_AS_SIMPLE     TEXT("UseComplexAsSimple")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION                         TEXT("assign_collision")
 
-#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_PROFILE               TEXT("assign_collision_profile")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_DEFAULT                 TEXT("UseDefault")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_SIMPLE_AND_COMPLEX      TEXT("UseSimpleAndComplex")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_SIMPLE_AS_COMPLEX       TEXT("UseSimpleAsComplex")
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_COMPLEX_AS_SIMPLE       TEXT("UseComplexAsSimple")
+
+#define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_PROFILE                 TEXT("assign_collision_profile")
 
 

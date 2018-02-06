@@ -100,7 +100,8 @@ UHoudiniNodeGeneratorStaticMesh::Generate(UHoudiniNodeClass* NodeClass, TArray<A
 
 
 AStaticMeshActor*
-UHoudiniNodeGeneratorStaticMesh::CreateStaticMeshActor(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives) const
+UHoudiniNodeGeneratorStaticMesh::CreateStaticMeshActor(UHoudiniNodeClass* NodeClass,
+    const TArray<GA_Primitive*>& Primitives) const
 {
     if(!NodeClass || !Primitives.Num())
     {
@@ -109,9 +110,21 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMeshActor(UHoudiniNodeClass* NodeCl
 
     UWorld* World = GetCurrentWorld(NodeClass);
 
-    FTransform StaticMeshActorTransform = FTransform::Identity;
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
+    if(!Detail.IsValid())
     {
-    
+        return nullptr;
+    }
+
+    FTransform StaticMeshActorTransform = FTransform::Identity;
+
+    // Extract transforms specified on the primitives and pick the first one.
+    {
+        TArray<FTransform> PrimitiveTransforms;
+        if(Detail.GetPrimitivePartTransforms(Primitives, PrimitiveTransforms))
+        {
+            StaticMeshActorTransform = PrimitiveTransforms[0];
+        }
     }
 
     FActorSpawnParameters SpawnInfo;
@@ -535,8 +548,8 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexUVs(UHoudiniNodeClass* NodeClass, cons
 
 
 bool
-UHoudiniNodeGeneratorStaticMesh::GetFaceMaterials(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, TArray<int32>& FaceMaterialIndices,
-    TArray<FStaticMaterial>& Materials) const
+UHoudiniNodeGeneratorStaticMesh::GetFaceMaterials(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives,
+    TArray<int32>& FaceMaterialIndices, TArray<FStaticMaterial>& Materials) const
 {
     FaceMaterialIndices.Empty();
     Materials.Empty();

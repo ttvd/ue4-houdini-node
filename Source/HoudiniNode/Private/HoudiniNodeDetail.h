@@ -59,6 +59,9 @@ public:
     //! Get positions for points of specified primitives.
     bool GetPrimitivePointPositions(const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Positions) const;
 
+    //! Get part transforms for specified primitives.
+    bool GetPrimitivePartTransforms(const TArray<GA_Primitive*>& Primitives, TArray<FTransform>& Transforms) const;
+
 public:
 
     //! Retrieve all primitives of this detail.

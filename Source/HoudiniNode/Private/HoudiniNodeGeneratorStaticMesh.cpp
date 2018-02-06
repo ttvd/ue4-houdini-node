@@ -296,7 +296,7 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexNormals(UHoudiniNodeClass* NodeClass, 
     FHoudiniNodeAttributeCast Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_NORMAL);
     if(!Attribute.GetAsVertex(Primitives, false, Normals))
     {
-        FVector DefaultNormal(0.0f, 0.0f, 1.0f);
+        const FVector& DefaultNormal = FVector::UpVector;
         Normals.Init(DefaultNormal, VertexCount);
     }
 
@@ -324,7 +324,7 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexColors(UHoudiniNodeClass* NodeClass, c
     FHoudiniNodeAttributeCast Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_COLOR);
     if(!Attribute.GetAsVertex(Primitives, Colors))
     {
-        FColor DefaultColor = FColor::White;
+        const FColor& DefaultColor = FColor::White;
         Colors.Init(DefaultColor, VertexCount);
     }
 

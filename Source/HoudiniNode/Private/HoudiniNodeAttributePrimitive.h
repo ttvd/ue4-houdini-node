@@ -73,6 +73,7 @@ public:
 
     //! Given a list of primitives, get their color values.
     bool Get(const TArray<GA_Primitive*>& Prims, TArray<FLinearColor>& Values) const;
+    bool Get(const TArray<GA_Primitive*>& Prims, TArray<FColor>& Values) const;
 
 public:
 
@@ -96,5 +97,6 @@ public:
 
     //! Get color values of all primitives.
     bool GetAll(TArray<FLinearColor>& Values) const;
+    bool GetAll(TArray<FColor>& Values) const;
 };
 

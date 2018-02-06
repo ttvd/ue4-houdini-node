@@ -38,7 +38,10 @@ FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, 
         FHoudiniNodeAttributeVertex Attribute(Detail, Name);
         if(Attribute.Exists())
         {
-        
+            if(Attribute.Get(Primitives, bScale, Values))
+            {
+                return true;
+            }
         }
     }
 
@@ -85,7 +88,91 @@ FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, 
         }
     }
 
-    return true;
+    return false;
+}
+
+
+bool
+FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, TArray<FColor>& Values) const
+{
+    Values.Empty();
+
+    TArray<FLinearColor> LinearColors;
+    if(!GetAsVertex(Primitives, LinearColors))
+    {
+        return false;
+    }
+
+    for(int32 Idx = 0; Idx < LinearColors.Num(); ++Idx)
+    {
+        const FLinearColor& LinearColor = LinearColors[Idx];
+        const FColor& Color = LinearColor.ToFColor(false);
+
+        Values.Add(Color);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, TArray<FLinearColor>& Values) const
+{
+    {
+        FHoudiniNodeAttributeVertex Attribute(Detail, Name);
+        if(Attribute.Exists())
+        {
+            if(Attribute.Get(Primitives, Values))
+            {
+                return true;
+            }
+        }
+    }
+
+    {
+        FHoudiniNodeAttributePoint Attribute(Detail, Name);
+        if(Attribute.Exists())
+        {
+        
+        }
+    }
+
+    {
+        FHoudiniNodeAttributePrimitive Attribute(Detail, Name);
+        if(Attribute.Exists())
+        {
+            TArray<FLinearColor> Vectors;
+            if(Attribute.Get(Primitives, Vectors))
+            {
+                for(int32 Idx = 0; Idx < Primitives.Num(); ++Idx)
+                {
+                    GA_Primitive* Prim = Primitives[Idx];
+                    if(Prim)
+                    {
+                        const FLinearColor& Value = Vectors[Idx];
+                        const int32 VertexCount = Prim->getVertexCount();
+
+                        for(int32 Idv = 0; Idv < VertexCount; ++Idv)
+                        {
+                            Values.Add(Value);
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+
+    {
+        FHoudiniNodeAttributeDetail Attribute(Detail, Name);
+        if(Attribute.Exists())
+        {
+        
+        }
+    }
+
+    return false;
 }
 
 #pragma warning(pop)

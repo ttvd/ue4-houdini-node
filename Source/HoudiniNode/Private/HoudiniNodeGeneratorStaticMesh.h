@@ -35,6 +35,9 @@ protected:
 protected:
 
     //! Given a list of primitives, return vertex normals.
-    bool GetVertexNormals(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Normals) const;
+    bool GetVertexNormals(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, uint32 VertexCount, TArray<FVector>& Normals) const;
+
+    //! Given a list of primitives, return vertex colors.
+    bool GetVertexColors(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, uint32 VertexCount, TArray<FColor>& Colors) const;
 };
 

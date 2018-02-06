@@ -16,7 +16,10 @@ public:
 public:
 
     //! Given a list of primitives return vector values.
-    bool Get(const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Values) const;
+    bool Get(const TArray<GA_Primitive*>& Primitives, bool bScale, TArray<FVector>& Values) const;
 
+    //! Given a list of primitives return color values.
+    bool Get(const TArray<GA_Primitive*>& Primitives, TArray<FColor>& Values) const;
+    bool Get(const TArray<GA_Primitive*>& Primitives, TArray<FLinearColor>& Values) const;
 };
 

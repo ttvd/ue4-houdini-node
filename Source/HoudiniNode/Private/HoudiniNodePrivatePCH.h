@@ -63,6 +63,8 @@
 #define LOCTEXT_NAMESPACE "HoudiniNode"
 #endif
 
+#define HOUDINI_NODE_ATTRIBUTE_NORMAL               TEXT("N")
+#define HOUDINI_NODE_ATTRIBUTE_COLOR                TEXT("Cd")
 
 #define HOUDINI_NODE_ATTRIBUTE_PART                 TEXT("part")
 #define HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM       TEXT("generator_prim")

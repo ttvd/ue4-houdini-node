@@ -606,7 +606,6 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, bool bSc
 
         if(bScale)
         {
-
             Value *= Scale;
         }
 
@@ -646,7 +645,7 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<F
 
         FQuat Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z(), AttributeValue.w());
         Swap(Value.Y, Value.Z);
-        Value.Y *= -1.0f;
+        Value.W *= -1.0f;
 
         Values.Add(Value);
     }
@@ -684,6 +683,26 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<F
 
         FVector2D Value(AttributeValue.x(), AttributeValue.y());
         Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<FColor>& Values) const
+{
+    Values.Empty();
+
+    TArray<FLinearColor> LinearValues;
+    if(Get(Prims, LinearValues))
+    {
+        for(int32 Idx = 0; Idx < LinearValues.Num(); ++Idx)
+        {
+            const FLinearColor& LinearColor = LinearValues[Idx];
+            const FColor& Color = LinearColor.ToFColor(false);
+            Values.Add(Color);
+        }
     }
 
     return Values.Num() > 0;
@@ -949,7 +968,7 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<FQuat>& Values) const
 
         FQuat Value(AttributeValue.x(), AttributeValue.y(), AttributeValue.z(), AttributeValue.w());
         Swap(Value.Y, Value.Z);
-        Value.Z *= -1.0f;
+        Value.W *= -1.0f;
 
         Values.Add(Value);
     }
@@ -989,6 +1008,26 @@ FHoudiniNodeAttributePrimitive::GetAll(TArray<FVector2D>& Values) const
 
         FVector2D Value(AttributeValue.x(), AttributeValue.y());
         Values.Add(Value);
+    }
+
+    return Values.Num() > 0;
+}
+
+
+bool
+FHoudiniNodeAttributePrimitive::GetAll(TArray<FColor>& Values) const
+{
+    Values.Empty();
+
+    TArray<FLinearColor> LinearValues;
+    if(GetAll(LinearValues))
+    {
+        for(int32 Idx = 0; Idx < LinearValues.Num(); ++Idx)
+        {
+            const FLinearColor& LinearColor = LinearValues[Idx];
+            const FColor& Color = LinearColor.ToFColor(false);
+            Values.Add(Color);
+        }
     }
 
     return Values.Num() > 0;

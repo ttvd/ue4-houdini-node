@@ -21,5 +21,8 @@ public:
     //! Given a list of primitives return color values.
     bool Get(const TArray<GA_Primitive*>& Primitives, TArray<FColor>& Values) const;
     bool Get(const TArray<GA_Primitive*>& Primitives, TArray<FLinearColor>& Values) const;
+
+    //! Given a list of primitives return vector2 values.
+    bool Get(const TArray<GA_Primitive*>& Primitives, bool bSwap, TArray<FVector2D>& Values) const;
 };
 

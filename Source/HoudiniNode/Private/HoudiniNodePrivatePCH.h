@@ -65,6 +65,8 @@
 
 #define HOUDINI_NODE_ATTRIBUTE_NORMAL               TEXT("N")
 #define HOUDINI_NODE_ATTRIBUTE_COLOR                TEXT("Cd")
+#define HOUDINI_NODE_ATTRIBUTE_UV                   TEXT("uv")
+#define HOUDINI_NODE_ATTRIBUTE_MATERIAL             TEXT("material")
 
 #define HOUDINI_NODE_ATTRIBUTE_PART                 TEXT("part")
 #define HOUDINI_NODE_ATTRIBUTE_GENERATOR_PRIM       TEXT("generator_prim")

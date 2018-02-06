@@ -152,4 +152,84 @@ FHoudiniNodeAttributeVertex::Get(const TArray<GA_Primitive*>& Primitives, TArray
     return Values.Num() > 0;
 }
 
+
+bool
+FHoudiniNodeAttributeVertex::Get(const TArray<GA_Primitive*>& Primitives, bool bSwap, TArray<FVector2D>& Values) const
+{
+    Values.Empty();
+
+    if(!IsValid())
+    {
+        return false;
+    }
+
+    const float Scale = Detail.GetScale();
+    bool bSuccess = false;
+
+    TArray<GA_Offset> VertexOffsets;
+    if(!Detail.GetPrimitiveVertices(Primitives, VertexOffsets))
+    {
+        return false;
+    }
+
+    {
+        GA_RWHandleV2 AttributeHandle = FindAttributeHandle<GA_RWHandleV2>(2);
+        if(AttributeHandle.isValid())
+        {
+            for(int32 Idx = 0; Idx < VertexOffsets.Num(); ++Idx)
+            {
+                GA_Offset VertexOffset = VertexOffsets[Idx];
+
+                if(VertexOffset == GA_INVALID_OFFSET)
+                {
+                    continue;
+                }
+
+                const UT_Vector2& AttributeValue = AttributeHandle.get(VertexOffset);
+
+                FVector2D Value(AttributeValue.x(), AttributeValue.y());
+
+                if(bSwap)
+                {
+                    Value.Y = 1.0f - Value.Y;
+                }
+
+                Values.Add(Value);
+            }
+
+            bSuccess = true;
+        }
+    }
+
+    if(!bSuccess)
+    {
+        GA_RWHandleV3 AttributeHandle = FindAttributeHandle<GA_RWHandleV3>(3);
+        if(AttributeHandle.isValid())
+        {
+            for(int32 Idx = 0; Idx < VertexOffsets.Num(); ++Idx)
+            {
+                GA_Offset VertexOffset = VertexOffsets[Idx];
+
+                if(VertexOffset == GA_INVALID_OFFSET)
+                {
+                    continue;
+                }
+
+                const UT_Vector3& AttributeValue = AttributeHandle.get(VertexOffset);
+
+                FVector2D Value(AttributeValue.x(), AttributeValue.y());
+
+                if(bSwap)
+                {
+                    Value.Y = 1.0f - Value.Y;
+                }
+
+                Values.Add(Value);
+            }
+        }
+    }
+
+    return Values.Num() > 0;
+}
+
 #pragma warning(pop)

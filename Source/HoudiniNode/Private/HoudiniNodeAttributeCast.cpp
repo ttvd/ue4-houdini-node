@@ -175,4 +175,65 @@ FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, 
     return false;
 }
 
+
+bool
+FHoudiniNodeAttributeCast::GetAsVertex(const TArray<GA_Primitive*>& Primitives, bool bSwap, TArray<FVector2D>& Values) const
+{
+    {
+        FHoudiniNodeAttributeVertex Attribute(Detail, Name);
+        if(Attribute.Exists())
+        {
+            if(Attribute.Get(Primitives, bSwap, Values))
+            {
+                return true;
+            }
+        }
+    }
+
+    {
+        FHoudiniNodeAttributePoint Attribute(Detail, Name);
+        if(Attribute.Exists())
+        {
+        
+        }
+    }
+
+    {
+        FHoudiniNodeAttributePrimitive Attribute(Detail, Name);
+        if(Attribute.Exists())
+        {
+            TArray<FVector2D> Vectors;
+            if(Attribute.Get(Primitives, bSwap, Vectors))
+            {
+                for(int32 Idx = 0; Idx < Primitives.Num(); ++Idx)
+                {
+                    GA_Primitive* Prim = Primitives[Idx];
+                    if(Prim)
+                    {
+                        const FVector2D& Value = Vectors[Idx];
+                        const int32 VertexCount = Prim->getVertexCount();
+
+                        for(int32 Idv = 0; Idv < VertexCount; ++Idv)
+                        {
+                            Values.Add(Value);
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+
+    {
+        FHoudiniNodeAttributeDetail Attribute(Detail, Name);
+        if(Attribute.Exists())
+        {
+        
+        }
+    }
+
+    return false;
+}
+
 #pragma warning(pop)

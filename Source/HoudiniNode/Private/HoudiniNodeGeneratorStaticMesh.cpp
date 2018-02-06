@@ -200,10 +200,15 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
     GetVertexNormals(NodeClass, Primitives, VertexCount, RawMesh.WedgeTangentZ);
     GetVertexColors(NodeClass, Primitives, VertexCount, RawMesh.WedgeColors);
 
+    TArray<int32> UnusedUVChannels;
+
     for(int32 Idx = 0; Idx < MAX_MESH_TEXTURE_COORDS; ++Idx)
     {
         TArray<FVector2D>& UVs = RawMesh.WedgeTexCoords[Idx];
-        GetVertexUVs(NodeClass, Primitives, VertexCount, Idx, UVs);
+        if(!GetVertexUVs(NodeClass, Primitives, VertexCount, Idx, UVs))
+        {
+            UnusedUVChannels.Add(Idx);
+        }
     }
 
     const FString StaticMeshName = TEXT("HoudiniNodeStaticMesh");
@@ -231,7 +236,19 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         SrcModel->BuildSettings.bGenerateLightmapUVs = false;
     }
 
-    StaticMesh->LightMapCoordinateIndex = 0;
+    if(SrcModel->BuildSettings.bGenerateLightmapUVs)
+    {
+        // Use first unused UV channel for generating light maps uvs.
+        if(UnusedUVChannels.Num() > 0)
+        {
+            StaticMesh->LightMapCoordinateIndex = UnusedUVChannels[0];
+        }
+    }
+    else
+    {
+        // We have no available uv channels.
+        SrcModel->BuildSettings.bGenerateLightmapUVs = false;
+    }
 
     UMaterialInterface* DefaultMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("Material'/Engine/EngineMaterials/DefaultMaterial.DefaultMaterial'"), nullptr, LOAD_None, nullptr);
     StaticMesh->StaticMaterials.Empty();

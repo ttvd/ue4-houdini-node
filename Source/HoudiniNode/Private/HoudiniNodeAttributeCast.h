@@ -27,6 +27,9 @@ public:
     bool GetAsVertex(const TArray<GA_Primitive*>& Primitives, TArray<FColor>& Values) const;
     bool GetAsVertex(const TArray<GA_Primitive*>& Primitives, TArray<FLinearColor>& Values) const;
 
+    //! Retrieve vector as a vertex attribute.
+    bool GetAsVertex(const TArray<GA_Primitive*>& Primitives, bool bSwap, TArray<FVector2D>& Values) const;
+
 protected:
 
     //! Detail.

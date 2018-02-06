@@ -655,7 +655,7 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<F
 
 
 bool
-FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<FVector2D>& Values) const
+FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, bool bSwap, TArray<FVector2D>& Values) const
 {
     Values.Empty();
 
@@ -682,6 +682,12 @@ FHoudiniNodeAttributePrimitive::Get(const TArray<GA_Primitive*>& Prims, TArray<F
         const UT_Vector2& AttributeValue = AttributeHandle.get(PrimOffset);
 
         FVector2D Value(AttributeValue.x(), AttributeValue.y());
+
+        if(bSwap)
+        {
+            Value.Y = 1.0f - Value.Y;
+        }
+
         Values.Add(Value);
     }
 

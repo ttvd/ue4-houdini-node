@@ -69,7 +69,7 @@ public:
     bool Get(const TArray<GA_Primitive*>& Prims, TArray<FQuat>& Values) const;
 
     //! Given a list of primitives, get their vector2 values.
-    bool Get(const TArray<GA_Primitive*>& Prims, TArray<FVector2D>& Values) const;
+    bool Get(const TArray<GA_Primitive*>& Prims, bool bSwap, TArray<FVector2D>& Values) const;
 
     //! Given a list of primitives, get their color values.
     bool Get(const TArray<GA_Primitive*>& Prims, TArray<FLinearColor>& Values) const;

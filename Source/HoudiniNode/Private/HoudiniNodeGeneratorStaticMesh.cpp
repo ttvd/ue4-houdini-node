@@ -200,10 +200,11 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
     GetVertexNormals(NodeClass, Primitives, VertexCount, RawMesh.WedgeTangentZ);
     GetVertexColors(NodeClass, Primitives, VertexCount, RawMesh.WedgeColors);
 
-    /*
-    RawMesh.WedgeTangentZ.SetNumZeroed(VertexCount);
-    RawMesh.WedgeColors.SetNumZeroed(VertexCount);
-    RawMesh.WedgeTexCoords[0].SetNumZeroed(VertexCount);
+    for(int32 Idx = 0; Idx < MAX_MESH_TEXTURE_COORDS; ++Idx)
+    {
+        TArray<FVector2D>& UVs = RawMesh.WedgeTexCoords[Idx];
+        GetVertexUVs(NodeClass, Primitives, VertexCount, Idx, UVs);
+    }
 
     const FString StaticMeshName = TEXT("HoudiniNodeStaticMesh");
     StaticMesh = NewObject<UStaticMesh>(Outer, FName(*StaticMeshName), RF_Public | RF_Transactional);
@@ -268,7 +269,6 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
     }
 
     StaticMesh->MarkPackageDirty();
-    */
 
 #endif
 
@@ -330,3 +330,49 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexColors(UHoudiniNodeClass* NodeClass, c
 
     return true;
 }
+
+
+bool
+UHoudiniNodeGeneratorStaticMesh::GetVertexUVs(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives,
+    uint32 VertexCount, uint32 Channel, TArray<FVector2D>& UVs) const
+{
+    UVs.Empty();
+
+    if(!NodeClass)
+    {
+        return false;
+    }
+
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
+    if(!Detail.IsValid())
+    {
+        return false;
+    }
+
+    FString AttributeName = HOUDINI_NODE_ATTRIBUTE_UV;
+
+    if(Channel > 0)
+    {
+        AttributeName = FString::Printf(TEXT("uv%d"), (Channel + 1));
+    }
+
+    FHoudiniNodeAttributeCast Attribute(Detail, AttributeName);
+
+    /*
+    if(!Attribute.GetAsVertex(Primitives, UVs))
+    {
+        const FVector2D& DefaultUV = FVector2D::ZeroVector;
+        UVs.Init(DefaultUV, VertexCount);
+    }
+
+    return true;
+    */
+
+    if(Attribute.GetAsVertex(Primitives, true, UVs))
+    {
+        return true;
+    }
+
+    return false;
+}
+

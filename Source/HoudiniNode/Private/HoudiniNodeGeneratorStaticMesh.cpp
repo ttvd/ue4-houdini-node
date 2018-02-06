@@ -382,7 +382,7 @@ UHoudiniNodeGeneratorStaticMesh::AssignStaticMeshComponentCollisionProfile(UHoud
         return false;
     }
 
-    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION);
+    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_PROFILE);
     if(Attribute.Exists())
     {
         TArray<FString> Values;

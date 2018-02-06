@@ -8,7 +8,8 @@ GHoudiniNode = nullptr;
 
 
 FHoudiniNode::FHoudiniNode() :
-    Director(nullptr)
+    Director(nullptr),
+    DefaultMaterial(nullptr)
 {
 
 }
@@ -25,14 +26,24 @@ FHoudiniNode::StartupModule()
 {
     UT_UndoManager::disableUndoCreation();
 
-    Director = new MOT_Director("HoudiniNode");
-    ensure(Director);
-    OPsetDirector(Director);
-    PIcreateResourceManager();
+    // Create and set director.
+    {
+        Director = new MOT_Director("HoudiniNode");
+        ensure(Director);
+        OPsetDirector(Director);
+
+        PIcreateResourceManager();
+    }
 
     GHoudiniNode = this;
 
     CreateGenerators();
+
+    // Load default material.
+    {
+        DefaultMaterial = LoadObject<UMaterialInterface>(nullptr, HOUDINI_NODE_DEFAULT_MATERIAL, nullptr, LOAD_None, nullptr);
+        ensure(DefaultMaterial);
+    }
 }
 
 
@@ -50,16 +61,23 @@ FHoudiniNode::ShutdownModule()
 }
 
 
+UMaterialInterface*
+FHoudiniNode::GetDefaultMaterial() const
+{
+    return DefaultMaterial;
+}
+
+
 OP_Network*
 FHoudiniNode::GetObjNetwork() const
 {
     if(Director)
     {
-		OP_Node* Node = Director->getChild("obj");
-		if(Node && Node->isNetwork())
-		{
-			return (OP_Network*) Node;
-		}
+        OP_Node* Node = Director->getChild("obj");
+        if(Node && Node->isNetwork())
+        {
+            return (OP_Network*) Node;
+        }
     }
 
     return nullptr;
@@ -81,6 +99,8 @@ FHoudiniNode::AddReferencedObjects(FReferenceCollector& Collector)
         UHoudiniNodeGenerator* Generator = Generators[Idx];
         Collector.AddReferencedObject(Generator);
     }
+
+    Collector.AddReferencedObject(DefaultMaterial);
 }
 
 

@@ -45,5 +45,34 @@ protected:
     //! Given a list of primitives, return uvs.
     bool GetVertexUVs(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, uint32 VertexCount,
         uint32 Channel, TArray<FVector2D>& UVs) const;
+
+protected:
+
+    //! Patch the winding order.
+    template <typename TType> bool PatchVertexWindingOrder(TArray<TType>& Array) const;
 };
 
+
+template <typename TType>
+bool
+UHoudiniNodeGeneratorStaticMesh::PatchVertexWindingOrder(TArray<TType>& Array) const
+{
+    const int32 VertexCount = Array.Num();
+    if(VertexCount % 3 != 0)
+    {
+        return false;
+    }
+
+    const int32 PrimitiveCount = VertexCount / 3;
+
+    for(int32 Idx = 0; Idx < PrimitiveCount; ++Idx)
+    {
+        TType& Vertex0 = Array[Idx * 3 + 0];
+        TType& Vertex1 = Array[Idx * 3 + 1];
+        TType& Vertex2 = Array[Idx * 3 + 2];
+
+        Swap(Vertex1, Vertex2);
+    }
+
+    return true;
+}

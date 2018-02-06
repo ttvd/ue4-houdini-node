@@ -300,6 +300,7 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexNormals(UHoudiniNodeClass* NodeClass, 
         Normals.Init(DefaultNormal, VertexCount);
     }
 
+    PatchVertexWindingOrder(Normals);
     return true;
 }
 
@@ -328,6 +329,7 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexColors(UHoudiniNodeClass* NodeClass, c
         Colors.Init(DefaultColor, VertexCount);
     }
 
+    PatchVertexWindingOrder(Colors);
     return true;
 }
 
@@ -368,11 +370,12 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexUVs(UHoudiniNodeClass* NodeClass, cons
     return true;
     */
 
-    if(Attribute.GetAsVertex(Primitives, true, UVs))
+    if(!Attribute.GetAsVertex(Primitives, true, UVs))
     {
-        return true;
+        return false;
     }
 
-    return false;
+    PatchVertexWindingOrder(UVs);
+    return true;
 }
 

@@ -63,6 +63,8 @@
 #define LOCTEXT_NAMESPACE "HoudiniNode"
 #endif
 
+#define HOUDINI_NODE_DEFAULT_MATERIAL               TEXT("Material'/Engine/EngineMaterials/DefaultMaterial.DefaultMaterial'")
+
 #define HOUDINI_NODE_ATTRIBUTE_NORMAL               TEXT("N")
 #define HOUDINI_NODE_ATTRIBUTE_COLOR                TEXT("Cd")
 #define HOUDINI_NODE_ATTRIBUTE_UV                   TEXT("uv")

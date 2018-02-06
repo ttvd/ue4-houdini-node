@@ -4,6 +4,7 @@
 
 
 class UStaticMesh;
+class UMaterialInterface;
 class AStaticMeshActor;
 
 class GA_Primitive;
@@ -45,6 +46,10 @@ protected:
     //! Given a list of primitives, return uvs.
     bool GetVertexUVs(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, uint32 VertexCount,
         uint32 Channel, TArray<FVector2D>& UVs) const;
+
+    //! Given a list of primitives, return face material indices.
+    bool GetFaceMaterials(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, TArray<int32>& FaceMaterialIndices,
+        TArray<FStaticMaterial>& Materials) const;
 
 protected:
 

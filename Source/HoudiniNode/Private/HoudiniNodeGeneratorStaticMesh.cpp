@@ -1,6 +1,8 @@
 #include "HoudiniNodeGeneratorStaticMesh.h"
 #include "HoudiniNodeClass.h"
 #include "HoudiniNodeAttributeCast.h"
+#include "HoudiniNodeAttributePrimitive.h"
+#include "HoudiniNodeModule.h"
 #include "HoudiniNodePrivatePCH.h"
 
 
@@ -192,6 +194,13 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
     RawMesh.FaceSmoothingMasks.SetNumZeroed(FaceCount);
     RawMesh.FaceMaterialIndices.SetNumZeroed(FaceCount);
 
+    TArray<FStaticMaterial> StaticMeshMaterials;
+
+    if(!GetFaceMaterials(NodeClass, Primitives, RawMesh.FaceMaterialIndices, StaticMeshMaterials))
+    {
+        return nullptr;
+    }
+
     if(!Detail.GetPrimitivePoints(Primitives, RawMesh.WedgeIndices))
     {
         return nullptr;
@@ -250,9 +259,8 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         SrcModel->BuildSettings.bGenerateLightmapUVs = false;
     }
 
-    UMaterialInterface* DefaultMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("Material'/Engine/EngineMaterials/DefaultMaterial.DefaultMaterial'"), nullptr, LOAD_None, nullptr);
-    StaticMesh->StaticMaterials.Empty();
-    StaticMesh->StaticMaterials.Add(FStaticMaterial(DefaultMaterial));
+    // Assign mesh materials.
+    StaticMesh->StaticMaterials = StaticMeshMaterials;
 
     // Store the new raw mesh.
     SrcModel->RawMeshBulkData->SaveRawMesh(RawMesh);
@@ -393,6 +401,79 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexUVs(UHoudiniNodeClass* NodeClass, cons
     }
 
     PatchVertexWindingOrder(UVs);
+    return true;
+}
+
+
+bool
+UHoudiniNodeGeneratorStaticMesh::GetFaceMaterials(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, TArray<int32>& FaceMaterialIndices,
+    TArray<FStaticMaterial>& Materials) const
+{
+    FaceMaterialIndices.Empty();
+    Materials.Empty();
+
+    if(!NodeClass)
+    {
+        return false;
+    }
+
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
+    if(!Detail.IsValid())
+    {
+        return false;
+    }
+
+    const int32 PrimitiveCount = Primitives.Num();
+
+    UMaterialInterface* DefaultMaterial = GHoudiniNode->GetDefaultMaterial();
+    if(!DefaultMaterial)
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributePrimitive Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_MATERIAL);
+    if(Attribute.Exists())
+    {
+        TMap<UObject*, TArray<GA_Primitive*> > PrimitiveMaterialGroups;
+
+        TArray<UObject*> MaterialAssignments;
+
+        int32 MaterialIndexMax = 0;
+        TMap<UMaterialInterface*, int32> MaterialIndices;
+
+        if(Attribute.Get(Primitives, MaterialAssignments))
+        {
+            for(int32 Idx = 0; Idx < MaterialAssignments.Num(); ++Idx)
+            {
+                UMaterialInterface* MaterialInterface = Cast<UMaterialInterface>(MaterialAssignments[Idx]);
+                if(!MaterialInterface)
+                {
+                    MaterialInterface = DefaultMaterial;
+                }
+
+                int32* FoundAssignment = MaterialIndices.Find(MaterialInterface);
+                if(FoundAssignment)
+                {
+                    int32 MaterialIndex = *FoundAssignment;
+                    FaceMaterialIndices.Add(MaterialIndex);
+                }
+                else
+                {
+                    MaterialIndices.Add(MaterialInterface, MaterialIndexMax);
+                    Materials.Add(FStaticMaterial(MaterialInterface));
+                    FaceMaterialIndices.Add(MaterialIndexMax);
+
+                    MaterialIndexMax++;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    FaceMaterialIndices.Init(0, PrimitiveCount);
+    Materials.Add(FStaticMaterial(DefaultMaterial));
+
     return true;
 }
 

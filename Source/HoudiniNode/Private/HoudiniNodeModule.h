@@ -7,6 +7,7 @@ class OP_Network;
 
 class UHoudiniNodeGenerator;
 class FReferenceCollector;
+class UMaterialInterface;
 
 
 class HOUDININODE_API FHoudiniNode : public IHoudiniNodeModuleInterface, public FGCObject
@@ -38,6 +39,11 @@ public:
     //! Retrieve the list of available generators.
     const TArray<UHoudiniNodeGenerator*>& GetGenerators() const;
 
+public:
+
+    //! Return the default material.
+    UMaterialInterface* GetDefaultMaterial() const;
+
 protected:
 
     //! Create generators.
@@ -52,6 +58,9 @@ protected:
 
     //! List of available generators.
     TArray<UHoudiniNodeGenerator*> Generators;
+
+    //! Default material.
+    UMaterialInterface* DefaultMaterial;
 };
 
 

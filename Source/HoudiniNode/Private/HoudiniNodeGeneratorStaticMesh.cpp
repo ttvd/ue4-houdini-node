@@ -1,5 +1,6 @@
 #include "HoudiniNodeGeneratorStaticMesh.h"
 #include "HoudiniNodeClass.h"
+#include "HoudiniNodeAttributeCast.h"
 #include "HoudiniNodePrivatePCH.h"
 
 
@@ -180,7 +181,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
 
     FRawMesh RawMesh;
 
-    if(!Detail.GetPrimitivePointPositions(Primitives, RawMesh.VertexPositions))
+    if(!Detail.GetAllPointPositions(RawMesh.VertexPositions))
     {
         return nullptr;
     }
@@ -196,7 +197,8 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         return nullptr;
     }
 
-
+    GetVertexNormals(NodeClass, Primitives, VertexCount, RawMesh.WedgeTangentZ);
+    GetVertexColors(NodeClass, Primitives, VertexCount, RawMesh.WedgeColors);
 
     /*
     RawMesh.WedgeTangentZ.SetNumZeroed(VertexCount);
@@ -275,7 +277,8 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
 
 
 bool
-UHoudiniNodeGeneratorStaticMesh::GetVertexNormals(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives, TArray<FVector>& Normals) const
+UHoudiniNodeGeneratorStaticMesh::GetVertexNormals(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives,
+    uint32 VertexCount, TArray<FVector>& Normals) const
 {
     Normals.Empty();
 
@@ -290,7 +293,40 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexNormals(UHoudiniNodeClass* NodeClass, 
         return false;
     }
 
+    FHoudiniNodeAttributeCast Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_NORMAL);
+    if(!Attribute.GetAsVertex(Primitives, false, Normals))
+    {
+        FVector DefaultNormal(0.0f, 0.0f, 1.0f);
+        Normals.Init(DefaultNormal, VertexCount);
+    }
 
+    return true;
+}
+
+
+bool
+UHoudiniNodeGeneratorStaticMesh::GetVertexColors(UHoudiniNodeClass* NodeClass, const TArray<GA_Primitive*>& Primitives,
+    uint32 VertexCount, TArray<FColor>& Colors) const
+{
+    Colors.Empty();
+
+    if(!NodeClass)
+    {
+        return false;
+    }
+
+    const FHoudiniNodeDetail& Detail = NodeClass->GetDetail();
+    if(!Detail.IsValid())
+    {
+        return false;
+    }
+
+    FHoudiniNodeAttributeCast Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_COLOR);
+    if(!Attribute.GetAsVertex(Primitives, Colors))
+    {
+        FColor DefaultColor = FColor::White;
+        Colors.Init(DefaultColor, VertexCount);
+    }
 
     return true;
 }

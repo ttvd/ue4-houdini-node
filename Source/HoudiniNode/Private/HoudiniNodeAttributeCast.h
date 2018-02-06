@@ -23,6 +23,10 @@ public:
     //! Retrieve vector type as vertex attribute.
     bool GetAsVertex(const TArray<GA_Primitive*>& Primitives, bool bScale, TArray<FVector>& Values) const;
 
+    //! Retrieve color type as vertex attribute.
+    bool GetAsVertex(const TArray<GA_Primitive*>& Primitives, TArray<FColor>& Values) const;
+    bool GetAsVertex(const TArray<GA_Primitive*>& Primitives, TArray<FLinearColor>& Values) const;
+
 protected:
 
     //! Detail.

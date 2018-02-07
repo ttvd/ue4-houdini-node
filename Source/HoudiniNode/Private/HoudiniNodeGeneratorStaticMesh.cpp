@@ -31,6 +31,35 @@ struct FHoudiniNodeGeneratorStaticMeshGlobalSilence
 };
 
 
+#if WITH_EDITOR
+
+static
+bool
+IsInvalidRawMesh(FRawMesh& RawMesh)
+{
+    int32 NumDenegerateTris = 0;
+    int32 NumWedges = RawMesh.WedgeIndices.Num();
+    int32 NumFaces = NumWedges / 3;
+
+    for(int32 WedgeIdx = 0; WedgeIdx < NumWedges; WedgeIdx += 3)
+    {
+        const FVector& Vertex0 = RawMesh.VertexPositions[RawMesh.WedgeIndices[WedgeIdx + 0]];
+        const FVector& Vertex1 = RawMesh.VertexPositions[RawMesh.WedgeIndices[WedgeIdx + 1]];
+        const FVector& Vertex2 = RawMesh.VertexPositions[RawMesh.WedgeIndices[WedgeIdx + 2]];
+
+        if(Vertex0.Equals(Vertex1, THRESH_POINTS_ARE_SAME) || Vertex0.Equals(Vertex2, THRESH_POINTS_ARE_SAME) ||
+            Vertex1.Equals(Vertex2, THRESH_POINTS_ARE_SAME))
+        {
+            NumDenegerateTris++;
+        }
+    }
+
+    return NumDenegerateTris > 0;
+}
+
+#endif
+
+
 UHoudiniNodeGeneratorStaticMesh::UHoudiniNodeGeneratorStaticMesh(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer)
 {
@@ -210,14 +239,19 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
     RawMesh.FaceSmoothingMasks.SetNumZeroed(FaceCount);
     RawMesh.FaceMaterialIndices.SetNumZeroed(FaceCount);
 
-    TArray<FStaticMaterial> StaticMeshMaterials;
-
-    if(!GetFaceMaterials(NodeClass, Primitives, RawMesh.FaceMaterialIndices, StaticMeshMaterials))
+    if(!Detail.GetPrimitivePoints(Primitives, RawMesh.WedgeIndices))
     {
         return nullptr;
     }
 
-    if(!Detail.GetPrimitivePoints(Primitives, RawMesh.WedgeIndices))
+    if(IsInvalidRawMesh(RawMesh))
+    {
+        return nullptr;
+    }
+
+    TArray<FStaticMaterial> StaticMeshMaterials;
+
+    if(!GetFaceMaterials(NodeClass, Primitives, RawMesh.FaceMaterialIndices, StaticMeshMaterials))
     {
         return nullptr;
     }

@@ -24,7 +24,7 @@ UHoudiniNodePropertyInt::Construct(OP_Node* Node, const PRM_Template* Template, 
         return false;
     }
 
-    InitializeProperty(this, Component, Template);
+    InitializeProperty(this, Component, Template, EHoudiniNodePropertyType::Integer);
 
     if(!ConstructProperty<int32>(Node, Time, true, true))
     {
@@ -51,3 +51,14 @@ UHoudiniNodePropertyInt::Update(OP_Node* Node, float Time)
     return true;
 }
 
+
+bool
+UHoudiniNodePropertyInt::Upload(OP_Node* Node, float Time)
+{
+    if(!Template || !Node || !Component || !Property)
+    {
+        return false;
+    }
+
+    return UploadValues(Node, Component, Time);
+}

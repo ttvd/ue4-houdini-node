@@ -24,7 +24,7 @@ UHoudiniNodePropertyFloat::Construct(OP_Node* Node, const PRM_Template* Template
         return false;
     }
 
-    InitializeProperty(this, Component, Template);
+    InitializeProperty(this, Component, Template, EHoudiniNodePropertyType::Float);
 
     if(!ConstructProperty<float>(Node, Time, true, true))
     {
@@ -49,5 +49,17 @@ UHoudiniNodePropertyFloat::Update(OP_Node* Node, float Time)
     }
 
     return true;
+}
+
+
+bool
+UHoudiniNodePropertyFloat::Upload(OP_Node* Node, float Time)
+{
+    if(!Template || !Node || !Component || !Property)
+    {
+        return false;
+    }
+
+    return UploadValues(Node, Component, Time);
 }
 

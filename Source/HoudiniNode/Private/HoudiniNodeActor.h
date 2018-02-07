@@ -3,6 +3,7 @@
 
 
 class UHoudiniNodeAsset;
+class UHoudiniNodeGenerator;
 class UHoudiniNodeComponent;
 
 
@@ -33,7 +34,12 @@ public:
 public:
 
     //! Register generated objects with this actor.
-    void RegisterGeneratedActors(const TMap<FString, TArray<AActor*> >& GeneratedActors);
+    void RegisterGeneratedActors(const TMap<UHoudiniNodeGenerator*, TArray<AActor*> >& InGeneratedActors);
+
+public:
+
+    //! Register manually created dynamic types.
+    static void AddReferencedObjects(UObject* InThis, FReferenceCollector& Collector);
 
 public:
 
@@ -43,6 +49,11 @@ public:
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 #endif
+
+protected:
+
+    //! Current list of generated actors.
+    TMap<UHoudiniNodeGenerator*, TArray<AActor*> > GeneratedActors;
 
 };
 

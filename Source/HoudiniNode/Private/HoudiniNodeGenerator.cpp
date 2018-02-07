@@ -170,3 +170,19 @@ UHoudiniNodeGenerator::Discard(const TArray<UObject*>& Objects) const
     return Result;
 }
 
+
+bool
+UHoudiniNodeGenerator::Discard(const TArray<AActor*>& Actors) const
+{
+    bool Result = false;
+
+    for(int32 Idx = 0; Idx < Actors.Num(); ++Idx)
+    {
+        AActor* Actor = Actors[Idx];
+        Result |= Discard(Actor);
+    }
+
+    return Result;
+}
+
+

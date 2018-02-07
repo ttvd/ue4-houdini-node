@@ -9,6 +9,7 @@
 #include "HoudiniNodePropertyFloat.h"
 #include "HoudiniNodePropertyInt.h"
 #include "HoudiniNodePropertyString.h"
+#include "HoudiniNodePropertyEnum.h"
 
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :
@@ -465,7 +466,15 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
 
             if(TypeFloat == PRM_Type::PRM_FLOAT_INTEGER)
             {
-                Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+                const PRM_ChoiceList* ChoiceList = Template->getChoiceListPtr();
+                if(ChoiceList)
+                {
+                    Property = NewObject<UHoudiniNodePropertyEnum>(this, *PropertyName, PropertyObjectFlags);
+                }
+                else
+                {
+                    Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+                }
             }
             else if(TypeFloat == PRM_Type::PRM_FLOAT_RGBA)
             {
@@ -483,7 +492,6 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
 
             if(TypeOrdinal == PRM_Type::PRM_ORD_CALLBACK)
             {
-                // Menu.
                 volatile int i = 5;
             }
             else if(TypeOrdinal == PRM_Type::PRM_ORD_TOGGLE)
@@ -493,12 +501,19 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
             }
             else if(TypeOrdinal == PRM_Type::PRM_ORD_SWITCHERLIST)
             {
-                // Tabs.
-                volatile int i = 5;
+                int i = 5;
             }
             else
             {
-                Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+                const PRM_ChoiceList* ChoiceList = Template->getChoiceListPtr();
+                if(ChoiceList)
+                {
+                    Property = NewObject<UHoudiniNodePropertyEnum>(this, *PropertyName, PropertyObjectFlags);
+                }
+                else
+                {
+                    Property = NewObject<UHoudiniNodePropertyInt>(this, *PropertyName, PropertyObjectFlags);
+                }
             }
         }
         else if(Type.isBasicType(PRM_Type::PRM_BASIC_STRING))

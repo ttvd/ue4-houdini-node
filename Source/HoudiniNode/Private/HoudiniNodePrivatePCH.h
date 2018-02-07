@@ -53,6 +53,7 @@
 #include <PRM/PRM_Name.h>
 #include <PRM/PRM_Template.h>
 #include <PRM/PRM_Range.h>
+#include <PRM/PRM_ChoiceList.h>
 
 #include <OBJ/OBJ_Node.h>
 #include <SOP/SOP_Node.h>

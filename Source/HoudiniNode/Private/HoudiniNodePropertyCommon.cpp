@@ -144,7 +144,8 @@ FHoudiniNodePropertyCommon::AssignPropertyRanges() const
 
 
 bool
-FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<float>& Values) const
+FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
+    bool bComputeOffset, TArray<float>& Values) const
 {
     Values.Empty();
 
@@ -195,7 +196,8 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
 
 
 bool
-FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<int32>& Values) const
+FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
+    bool bComputeOffset, TArray<int32>& Values) const
 {
     Values.Empty();
 
@@ -246,7 +248,8 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
 
 
 bool
-FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset, TArray<FString>& Values) const
+FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
+    bool bComputeOffset, TArray<FString>& Values) const
 {
     Values.Empty();
 

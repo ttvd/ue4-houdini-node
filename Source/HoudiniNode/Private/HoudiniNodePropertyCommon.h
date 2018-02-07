@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HoudiniNodePropertyType.h"
+
 class OP_Node;
 class PRM_Template;
 
@@ -19,7 +21,8 @@ public:
 protected:
 
     //! Initialize the property.
-    void InitializeProperty(UProperty* InProperty, UHoudiniNodeComponent* InComponent, const PRM_Template* InTemplate);
+    void InitializeProperty(UProperty* InProperty, UHoudiniNodeComponent* InComponent, const PRM_Template* InTemplate,
+        EHoudiniNodePropertyType::Enum InPropertyType);
 
     //! Construct the property.
     template <typename TType> bool ConstructProperty(OP_Node* Node, float Time, bool bAssign, bool bComputeOffset);
@@ -38,16 +41,21 @@ protected:
 protected:
 
     //! Retrieve float values for a given property.
-    bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
+    bool GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
         TArray<float>& Values) const;
 
     //! Retrieve integer values for a given property.
-    bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
+    bool GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
         TArray<int32>& Values) const;
 
     //! Retrieve string values for a given property.
-    bool GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
+    bool GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
         TArray<FString>& Values) const;
+
+protected:
+
+    //! Set values for a given property.
+    bool UploadValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time) const;
 
 private:
 
@@ -56,6 +64,12 @@ private:
 
     //! Retrieve property offset.
     uint32 GetPropertyOffset() const;
+
+    //! Retrieve property size.
+    uint32 GetPropertyDim() const;
+
+    //! Return property type.
+    EHoudiniNodePropertyType::Enum GetPropertyType() const;
 
 protected:
 
@@ -67,6 +81,9 @@ protected:
 
     //! Template used to construct the property.
     PRM_Template* Template;
+
+    //! Type of this property.
+    EHoudiniNodePropertyType::Enum PropertyType;
 };
 
 
@@ -83,11 +100,12 @@ FHoudiniNodePropertyCommon::ConstructProperty(OP_Node* Node, float Time, bool bA
     AssignPropertyRanges();
 
     TArray<TType> Values;
-    if(!GetPropertyValues(Node, Component, Time, bAssign, bComputeOffset, Values))
+    if(!GetValues(Node, Component, Time, bAssign, bComputeOffset, Values))
     {
         return false;
     }
 
     return true;
 }
+
 

@@ -340,6 +340,16 @@ UHoudiniNodeClass::OnParameterChanged(UProperty* Property)
 
     const FString& PropertyName = Property->GetMetaData(TEXT("HoudiniName"));
 
+    // Upload changed property value.
+    {
+        IHoudiniNodePropertyInterface** FoundPropertyInterface = Properties.Find(PropertyName);
+        if(FoundPropertyInterface)
+        {
+            IHoudiniNodePropertyInterface* PropertyInterface = *FoundPropertyInterface;
+            PropertyInterface->Upload(Node, Time);
+        }
+    }
+
     if(!CookDetail())
     {
         return false;

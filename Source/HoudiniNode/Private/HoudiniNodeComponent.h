@@ -35,6 +35,12 @@ public:
     template <typename TType> void SetScratchSpaceValuesAtOffset(const TArray<TType>& Values, uint32 Offset);
     template <typename TType> void SetScratchSpaceValueAtOffset(TType Values, uint32 Offset);
 
+public:
+
+    //! Get a value at the given offset.
+    template <typename TType> void GetScratchSpaceValuesAtOffset(uint32 Offset, int32 Dim, TArray<TType>& Values);
+    template <typename TType> void GetScratchSpaceValueAtOffset(uint32 Offset, TType& Value);
+
 protected:
 
     //! Scratch space buffer.
@@ -145,4 +151,55 @@ void
 UHoudiniNodeComponent::SetScratchSpaceValueAtOffset(TType Values, uint32 Offset)
 {
     SetScratchSpaceValuesAtOffset(&Value, sizeof(TType), Offset);
+}
+
+
+template <typename TType>
+void
+UHoudiniNodeComponent::GetScratchSpaceValuesAtOffset(uint32 Offset, int32 NumEntries, TArray<TType>& Values)
+{
+    if(NumEntries > 0)
+    {
+        Values.SetNumZeroed(NumEntries);
+
+        char* Position = (char*) this;
+        Position += Offset;
+
+        const int32 EntrySize = sizeof(TType);
+        const int32 Bytes = EntrySize * NumEntries;
+
+        if(EntrySize <= 4)
+        {
+            FMemory::Memcpy((void*) &Values[0], (const void*) Position, Bytes);
+        }
+        else
+        {
+            for(int32 Idx = 0; Idx < NumEntries; ++Idx)
+            {
+                TType Value = *((TType*) Position + Idx);
+                Values[Idx] = Value;
+                Position += sizeof(TType);
+            }
+        }
+    }
+}
+
+
+template <typename TType>
+void
+UHoudiniNodeComponent::GetScratchSpaceValueAtOffset(uint32 Offset, TType& Value)
+{
+    char* Position = (char*) this;
+    Position += Offset;
+
+    const int32 EntrySize = sizeof(TType);
+
+    if(EntrySize <= 4)
+    {
+        FMemory::Memcpy((void*) &Values[0], (const void*) Position, Bytes);
+    }
+    else
+    {
+        Value = *((TType*) Position);
+    }
 }

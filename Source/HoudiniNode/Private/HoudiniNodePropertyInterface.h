@@ -17,5 +17,8 @@ public:
 
     //! Update property.
     virtual bool Update(OP_Node* Node, float Time) = 0;
+
+    //! Upload property value.
+    virtual bool Upload(OP_Node* Node, float Time) = 0;
 };
 

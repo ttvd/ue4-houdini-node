@@ -20,11 +20,14 @@ FHoudiniNodePropertyCommon::~FHoudiniNodePropertyCommon()
 
 
 void
-FHoudiniNodePropertyCommon::InitializeProperty(UProperty* InProperty, UHoudiniNodeComponent* InComponent, const PRM_Template* InTemplate)
+FHoudiniNodePropertyCommon::InitializeProperty(UProperty* InProperty, UHoudiniNodeComponent* InComponent,
+    const PRM_Template* InTemplate, EHoudiniNodePropertyType::Enum InPropertyType)
 {
     Property = InProperty;
     Component = InComponent;
     Template = const_cast<PRM_Template*>(InTemplate);
+
+    PropertyType = InPropertyType;
 
     if(Property)
     {
@@ -74,6 +77,21 @@ uint32
 FHoudiniNodePropertyCommon::GetPropertyOffset() const
 {
     return *(int32*)((char*) &Property->RepNotifyFunc - sizeof(int32));
+}
+
+
+uint32
+FHoudiniNodePropertyCommon::GetPropertyDim() const
+{
+    check(Property);
+    return Property->ArrayDim;
+}
+
+
+EHoudiniNodePropertyType::Enum
+FHoudiniNodePropertyCommon::GetPropertyType() const
+{
+    return PropertyType;
 }
 
 
@@ -144,7 +162,7 @@ FHoudiniNodePropertyCommon::AssignPropertyRanges() const
 
 
 bool
-FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
+FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
     bool bComputeOffset, TArray<float>& Values) const
 {
     Values.Empty();
@@ -196,7 +214,7 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
 
 
 bool
-FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
+FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
     bool bComputeOffset, TArray<int32>& Values) const
 {
     Values.Empty();
@@ -248,7 +266,7 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
 
 
 bool
-FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
+FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
     bool bComputeOffset, TArray<FString>& Values) const
 {
     Values.Empty();
@@ -300,4 +318,83 @@ FHoudiniNodePropertyCommon::GetPropertyValues(OP_Node* Node, UHoudiniNodeCompone
 
     return true;
 }
+
+
+bool
+FHoudiniNodePropertyCommon::UploadValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time) const
+{
+    if(!Node || !Template || !Property || !Component)
+    {
+        return false;
+    }
+
+    const PRM_Name* TemplateName = Template->getNamePtr();
+    if(!TemplateName)
+    {
+        return false;
+    }
+
+    const UT_String& Name = TemplateName->getToken();
+
+    const uint32 Offset = GetPropertyOffset();
+    const int32 NumEntries = GetPropertyDim();
+
+    switch(PropertyType)
+    {
+        case EHoudiniNodePropertyType::Integer:
+        {
+            TArray<int32> Values;
+            Component->GetScratchSpaceValuesAtOffset(Offset, NumEntries, Values);
+
+            for(int32 Idx = 0; Idx < Values.Num(); ++Idx)
+            {
+                const int32 Value = Values[Idx];
+                Node->setInt(Name.c_str(), Idx, Time, Value);
+            }
+
+            break;
+        }
+
+        case EHoudiniNodePropertyType::Float:
+        {
+            TArray<float> Values;
+            Component->GetScratchSpaceValuesAtOffset(Offset, NumEntries, Values);
+
+            for(int32 Idx = 0; Idx < Values.Num(); ++Idx)
+            {
+                const float Value = Values[Idx];
+                Node->setFloat(Name.c_str(), Idx, Time, Value);
+            }
+
+            break;
+        }
+
+        case EHoudiniNodePropertyType::String:
+        {
+            TArray<FString> Values;
+            Component->GetScratchSpaceValuesAtOffset(Offset, NumEntries, Values);
+
+            for(int32 Idx = 0; Idx < Values.Num(); ++Idx)
+            {
+                const FString& Value = Values[Idx];
+                UT_String RawValue = TCHAR_TO_UTF8(*Value);
+
+                Node->setString(RawValue.c_str(), CH_STRING_LITERAL, Name.c_str(), Idx, Time);
+            }
+
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
+
+    return true;
+}
+
+
+
+
 

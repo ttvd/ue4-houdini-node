@@ -3,6 +3,8 @@
 #include "HoudiniNodeAsset.h"
 #include "HoudiniNodeComponent.h"
 #include "HoudiniNodeClass.h"
+#include "HoudiniNodeGenerator.h"
+#include "HoudiniNodeModule.h"
 
 
 AHoudiniNodeActor::AHoudiniNodeActor(const FObjectInitializer& ObjectInitializer) :
@@ -22,10 +24,58 @@ AHoudiniNodeActor::~AHoudiniNodeActor()
 }
 
 
-void
-AHoudiniNodeActor::RegisterGeneratedActors(const TMap<FString, TArray<AActor*> >& GeneratedActors)
-{
 
+void
+AHoudiniNodeActor::AddReferencedObjects(UObject* InThis, FReferenceCollector& Collector)
+{
+    AHoudiniNodeActor* HoudiniNodeActor = Cast<AHoudiniNodeActor>(InThis);
+    if(!HoudiniNodeActor)
+    {
+        return;
+    }
+
+    for(TMap<UHoudiniNodeGenerator*, TArray<AActor*> >::TIterator Iter(HoudiniNodeActor->GeneratedActors); Iter; ++Iter)
+    {
+        UHoudiniNodeGenerator* ActorGenerator = Iter.Key();
+        const TArray<AActor*>& Actors = Iter.Value();
+
+        if(ActorGenerator)
+        {
+            Collector.AddReferencedObject(ActorGenerator, InThis);
+        }
+
+        for(int32 Idx = 0; Idx < Actors.Num(); ++Idx)
+        {
+            AActor* Actor = Actors[Idx];
+            if(Actor)
+            {
+                Collector.AddReferencedObject(Actor, InThis);
+            }
+        }
+    }
+}
+
+
+void
+AHoudiniNodeActor::RegisterGeneratedActors(const TMap<UHoudiniNodeGenerator*, TArray<AActor*> >& InGeneratedActors)
+{
+    // Discard current objects.
+    {
+        for(TMap<UHoudiniNodeGenerator*, TArray<AActor*> >::TIterator Iter(GeneratedActors); Iter; ++Iter)
+        {
+            UHoudiniNodeGenerator* ActorGenerator = Iter.Key();
+            const TArray<AActor*>& Actors = Iter.Value();
+
+            if(ActorGenerator)
+            {
+                ActorGenerator->Discard(Actors);
+            }
+        }
+
+        GeneratedActors.Empty();
+    }
+
+    GeneratedActors = InGeneratedActors;
 }
 
 

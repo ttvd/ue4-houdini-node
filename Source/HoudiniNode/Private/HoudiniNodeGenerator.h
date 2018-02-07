@@ -39,6 +39,9 @@ public:
     //! Discard a list of objects, return true if at least one object is discarded.
     virtual bool Discard(const TArray<UObject*>& Objects) const;
 
+    //! Discard a list of actors, return true if at least one actor is discarded.
+    virtual bool Discard(const TArray<AActor*>& Actors) const;
+
 public:
 
     //! Return true if generator name matches a given string.

@@ -298,7 +298,7 @@ UHoudiniNodeClass::OnCookComplete()
 {
     const TArray<UHoudiniNodeGenerator*>& Generators = GHoudiniNode->GetGenerators();
 
-    TMap<FString, TArray<AActor*> > AllGeneratedActors;
+    TMap<UHoudiniNodeGenerator*, TArray<AActor*> > AllGeneratedActors;
 
     for(int32 Idx = 0; Idx < Generators.Num(); ++Idx)
     {
@@ -313,8 +313,7 @@ UHoudiniNodeClass::OnCookComplete()
         TArray<AActor*> GeneratedActors;
         if(Generator->Generate(this, GeneratedActors))
         {
-            const FString& GeneratorName = Generator->GetGeneratorName();
-            AllGeneratedActors.Add(GeneratorName, GeneratedActors);
+            AllGeneratedActors.Add(Generator, GeneratedActors);
         }
 
         Generator->CleanUp();

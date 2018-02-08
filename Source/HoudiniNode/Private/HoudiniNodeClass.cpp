@@ -8,6 +8,7 @@
 #include "HoudiniNodeAttributePrimitive.h"
 
 #include "HoudiniNodePropertyFloat.h"
+#include "HoudiniNodePropertyColor.h"
 #include "HoudiniNodePropertyString.h"
 #include "HoudiniNodePropertySeparator.h"
 #include "HoudiniNodePropertyInt.h"

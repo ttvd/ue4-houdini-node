@@ -76,6 +76,23 @@ AHoudiniNodeActor::RegisterGeneratedActors(const TMap<UHoudiniNodeGenerator*, TA
     }
 
     GeneratedActors = InGeneratedActors;
+
+    // Attach new objects.
+    {
+        const FAttachmentTransformRules& AttachmentRules = FAttachmentTransformRules::KeepRelativeTransform;
+
+        for(TMap<UHoudiniNodeGenerator*, TArray<AActor*> >::TIterator Iter(GeneratedActors); Iter; ++Iter)
+        {
+            UHoudiniNodeGenerator* ActorGenerator = Iter.Key();
+            const TArray<AActor*>& Actors = Iter.Value();
+
+            for(int32 Idx = 0; Idx < Actors.Num(); ++Idx)
+            {
+                AActor* Actor = Actors[Idx];
+                Actor->AttachToActor(this, AttachmentRules);
+            }
+        }
+    }
 }
 
 
@@ -141,7 +158,9 @@ AHoudiniNodeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
             if(HoudiniNodeComponent)
             {
                 SetRootComponent(HoudiniNodeComponent);
+
                 HoudiniNodeComponent->RegisterComponent();
+                HoudiniNodeComponent->SetMobility(EComponentMobility::Static);
             }
 
             HoudiniNodeClass->SetCookTime(Time);

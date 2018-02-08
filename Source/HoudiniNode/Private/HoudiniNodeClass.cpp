@@ -6,10 +6,15 @@
 #include "HoudiniNodeActor.h"
 #include "HoudiniNodeComponent.h"
 #include "HoudiniNodeAttributePrimitive.h"
+
 #include "HoudiniNodePropertyFloat.h"
-#include "HoudiniNodePropertyInt.h"
 #include "HoudiniNodePropertyString.h"
+#include "HoudiniNodePropertySeparator.h"
+#include "HoudiniNodePropertyInt.h"
 #include "HoudiniNodePropertyEnum.h"
+#include "HoudiniNodePropertyBool.h"
+#include "HoudiniNodePropertyButton.h"
+
 
 
 UHoudiniNodeClass::UHoudiniNodeClass(const FObjectInitializer& ObjectInitializer) :

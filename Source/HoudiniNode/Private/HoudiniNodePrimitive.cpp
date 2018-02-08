@@ -98,6 +98,8 @@ FHoudiniNodePrimitive::GetPointPositions(TArray<FVector>& PointPositions) const
     GU_Detail* DetailRaw = Detail.GetDetail();
 
     const int32 VertexCount = Primitive->getVertexCount();
+    const float Scale = Detail.GetScale();
+
     for(int32 Idx = 0; Idx < VertexCount; ++Idx)
     {
         GA_Offset PointOffset = Primitive->getPointOffset(Idx);

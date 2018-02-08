@@ -5,8 +5,6 @@
 
 
 class PRM_Template;
-class OP_Node;
-
 class UHoudiniNodeComponent;
 
 
@@ -19,12 +17,12 @@ class HOUDININODE_API UHoudiniNodePropertyString : public UStrProperty, public F
 public:
 
     //! Construct float property from a given template.
-    virtual bool Construct(OP_Node* Node, const PRM_Template* Template, UHoudiniNodeComponent* Component, float Time) override;
+    virtual bool Construct(const PRM_Template* Template, UHoudiniNodeComponent* Component) override;
 
     //! Update property.
-    virtual bool Update(OP_Node* Node, float Time) override;
+    virtual bool Update() override;
 
     //! Upload property value.
-    virtual bool Upload(OP_Node* Node, float Time) override;
+    virtual bool Upload() override;
 };
 

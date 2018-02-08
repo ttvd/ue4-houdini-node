@@ -2,7 +2,6 @@
 
 #include "HoudiniNodePropertyType.h"
 
-class OP_Node;
 class PRM_Template;
 
 class UProperty;
@@ -18,6 +17,17 @@ public:
 
     friend class UHoudiniNodeClass;
 
+public:
+
+    //! Retrieve property offset.
+    uint32 GetPropertyOffset() const;
+
+    //! Retrieve property size.
+    uint32 GetPropertyDim() const;
+
+    //! Return property type.
+    EHoudiniNodePropertyType::Enum GetPropertyType() const;
+
 protected:
 
     //! Initialize the property.
@@ -25,7 +35,7 @@ protected:
         EHoudiniNodePropertyType::Enum InPropertyType);
 
     //! Construct the property.
-    template <typename TType> bool ConstructProperty(OP_Node* Node, float Time, bool bAssign, bool bComputeOffset);
+    template <typename TType> bool ConstructProperty(bool bAssign, bool bComputeOffset);
 
     //! Assign this property to a class.
     void AssignClass();
@@ -41,35 +51,34 @@ protected:
 protected:
 
     //! Retrieve float values for a given property.
-    bool GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
+    bool GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
         TArray<float>& Values) const;
 
     //! Retrieve integer values for a given property.
-    bool GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
+    bool GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
         TArray<int32>& Values) const;
 
     //! Retrieve string values for a given property.
-    bool GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign, bool bComputeOffset,
+    bool GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
         TArray<FString>& Values) const;
 
 protected:
 
     //! Set values for a given property.
-    bool UploadValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time) const;
+    bool UploadValues() const;
 
 protected:
 
     //! Assign property offset.
     void AssignPropertyOffset(uint32 Offset) const;
 
-    //! Retrieve property offset.
-    uint32 GetPropertyOffset() const;
+protected:
 
-    //! Retrieve property size.
-    uint32 GetPropertyDim() const;
+    //! Retrieve current node.
+    OP_Node* GetNode() const;
 
-    //! Return property type.
-    EHoudiniNodePropertyType::Enum GetPropertyType() const;
+    //! Retrieve current time.
+    float GetCookTime() const;
 
 protected:
 
@@ -89,9 +98,9 @@ protected:
 
 template <typename TType>
 bool
-FHoudiniNodePropertyCommon::ConstructProperty(OP_Node* Node, float Time, bool bAssign, bool bComputeOffset)
+FHoudiniNodePropertyCommon::ConstructProperty(bool bAssign, bool bComputeOffset)
 {
-    if(!Node || !Component)
+    if(Component)
     {
         return false;
     }
@@ -100,7 +109,7 @@ FHoudiniNodePropertyCommon::ConstructProperty(OP_Node* Node, float Time, bool bA
     AssignPropertyRanges();
 
     TArray<TType> Values;
-    if(!GetValues(Node, Component, Time, bAssign, bComputeOffset, Values))
+    if(!GetValues(Component, bAssign, bComputeOffset, Values))
     {
         return false;
     }

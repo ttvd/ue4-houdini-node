@@ -19,6 +19,42 @@ FHoudiniNodePropertyCommon::~FHoudiniNodePropertyCommon()
 }
 
 
+OP_Node*
+FHoudiniNodePropertyCommon::GetNode() const
+{
+    if(!Component)
+    {
+        return nullptr;
+    }
+
+    UHoudiniNodeClass* HoudiniNodeClass = Cast<UHoudiniNodeClass>(Component->GetClass());
+    if(!HoudiniNodeClass)
+    {
+        return nullptr;
+    }
+
+    return HoudiniNodeClass->GetNode();
+}
+
+
+float
+FHoudiniNodePropertyCommon::GetCookTime() const
+{
+    if(!Component)
+    {
+        return 0.0f;
+    }
+
+    UHoudiniNodeClass* HoudiniNodeClass = Cast<UHoudiniNodeClass>(Component->GetClass());
+    if(!HoudiniNodeClass)
+    {
+        return 0.0f;
+    }
+
+    return HoudiniNodeClass->GetCookTime();
+}
+
+
 void
 FHoudiniNodePropertyCommon::InitializeProperty(UProperty* InProperty, UHoudiniNodeComponent* InComponent,
     const PRM_Template* InTemplate, EHoudiniNodePropertyType::Enum InPropertyType)
@@ -162,12 +198,12 @@ FHoudiniNodePropertyCommon::AssignPropertyRanges() const
 
 
 bool
-FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
-    bool bComputeOffset, TArray<float>& Values) const
+FHoudiniNodePropertyCommon::GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
+    TArray<float>& Values) const
 {
     Values.Empty();
 
-    if(!Node || !Template || !Property || !Component)
+    if(!Template || !Property || !Component)
     {
         return false;
     }
@@ -185,6 +221,14 @@ FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Comp
     {
         return false;
     }
+
+    OP_Node* Node = GetNode();
+    if(!Node)
+    {
+        return false;
+    }
+
+    const float Time = GetCookTime();
 
     Values.SetNumZeroed(VectorSize);
     for(int32 Idx = 0; Idx < VectorSize; ++Idx)
@@ -214,12 +258,12 @@ FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Comp
 
 
 bool
-FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
-    bool bComputeOffset, TArray<int32>& Values) const
+FHoudiniNodePropertyCommon::GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
+    TArray<int32>& Values) const
 {
     Values.Empty();
 
-    if(!Node || !Template || !Property || !Component)
+    if(!Template || !Property || !Component)
     {
         return false;
     }
@@ -237,6 +281,14 @@ FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Comp
     {
         return false;
     }
+
+    OP_Node* Node = GetNode();
+    if(!Node)
+    {
+        return false;
+    }
+
+    const float Time = GetCookTime();
 
     Values.SetNumZeroed(VectorSize);
     for(int32 Idx = 0; Idx < VectorSize; ++Idx)
@@ -266,12 +318,12 @@ FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Comp
 
 
 bool
-FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time, bool bAssign,
-    bool bComputeOffset, TArray<FString>& Values) const
+FHoudiniNodePropertyCommon::GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
+    TArray<FString>& Values) const
 {
     Values.Empty();
 
-    if(!Node || !Template || !Property || !Component)
+    if(!Template || !Property || !Component)
     {
         return false;
     }
@@ -289,6 +341,14 @@ FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Comp
     {
         return false;
     }
+
+    OP_Node* Node = GetNode();
+    if(!Node)
+    {
+        return false;
+    }
+
+    const float Time = GetCookTime();
 
     Values.SetNumZeroed(VectorSize);
     for(int32 Idx = 0; Idx < VectorSize; ++Idx)
@@ -321,9 +381,9 @@ FHoudiniNodePropertyCommon::GetValues(OP_Node* Node, UHoudiniNodeComponent* Comp
 
 
 bool
-FHoudiniNodePropertyCommon::UploadValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time) const
+FHoudiniNodePropertyCommon::UploadValues() const
 {
-    if(!Node || !Template || !Property || !Component)
+    if(!Template || !Property || !Component)
     {
         return false;
     }
@@ -338,6 +398,14 @@ FHoudiniNodePropertyCommon::UploadValues(OP_Node* Node, UHoudiniNodeComponent* C
 
     const uint32 Offset = GetPropertyOffset();
     const int32 NumEntries = GetPropertyDim();
+
+    OP_Node* Node = GetNode();
+    if(!Node)
+    {
+        return false;
+    }
+
+    const float Time = GetCookTime();
 
     switch(PropertyType)
     {

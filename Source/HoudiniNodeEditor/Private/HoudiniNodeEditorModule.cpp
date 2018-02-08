@@ -8,6 +8,9 @@
 #include "HoudiniNodePropertyButton.h"
 #include "HoudiniNodePropertyButtonCustomization.h"
 
+#include "HoudiniNodePropertyLabel.h"
+#include "HoudiniNodePropertyLabelCustomization.h"
+
 
 FHoudiniNodeEditor*
 GHoudiniNodeEditor = nullptr;
@@ -57,19 +60,14 @@ FHoudiniNodeEditor::RegisterPropertyCustomizations()
 {
     FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(TEXT("PropertyEditor"));
 
-    {
-        FName ClassName = UHoudiniNodePropertySeparator::StaticClass()->GetFName();
+    PropertyModule.RegisterCustomPropertyTypeLayout(UHoudiniNodePropertySeparator::StaticClass()->GetFName(),
+        FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertySeparatorCustomization::MakeInstance));
 
-        PropertyModule.RegisterCustomPropertyTypeLayout(ClassName, 
-            FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertySeparatorCustomization::MakeInstance));
-    }
+    PropertyModule.RegisterCustomPropertyTypeLayout(UHoudiniNodePropertyButton::StaticClass()->GetFName(),
+        FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyButtonCustomization::MakeInstance));
 
-    {
-        FName ClassName = UHoudiniNodePropertyButton::StaticClass()->GetFName();
-
-        PropertyModule.RegisterCustomPropertyTypeLayout(ClassName, 
-            FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyButtonCustomization::MakeInstance));
-    }
+    PropertyModule.RegisterCustomPropertyTypeLayout(UHoudiniNodePropertyLabel::StaticClass()->GetFName(),
+        FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyLabelCustomization::MakeInstance));
 }
 
 
@@ -80,15 +78,9 @@ FHoudiniNodeEditor::UnregisterPropertyCustomizations()
     {
         FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(TEXT("PropertyEditor"));
 
-        {
-            FName ClassName = UHoudiniNodePropertySeparator::StaticClass()->GetFName();
-            PropertyModule.UnregisterCustomPropertyTypeLayout(ClassName);
-        }
-
-        {
-            FName ClassName = UHoudiniNodePropertyButton::StaticClass()->GetFName();
-            PropertyModule.UnregisterCustomPropertyTypeLayout(ClassName);
-        }
+        PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertySeparator::StaticClass()->GetFName());
+        PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyButton::StaticClass()->GetFName());
+        PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyLabel::StaticClass()->GetFName());
     }
 }
 

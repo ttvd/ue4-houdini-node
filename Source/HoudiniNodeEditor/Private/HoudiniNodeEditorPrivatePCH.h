@@ -4,7 +4,7 @@
 
 #if WITH_EDITOR
 #include "Editor/PropertyEditor/Public/PropertyEditorModule.h"
-//#include "Editor/EditorStyle/Public/EditorStyleSet.h"
+#include "Editor/EditorStyle/Public/EditorStyleSet.h"
 #include "SSeparator.h"
 #include "DetailWidgetRow.h"
 #endif

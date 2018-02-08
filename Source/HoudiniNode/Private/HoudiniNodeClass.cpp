@@ -539,7 +539,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
 
             if(TypeString == PRM_Type::PRM_STR_SEPARATOR)
             {
-                volatile int i = 5;
+                Property = NewObject<UHoudiniNodePropertySeparator>(this, *PropertyName, PropertyObjectFlags);
             }
             else if(TypeString == PRM_Type::PRM_STR_LABEL)
             {

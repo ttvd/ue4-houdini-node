@@ -14,13 +14,7 @@ FHoudiniNodePropertySeparatorCustomization::CustomizeHeader(TSharedRef<IProperty
     FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& PropertyTypeCustomizationUtils)
 {
     HeaderRow
-        /*.NameContent()
-        [
-            StructPropertyHandle->CreatePropertyNameWidget()
-        ]*/
-        .ValueContent()
-        .MinDesiredWidth(125.0f)
-        .MaxDesiredWidth(600.0f)
+        .WholeRowContent()
         [
             SNew(SSeparator)
             .Orientation(Orient_Horizontal)

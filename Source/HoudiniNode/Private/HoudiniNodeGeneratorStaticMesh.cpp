@@ -256,7 +256,12 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         return nullptr;
     }
 
-    GetVertexNormals(NodeClass, Primitives, VertexCount, RawMesh.WedgeTangentZ);
+    bool bGenerateNormals = false;
+    if(!GetVertexNormals(NodeClass, Primitives, VertexCount, RawMesh.WedgeTangentZ))
+    {
+        bGenerateNormals = true;
+    }
+
     GetVertexColors(NodeClass, Primitives, VertexCount, RawMesh.WedgeColors);
 
     TArray<int32> UnusedUVChannels;
@@ -268,6 +273,14 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
         {
             UnusedUVChannels.Add(Idx);
         }
+    }
+
+    // Unreal seems to require at least one channel, otherwise mesh is invalid.
+    if(UnusedUVChannels.Num() == MAX_MESH_TEXTURE_COORDS)
+    {
+        // Fill at first channel with zero uvs.
+        RawMesh.WedgeTexCoords[0].Init(FVector2D::ZeroVector, VertexCount);
+        UnusedUVChannels.RemoveAt(0);
     }
 
     const FString StaticMeshName = TEXT("HoudiniNodeStaticMesh");
@@ -290,7 +303,7 @@ UHoudiniNodeGeneratorStaticMesh::CreateStaticMesh(UHoudiniNodeClass* NodeClass, 
 
     {
         SrcModel->BuildSettings.bUseMikkTSpace = false;
-        SrcModel->BuildSettings.bRecomputeNormals = false;
+        SrcModel->BuildSettings.bRecomputeNormals = bGenerateNormals;
         SrcModel->BuildSettings.bRecomputeTangents = false;
         SrcModel->BuildSettings.bGenerateLightmapUVs = false;
     }
@@ -497,8 +510,7 @@ UHoudiniNodeGeneratorStaticMesh::GetVertexNormals(UHoudiniNodeClass* NodeClass, 
     FHoudiniNodeAttributeCast Attribute(Detail, HOUDINI_NODE_ATTRIBUTE_NORMAL);
     if(!Attribute.GetAsVertex(Primitives, false, Normals))
     {
-        const FVector& DefaultNormal = FVector::UpVector;
-        Normals.Init(DefaultNormal, VertexCount);
+        return false;
     }
 
     PatchVertexWindingOrder(Normals);

@@ -4,6 +4,7 @@
 
 #if WITH_EDITOR
 #include "Editor/PropertyEditor/Public/PropertyEditorModule.h"
+#include "SSeparator.h"
 #endif
 
 

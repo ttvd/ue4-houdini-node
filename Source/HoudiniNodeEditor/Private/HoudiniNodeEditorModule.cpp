@@ -2,6 +2,9 @@
 #include "HoudiniNodeEditorPrivatePCH.h"
 #include "HoudiniNodeActorFactory.h"
 
+#include "HoudiniNodePropertySeparator.h"
+#include "HoudiniNodePropertySeparatorCustomization.h"
+
 
 FHoudiniNodeEditor*
 GHoudiniNodeEditor = nullptr;
@@ -51,7 +54,12 @@ FHoudiniNodeEditor::RegisterPropertyCustomizations()
 {
     FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(TEXT("PropertyEditor"));
 
-    // RegisterCustomClassLayout
+    {
+        FName ClassName = UHoudiniNodePropertySeparator::StaticClass()->GetFName();
+
+        PropertyModule.RegisterCustomPropertyTypeLayout(ClassName, 
+            FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertySeparatorCustomization::MakeInstance));
+    }
 }
 
 
@@ -61,7 +69,11 @@ FHoudiniNodeEditor::UnregisterPropertyCustomizations()
     if(FModuleManager::Get().IsModuleLoaded(TEXT("PropertyEditor")))
     {
         FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(TEXT("PropertyEditor"));
-        //UnregisterCustomClassLayout
+
+        {
+            FName ClassName = UHoudiniNodePropertySeparator::StaticClass()->GetFName();
+            PropertyModule.UnregisterCustomPropertyTypeLayout(ClassName);
+        }
     }
 }
 

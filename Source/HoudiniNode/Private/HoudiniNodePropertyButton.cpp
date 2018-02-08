@@ -27,17 +27,15 @@ UHoudiniNodePropertyButton::Press()
     const uint32 Offset = GetPropertyOffset();
     const int32 Value = 1;
 
-    UHoudiniNodeClass* NodeClass = Cast<UHoudiniNodeClass>(Component->GetClass());
-    NodeClass->OnParameterChanged(this);
-
-    /*
     Component->PreEditChange(this);
-
     Component->SetScratchSpaceValueAtOffset(Value, Offset);
 
-    FPropertyChangedEvent PropertyChangedEvent(this);
+#if WITH_EDITOR
+
+    FPropertyChangedEvent PropertyChangedEvent(this, EPropertyChangeType::ValueSet);
     Component->PostEditChangeProperty(PropertyChangedEvent);
-    */
+
+#endif
 
     return true;
 }

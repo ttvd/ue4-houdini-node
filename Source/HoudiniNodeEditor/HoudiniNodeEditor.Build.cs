@@ -106,7 +106,8 @@ namespace UnrealBuildTool.Rules
 					"Core",
 					"CoreUObject",
                     "Engine",
-                    "HoudiniNode"
+                    "HoudiniNode",
+                    "PropertyEditor"
                 }
 			);
 

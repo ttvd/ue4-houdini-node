@@ -109,7 +109,8 @@ namespace UnrealBuildTool.Rules
                     "HoudiniNode",
                     "PropertyEditor",
                     "SlateCore",
-                    "Slate"
+                    "Slate"//,
+                    //"EditorStyle"
                 }
 			);
 

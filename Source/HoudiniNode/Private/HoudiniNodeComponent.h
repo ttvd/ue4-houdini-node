@@ -148,7 +148,7 @@ UHoudiniNodeComponent::SetScratchSpaceValuesAtOffset(const TArray<TType>& Values
 
 template <typename TType>
 void
-UHoudiniNodeComponent::SetScratchSpaceValueAtOffset(TType Values, uint32 Offset)
+UHoudiniNodeComponent::SetScratchSpaceValueAtOffset(TType Value, uint32 Offset)
 {
     SetScratchSpaceValuesAtOffset(&Value, sizeof(TType), Offset);
 }

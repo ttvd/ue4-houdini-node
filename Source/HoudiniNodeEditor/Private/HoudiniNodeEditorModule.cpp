@@ -5,6 +5,9 @@
 #include "HoudiniNodePropertySeparator.h"
 #include "HoudiniNodePropertySeparatorCustomization.h"
 
+#include "HoudiniNodePropertyButton.h"
+#include "HoudiniNodePropertyButtonCustomization.h"
+
 
 FHoudiniNodeEditor*
 GHoudiniNodeEditor = nullptr;
@@ -60,6 +63,13 @@ FHoudiniNodeEditor::RegisterPropertyCustomizations()
         PropertyModule.RegisterCustomPropertyTypeLayout(ClassName, 
             FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertySeparatorCustomization::MakeInstance));
     }
+
+    {
+        FName ClassName = UHoudiniNodePropertyButton::StaticClass()->GetFName();
+
+        PropertyModule.RegisterCustomPropertyTypeLayout(ClassName, 
+            FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyButtonCustomization::MakeInstance));
+    }
 }
 
 
@@ -72,6 +82,11 @@ FHoudiniNodeEditor::UnregisterPropertyCustomizations()
 
         {
             FName ClassName = UHoudiniNodePropertySeparator::StaticClass()->GetFName();
+            PropertyModule.UnregisterCustomPropertyTypeLayout(ClassName);
+        }
+
+        {
+            FName ClassName = UHoudiniNodePropertyButton::StaticClass()->GetFName();
             PropertyModule.UnregisterCustomPropertyTypeLayout(ClassName);
         }
     }

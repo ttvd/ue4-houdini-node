@@ -17,48 +17,27 @@ UHoudiniNodePropertyButton::~UHoudiniNodePropertyButton()
 
 
 bool
-UHoudiniNodePropertyButton::Construct(OP_Node* Node, const PRM_Template* Template, UHoudiniNodeComponent* Component, float Time)
+UHoudiniNodePropertyButton::Press()
 {
-    if(!Template || !Node || !Component)
+    if(!Property || !Component)
     {
         return false;
     }
 
-    InitializeProperty(this, Component, Template, EHoudiniNodePropertyType::Integer);
+    const uint32 Offset = GetPropertyOffset();
+    const int32 Value = 1;
 
-    if(!ConstructProperty<int32>(Node, Time, true, true))
-    {
-        return false;
-    }
+    UHoudiniNodeClass* NodeClass = Cast<UHoudiniNodeClass>(Component->GetClass());
+    NodeClass->OnParameterChanged(this);
+
+    /*
+    Component->PreEditChange(this);
+
+    Component->SetScratchSpaceValueAtOffset(Value, Offset);
+
+    FPropertyChangedEvent PropertyChangedEvent(this);
+    Component->PostEditChangeProperty(PropertyChangedEvent);
+    */
 
     return true;
-}
-
-
-bool
-UHoudiniNodePropertyButton::Update(OP_Node* Node, float Time)
-{
-    if(!Template || !Node || !Component)
-    {
-        return false;
-    }
-
-    if(!ConstructProperty<int32>(Node, Time, true, false))
-    {
-        return false;
-    }
-
-    return true;
-}
-
-
-bool
-UHoudiniNodePropertyButton::Upload(OP_Node* Node, float Time)
-{
-    if(!Template || !Node || !Component || !Property)
-    {
-        return false;
-    }
-
-    return UploadValues(Node, Component, Time);
 }

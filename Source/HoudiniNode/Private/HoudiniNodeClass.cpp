@@ -507,12 +507,15 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
 
             if(TypeOrdinal == PRM_Type::PRM_ORD_CALLBACK)
             {
-                volatile int i = 5;
+                Property = NewObject<UHoudiniNodePropertyButton>(this, *PropertyName, PropertyObjectFlags);
+            }
+            else if(TypeOrdinal == PRM_Type::PRM_ORD_BUTTONSTRIP)
+            {
+                int i = 5;
             }
             else if(TypeOrdinal == PRM_Type::PRM_ORD_TOGGLE)
             {
-                // Radio.
-                volatile int i = 5;
+                Property = NewObject<UHoudiniNodePropertyBool>(this, *PropertyName, PropertyObjectFlags);
             }
             else if(TypeOrdinal == PRM_Type::PRM_ORD_SWITCHERLIST)
             {
@@ -533,8 +536,6 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
         }
         else if(Type.isBasicType(PRM_Type::PRM_BASIC_STRING))
         {
-            // Paths, labels and separators.
-            
             const PRM_Type::PRM_StringType& TypeString = Type.getStringType();
 
             if(TypeString == PRM_Type::PRM_STR_SEPARATOR)

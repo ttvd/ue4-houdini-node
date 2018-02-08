@@ -57,7 +57,7 @@ protected:
     //! Set values for a given property.
     bool UploadValues(OP_Node* Node, UHoudiniNodeComponent* Component, float Time) const;
 
-private:
+protected:
 
     //! Assign property offset.
     void AssignPropertyOffset(uint32 Offset) const;

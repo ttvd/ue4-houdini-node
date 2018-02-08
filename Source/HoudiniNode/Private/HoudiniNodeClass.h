@@ -86,10 +86,12 @@ public:
     //! Cook the detail at present time.
     bool CookDetail();
 
-protected:
+public:
 
     //! Called whenever a property of this class changes. Return true if triggered cook was successful.
     bool OnParameterChanged(UProperty* Property);
+
+protected:
 
     //! Called on successful cook. We generate geometry here.
     void OnCookComplete();

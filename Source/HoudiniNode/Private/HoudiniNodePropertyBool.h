@@ -11,7 +11,7 @@ class UHoudiniNodeComponent;
 
 
 UCLASS()
-class HOUDININODE_API UHoudiniNodePropertyBool : public UFloatProperty, public FHoudiniNodePropertyCommon, public IHoudiniNodePropertyInterface
+class HOUDININODE_API UHoudiniNodePropertyBool : public UBoolProperty, public FHoudiniNodePropertyCommon, public IHoudiniNodePropertyInterface
 {
     GENERATED_UCLASS_BODY()
     virtual ~UHoudiniNodePropertyBool();
@@ -27,4 +27,3 @@ public:
     //! Upload property value.
     virtual bool Upload(OP_Node* Node, float Time) override;
 };
-

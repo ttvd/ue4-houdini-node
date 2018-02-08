@@ -17,17 +17,16 @@ UHoudiniNodePropertyEnum::~UHoudiniNodePropertyEnum()
 
 
 bool
-UHoudiniNodePropertyEnum::Construct(OP_Node* Node, const PRM_Template* Template, UHoudiniNodeComponent* Component,
-    float Time)
+UHoudiniNodePropertyEnum::Construct(const PRM_Template* Template, UHoudiniNodeComponent* Component)
 {
-    if(!Template || !Node || !Component)
+    if(!Template || !Component)
     {
         return false;
     }
 
     InitializeProperty(this, Component, Template, EHoudiniNodePropertyType::Integer);
 
-    if(!ConstructProperty<int>(Node, Time, true, true))
+    if(!ConstructProperty<int>(true, true))
     {
         return false;
     }
@@ -70,14 +69,14 @@ UHoudiniNodePropertyEnum::Construct(OP_Node* Node, const PRM_Template* Template,
 
 
 bool
-UHoudiniNodePropertyEnum::Update(OP_Node* Node, float Time)
+UHoudiniNodePropertyEnum::Update()
 {
-    if(!Template || !Node || !Component)
+    if(!Template || !Component)
     {
         return false;
     }
 
-    if(!ConstructProperty<int>(Node, Time, true, false))
+    if(!ConstructProperty<int>(true, false))
     {
         return false;
     }
@@ -135,13 +134,13 @@ UHoudiniNodePropertyEnum::GetEnumValues(TArray<TPair<FName, int64> >& EnumValues
 
 
 bool
-UHoudiniNodePropertyEnum::Upload(OP_Node* Node, float Time)
+UHoudiniNodePropertyEnum::Upload()
 {
-    if(!Template || !Node || !Component || !Property)
+    if(!Template || !Component || !Property)
     {
         return false;
     }
 
-    return UploadValues(Node, Component, Time);
+    return UploadValues();
 }
 

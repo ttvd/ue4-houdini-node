@@ -17,16 +17,16 @@ UHoudiniNodePropertyColor::~UHoudiniNodePropertyColor()
 
 
 bool
-UHoudiniNodePropertyColor::Construct(OP_Node* Node, const PRM_Template* Template, UHoudiniNodeComponent* Component, float Time)
+UHoudiniNodePropertyColor::Construct(const PRM_Template* Template, UHoudiniNodeComponent* Component)
 {
-    if(!Template || !Node || !Component)
+    if(!Template || !Component)
     {
         return false;
     }
 
     InitializeProperty(this, Component, Template, EHoudiniNodePropertyType::Float);
 
-    if(!ConstructProperty<float>(Node, Time, true, true))
+    if(!ConstructProperty<float>(true, true))
     {
         return false;
     }
@@ -36,14 +36,14 @@ UHoudiniNodePropertyColor::Construct(OP_Node* Node, const PRM_Template* Template
 
 
 bool
-UHoudiniNodePropertyColor::Update(OP_Node* Node, float Time)
+UHoudiniNodePropertyColor::Update()
 {
-    if(!Template || !Node || !Component)
+    if(!Template || !Component)
     {
         return false;
     }
 
-    if(!ConstructProperty<float>(Node, Time, true, false))
+    if(!ConstructProperty<float>(true, false))
     {
         return false;
     }
@@ -53,13 +53,13 @@ UHoudiniNodePropertyColor::Update(OP_Node* Node, float Time)
 
 
 bool
-UHoudiniNodePropertyColor::Upload(OP_Node* Node, float Time)
+UHoudiniNodePropertyColor::Upload()
 {
-    if(!Template || !Node || !Component || !Property)
+    if(!Template || !Component || !Property)
     {
         return false;
     }
 
-    return UploadValues(Node, Component, Time);
+    return UploadValues();
 }
 

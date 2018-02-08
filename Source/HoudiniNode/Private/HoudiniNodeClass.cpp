@@ -16,6 +16,7 @@
 #include "HoudiniNodePropertyEnum.h"
 #include "HoudiniNodePropertyBool.h"
 #include "HoudiniNodePropertyButton.h"
+#include "HoudiniNodePropertyButtonStrip.h"
 
 
 
@@ -512,7 +513,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
             }
             else if(TypeOrdinal == PRM_Type::PRM_ORD_BUTTONSTRIP)
             {
-                int i = 5;
+                Property = NewObject<UHoudiniNodePropertyButtonStrip>(this, *PropertyName, PropertyObjectFlags);
             }
             else if(TypeOrdinal == PRM_Type::PRM_ORD_TOGGLE)
             {
@@ -559,7 +560,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
 
         if(Property)
         {
-            Property->Construct(Node, Template, Component, Time);
+            Property->Construct(Template, Component);
 
             CreatedProperties.Add(Property);
             Properties.Add(PropertyName, Property);

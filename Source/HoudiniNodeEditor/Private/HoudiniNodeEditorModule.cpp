@@ -8,6 +8,9 @@
 #include "HoudiniNodePropertyButton.h"
 #include "HoudiniNodePropertyButtonCustomization.h"
 
+#include "HoudiniNodePropertyButtonStrip.h"
+#include "HoudiniNodePropertyButtonStripCustomization.h"
+
 #include "HoudiniNodePropertyLabel.h"
 #include "HoudiniNodePropertyLabelCustomization.h"
 
@@ -66,6 +69,9 @@ FHoudiniNodeEditor::RegisterPropertyCustomizations()
     PropertyModule.RegisterCustomPropertyTypeLayout(UHoudiniNodePropertyButton::StaticClass()->GetFName(),
         FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyButtonCustomization::MakeInstance));
 
+    PropertyModule.RegisterCustomPropertyTypeLayout(UHoudiniNodePropertyButtonStrip::StaticClass()->GetFName(),
+        FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyButtonStripCustomization::MakeInstance));
+
     PropertyModule.RegisterCustomPropertyTypeLayout(UHoudiniNodePropertyLabel::StaticClass()->GetFName(),
         FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyLabelCustomization::MakeInstance));
 }
@@ -80,6 +86,7 @@ FHoudiniNodeEditor::UnregisterPropertyCustomizations()
 
         PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertySeparator::StaticClass()->GetFName());
         PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyButton::StaticClass()->GetFName());
+        PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyButtonStrip::StaticClass()->GetFName());
         PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyLabel::StaticClass()->GetFName());
     }
 }

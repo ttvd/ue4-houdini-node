@@ -17,6 +17,14 @@ public:
 
     virtual void StartupModule() override;
     virtual void ShutdownModule() override;
+
+protected:
+
+    //! Register property customizations.
+    void RegisterPropertyCustomizations();
+
+    //! Unregister property customizations.
+    void UnregisterPropertyCustomizations();
 };
 
 

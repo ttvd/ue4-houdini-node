@@ -34,12 +34,35 @@ FHoudiniNodeEditor::StartupModule()
             GEditor->ActorFactories.Add(Factory);
         }
     }
+
+    RegisterPropertyCustomizations();
 }
 
 
 void
 FHoudiniNodeEditor::ShutdownModule()
 {
+    UnregisterPropertyCustomizations();
+}
+
+
+void
+FHoudiniNodeEditor::RegisterPropertyCustomizations()
+{
+    FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(TEXT("PropertyEditor"));
+
+    // RegisterCustomClassLayout
+}
+
+
+void
+FHoudiniNodeEditor::UnregisterPropertyCustomizations()
+{
+    if(FModuleManager::Get().IsModuleLoaded(TEXT("PropertyEditor")))
+    {
+        FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(TEXT("PropertyEditor"));
+        //UnregisterCustomClassLayout
+    }
 }
 
 

@@ -14,6 +14,9 @@
 #include "HoudiniNodePropertyLabel.h"
 #include "HoudiniNodePropertyLabelCustomization.h"
 
+#include "HoudiniNodePropertyPath.h"
+#include "HoudiniNodePropertyPathCustomization.h"
+
 
 FHoudiniNodeEditor*
 GHoudiniNodeEditor = nullptr;
@@ -74,6 +77,9 @@ FHoudiniNodeEditor::RegisterPropertyCustomizations()
 
     PropertyModule.RegisterCustomPropertyTypeLayout(UHoudiniNodePropertyLabel::StaticClass()->GetFName(),
         FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyLabelCustomization::MakeInstance));
+
+    PropertyModule.RegisterCustomPropertyTypeLayout(UHoudiniNodePropertyPath::StaticClass()->GetFName(),
+        FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FHoudiniNodePropertyPathCustomization::MakeInstance));
 }
 
 
@@ -88,6 +94,7 @@ FHoudiniNodeEditor::UnregisterPropertyCustomizations()
         PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyButton::StaticClass()->GetFName());
         PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyButtonStrip::StaticClass()->GetFName());
         PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyLabel::StaticClass()->GetFName());
+        PropertyModule.UnregisterCustomPropertyTypeLayout(UHoudiniNodePropertyPath::StaticClass()->GetFName());
     }
 }
 

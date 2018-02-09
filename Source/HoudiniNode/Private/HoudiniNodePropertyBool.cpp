@@ -60,5 +60,5 @@ UHoudiniNodePropertyBool::Upload()
         return false;
     }
 
-    return UploadValues(Component);
+    return UploadValues();
 }

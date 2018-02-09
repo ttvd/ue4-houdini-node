@@ -17,9 +17,9 @@ UHoudiniNodePropertyFloat::~UHoudiniNodePropertyFloat()
 
 
 bool
-UHoudiniNodePropertyFloat::Construct(const PRM_Template* Template, UHoudiniNodeComponent* Component, float Time)
+UHoudiniNodePropertyFloat::Construct(const PRM_Template* Template, UHoudiniNodeComponent* Component)
 {
-    if(!Template || !Node || !Component)
+    if(!Template || !Component)
     {
         return false;
     }

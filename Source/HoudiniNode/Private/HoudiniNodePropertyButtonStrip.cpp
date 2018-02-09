@@ -27,14 +27,9 @@ UHoudiniNodePropertyButtonStrip::GetButtonNames(TArray<FString>& ButtonNames) co
         return false;
     }
 
-    UHoudiniNodeClass* HoudiniNodeClass = Cast<UHoudiniNodeClass>(Component->GetClass());
-
-    const float Time = HoudiniNodeClass->GetCookTime();
-    OP_Node* Node = HoudiniNodeClass->GetNode();
-
     TArray<FString> Strings;
 
-    if(!GetValues(Node, Component, Time, false, false, Strings))
+    if(!GetValues(false, false, Strings))
     {
         return false;
     }

@@ -198,7 +198,7 @@ FHoudiniNodePropertyCommon::AssignPropertyRanges() const
 
 
 bool
-FHoudiniNodePropertyCommon::GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
+FHoudiniNodePropertyCommon::GetValues(bool bAssign, bool bComputeOffset,
     TArray<float>& Values) const
 {
     Values.Empty();
@@ -258,7 +258,7 @@ FHoudiniNodePropertyCommon::GetValues(UHoudiniNodeComponent* Component, bool bAs
 
 
 bool
-FHoudiniNodePropertyCommon::GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
+FHoudiniNodePropertyCommon::GetValues(bool bAssign, bool bComputeOffset,
     TArray<int32>& Values) const
 {
     Values.Empty();
@@ -318,7 +318,7 @@ FHoudiniNodePropertyCommon::GetValues(UHoudiniNodeComponent* Component, bool bAs
 
 
 bool
-FHoudiniNodePropertyCommon::GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
+FHoudiniNodePropertyCommon::GetValues(bool bAssign, bool bComputeOffset,
     TArray<FString>& Values) const
 {
     Values.Empty();

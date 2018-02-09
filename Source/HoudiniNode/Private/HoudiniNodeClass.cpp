@@ -354,7 +354,7 @@ UHoudiniNodeClass::OnParameterChanged(UProperty* Property)
         if(FoundPropertyInterface)
         {
             IHoudiniNodePropertyInterface* PropertyInterface = *FoundPropertyInterface;
-            PropertyInterface->Upload(Node, Time);
+            PropertyInterface->Upload();
         }
     }
 
@@ -473,7 +473,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
 
     if(Property)
     {
-        Property->Update(Node, Time);
+        Property->Update();
     }
     else
     {

@@ -5,8 +5,6 @@
 
 
 class PRM_Template;
-class OP_Node;
-
 class UHoudiniNodeComponent;
 
 

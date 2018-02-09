@@ -51,16 +51,13 @@ protected:
 protected:
 
     //! Retrieve float values for a given property.
-    bool GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
-        TArray<float>& Values) const;
+    bool GetValues(bool bAssign, bool bComputeOffset, TArray<float>& Values) const;
 
     //! Retrieve integer values for a given property.
-    bool GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
-        TArray<int32>& Values) const;
+    bool GetValues(bool bAssign, bool bComputeOffset, TArray<int32>& Values) const;
 
     //! Retrieve string values for a given property.
-    bool GetValues(UHoudiniNodeComponent* Component, bool bAssign, bool bComputeOffset,
-        TArray<FString>& Values) const;
+    bool GetValues(bool bAssign, bool bComputeOffset, TArray<FString>& Values) const;
 
 protected:
 
@@ -109,7 +106,7 @@ FHoudiniNodePropertyCommon::ConstructProperty(bool bAssign, bool bComputeOffset)
     AssignPropertyRanges();
 
     TArray<TType> Values;
-    if(!GetValues(Component, bAssign, bComputeOffset, Values))
+    if(!GetValues(bAssign, bComputeOffset, Values))
     {
         return false;
     }

@@ -114,6 +114,11 @@ UHoudiniNodePropertyEnum::GetEnumValues(TArray<TPair<FName, int64> >& EnumValues
     }
 
     PRM_ChoiceList* ChoiceList = const_cast<PRM_ChoiceList*>(Template->getChoiceListPtr());
+    if(!ChoiceList)
+    {
+        return false;
+    }
+
     PRM_Name* ChoiceName = ChoiceList->choiceNamesPtr();
 
     int32 Idx = 0;

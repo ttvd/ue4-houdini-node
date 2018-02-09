@@ -61,6 +61,11 @@ protected:
 
 protected:
 
+    //! Retrieve choice values.
+    bool GetChoiceValues(TArray<TPair<FString, int64> >& ChoiceValues) const;
+
+protected:
+
     //! Set values for a given property.
     bool UploadValues() const;
 
@@ -97,7 +102,7 @@ template <typename TType>
 bool
 FHoudiniNodePropertyCommon::ConstructProperty(bool bAssign, bool bComputeOffset)
 {
-    if(Component)
+    if(!Component)
     {
         return false;
     }

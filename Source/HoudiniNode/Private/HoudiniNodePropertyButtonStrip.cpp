@@ -22,22 +22,18 @@ UHoudiniNodePropertyButtonStrip::GetButtonNames(TArray<FString>& ButtonNames) co
 {
     ButtonNames.Empty();
 
-    if(!Property || !Component)
+    TArray<TPair<FString, int64> > ChoiceValues;
+    if(!GetChoiceValues(ChoiceValues))
     {
         return false;
     }
 
-    TArray<FString> Strings;
-
-    if(!GetValues(false, false, Strings))
+    for(int32 Idx = 0; Idx < ChoiceValues.Num(); ++Idx)
     {
-        return false;
-    }
+        const TPair<FString, int64>& ChoiceValue = ChoiceValues[Idx];
+        const FString& ChoiceValueString = ChoiceValue.Key;
 
-    for(int32 Idx = 0; Idx < Strings.Num(); ++Idx)
-    {
-        const FString& Value = Strings[Idx];
-        ButtonNames.Add(Value);
+        ButtonNames.Add(ChoiceValueString);
     }
 
     return ButtonNames.Num() > 0;

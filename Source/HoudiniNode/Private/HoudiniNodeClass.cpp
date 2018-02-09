@@ -11,6 +11,7 @@
 #include "HoudiniNodePropertyColor.h"
 #include "HoudiniNodePropertyString.h"
 #include "HoudiniNodePropertyLabel.h"
+#include "HoudiniNodePropertyPath.h"
 #include "HoudiniNodePropertySeparator.h"
 #include "HoudiniNodePropertyInt.h"
 #include "HoudiniNodePropertyEnum.h"
@@ -550,7 +551,7 @@ UHoudiniNodeClass::CreateParameter(const PRM_Template* Template, TArray<IHoudini
             }
             else if(TypeString == PRM_Type::PRM_STR_PATH)
             {
-                volatile int i = 5;
+                Property = NewObject<UHoudiniNodePropertyPath>(this, *PropertyName, PropertyObjectFlags);
             }
             else if(TypeString == PRM_Type::PRM_STR_NONE)
             {

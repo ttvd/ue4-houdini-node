@@ -381,6 +381,41 @@ FHoudiniNodePropertyCommon::GetValues(bool bAssign, bool bComputeOffset,
 
 
 bool
+FHoudiniNodePropertyCommon::GetChoiceValues(TArray<TPair<FString, int64> >& ChoiceValues) const
+{
+    ChoiceValues.Empty();
+
+    if(!Template)
+    {
+        return false;
+    }
+
+    PRM_ChoiceList* ChoiceList = const_cast<PRM_ChoiceList*>(Template->getChoiceListPtr());
+    if(!ChoiceList)
+    {
+        return false;
+    }
+
+    PRM_Name* ChoiceName = ChoiceList->choiceNamesPtr();
+
+    int32 Idx = 0;
+    while(ChoiceName && ChoiceName->getToken())
+    {
+        const UT_String& RawLabel = ChoiceName->getLabel();
+        FString Label = UTF8_TO_TCHAR(RawLabel.c_str());
+
+        TPair<FString, int64> Entry(Label, Idx);
+        ChoiceValues.Add(Entry);
+
+        Idx++;
+        ChoiceName++;
+    }
+
+    return ChoiceValues.Num() > 0;
+}
+
+
+bool
 FHoudiniNodePropertyCommon::UploadValues() const
 {
     if(!Template || !Property || !Component)

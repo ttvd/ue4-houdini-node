@@ -113,25 +113,18 @@ UHoudiniNodePropertyEnum::GetEnumValues(TArray<TPair<FName, int64> >& EnumValues
         return false;
     }
 
-    PRM_ChoiceList* ChoiceList = const_cast<PRM_ChoiceList*>(Template->getChoiceListPtr());
-    if(!ChoiceList)
+    TArray<TPair<FString, int64> > ChoiceValues;
+    if(!GetChoiceValues(ChoiceValues))
     {
         return false;
     }
 
-    PRM_Name* ChoiceName = ChoiceList->choiceNamesPtr();
-
-    int32 Idx = 0;
-    while(ChoiceName && ChoiceName->getToken())
+    for(int32 Idx = 0; Idx < ChoiceValues.Num(); ++Idx)
     {
-        const UT_String& RawLabel = ChoiceName->getLabel();
-        FString Label = UTF8_TO_TCHAR(RawLabel.c_str());
+        const TPair<FString, int64>& ChoiceValue = ChoiceValues[Idx];
 
-        TPair<FName, int64> EnumEntry(FName(*Label), Idx);
+        TPair<FName, int64> EnumEntry(FName(*ChoiceValue.Key), ChoiceValue.Value);
         EnumValues.Add(EnumEntry);
-
-        Idx++;
-        ChoiceName++;
     }
 
     return EnumValues.Num() > 0;

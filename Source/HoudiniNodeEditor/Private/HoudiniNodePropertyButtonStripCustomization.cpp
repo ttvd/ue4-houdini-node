@@ -34,7 +34,7 @@ FHoudiniNodePropertyButtonStripCustomization::CustomizeHeader(TSharedRef<IProper
         SAssignNew(ButtonsPanel, SUniformGridPanel)
     ];
 
-    const int32 PropertySize = Property->GetPropertyDim();
+    const int32 PropertySize = ButtonNames.Num();
     for(int32 Idx = 0; Idx < PropertySize; ++Idx)
     {
         const FString& ButtonName = ButtonNames[Idx];
@@ -50,11 +50,13 @@ FHoudiniNodePropertyButtonStripCustomization::CustomizeHeader(TSharedRef<IProper
                 +SHorizontalBox::Slot()
                 .AutoWidth()
                 .VAlign(VAlign_Center)
+                /*
                 .Padding(3, 2)
                 [
                     SNew(SImage)
                     .Image(FEditorStyle::GetBrush("Mobility.Movable"))
                 ]
+                */
 
                 +SHorizontalBox::Slot()
                 .FillWidth(1.0f)

@@ -1,6 +1,5 @@
 #pragma once
-
-#include "Archive.h"
+#include "HoudiniNodeVariant.h"
 
 
 class UObject;
@@ -15,67 +14,86 @@ public:
 
 public:
 
-    /*
-    //! Serialize bytes.
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, void* Data, int64 Length);
+    //! Pack this archive into a given byte array.
+    bool Pack(TArray<char>& PackedBuffer) const;
 
-    //! Type serialization functions.
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const FName& Name);
+public:
 
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const FString& String);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<FString>& Strings);
+    //! Encode values.
+    template <typename TType> FHoudiniNodeArchive& Encode(const TType& Value);
+    template <typename TType> FHoudiniNodeArchive& Encode(const TArray<TType>& Values);
 
-    //! Serialization of primitive types.
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, bool bValue);
+    //! Encode values with a boolean option.
+    template <typename TType> FHoudiniNodeArchive& EncodeOption(const TType& Value, bool bOption);
+    template <typename TType> FHoudiniNodeArchive& EncodeOption(const TArray<TType>& Values, bool bOption);
 
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, float Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<float>& Values);
+protected:
 
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, int8 Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<int8>& Values);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, int16 Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<int16>& Values);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, int32 Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<int32>& Values);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, int64 Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<int64>& Values);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, uint8 Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<uint8>& Values);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, uint16 Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<uint16>& Values);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, uint32 Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<uint32>& Values);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, uint64 Value);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<uint64>& Values);
-
-    //! Serialization of math types.
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const FVector& Data, bool bScale);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<FVector>& Data, bool bScale);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const FVector2D& Data, bool bUVSwap);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<FVector2D>& Data, bool bUVSwap);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const FQuat& Data);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<FQuat>& Data);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const FRotator& Data);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<FRotator>& Data);
-
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const FTransform& Data, bool bSwap);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<FTransform>& Data, bool bSwap);
-
-    //! Serialization of objects.
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, UObject* Object);
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const TArray<UObject*>& Objects);
-
-    //! Serialize another archive.
-    virtual FHoudiniNodeArchive& operator<<(const FString& Key, const FHoudiniNodeArchive& Archive);
-    */
+    //! Storage for this archive.
+    TArray<FHoudiniNodeVariant> Buffer;
 };
+
+
+template <typename TType>
+FHoudiniNodeArchive&
+FHoudiniNodeArchive::Encode(const TType& Value)
+{
+    Buffer.Add(Value);
+    return *this;
+}
+
+
+template <typename TType>
+FHoudiniNodeArchive&
+FHoudiniNodeArchive::Encode(const TArray<TType>& Values)
+{
+    TArray<FHoudiniNodeVariant> Array;
+
+    for(int32 Idx = 0; Idx < Values.Num(); ++Idx)
+    {
+        const TType& Value = Values[Idx];
+        FHoudiniNodeVariant Variant(Value);
+        Array.Add(Variant);
+    }
+
+    if(Array.Num() > 0)
+    {
+        Buffer.Add(Array);
+    }
+
+    return *this;
+}
+
+
+template <typename TType>
+FHoudiniNodeArchive&
+FHoudiniNodeArchive::EncodeOption(const TType& Value, bool bOption)
+{
+    FHoudiniNodeVariant Variant(Value, bOption);
+    Buffer.Add(Variant);
+
+    return *this;
+}
+
+
+template <typename TType>
+FHoudiniNodeArchive&
+FHoudiniNodeArchive::EncodeOption(const TArray<TType>& Values, bool bOption)
+{
+    TArray<FHoudiniNodeVariant> Variants;
+
+    for(int32 Idx = 0; Idx < Values.Num(); ++Idx)
+    {
+        const TType& Value = Values[Idx];
+        FHoudiniNodeVariant Variant(Value, bOption);
+
+        Variants.Add(Variant);
+    }
+
+    if(Variants.Num() > 0)
+    {
+        Buffer.Add(Variants);
+    }
+
+    return *this;
+}

@@ -11,3 +11,13 @@ FHoudiniNodeArchive::~FHoudiniNodeArchive()
 {
 
 }
+
+
+bool
+FHoudiniNodeArchive::Pack(TArray<char>& PackedBuffer) const
+{
+    PackedBuffer.Empty();
+
+
+    return true;
+}

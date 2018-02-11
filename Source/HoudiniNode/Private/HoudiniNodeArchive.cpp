@@ -32,7 +32,7 @@ FHoudiniNodeArchive::Pack(TArray<uint8>& PackedBuffer) const
         }
 
         FHoudiniNodeVariant ObjectMap(Objects);
-        MainMap.Add("objects", ObjectMap);
+        MainMap.Add(HOUDINI_NODE_PACKING_SECTION_OBJECTS, ObjectMap);
     }
 
     // Create the main data segment.
@@ -57,7 +57,7 @@ FHoudiniNodeArchive::Pack(TArray<uint8>& PackedBuffer) const
         }
 
         FHoudiniNodeVariant ObjectArray(Objects);
-        MainMap.Add("data", ObjectArray);
+        MainMap.Add(HOUDINI_NODE_PACKING_SECTION_DATA, ObjectArray);
     }
 
     FHoudiniNodeVariant MainMapVariant(MainMap);

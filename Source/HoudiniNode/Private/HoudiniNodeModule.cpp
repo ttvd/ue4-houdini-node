@@ -1,6 +1,7 @@
 #include "HoudiniNodeModule.h"
 #include "HoudiniNodePrivatePCH.h"
 #include "HoudiniNodeGenerator.h"
+#include "HoudiniNodeObjectPacker.h"
 
 
 FHoudiniNode*
@@ -38,6 +39,7 @@ FHoudiniNode::StartupModule()
     GHoudiniNode = this;
 
     CreateGenerators();
+    CreateObjectPackers();
 
     // Load default material.
     {
@@ -100,6 +102,14 @@ FHoudiniNode::AddReferencedObjects(FReferenceCollector& Collector)
         Collector.AddReferencedObject(Generator);
     }
 
+    for(TMap<UClass*, UHoudiniNodeObjectPacker*>::TIterator Iter(ObjectPackers); Iter; ++Iter)
+    {
+        UClass* Class = Iter.Key();
+        UHoudiniNodeObjectPacker* ObjectPacker = Iter.Value();
+
+        Collector.AddReferencedObject(ObjectPacker);
+    }
+
     Collector.AddReferencedObject(DefaultMaterial);
 }
 
@@ -132,10 +142,49 @@ FHoudiniNode::CreateGenerators()
 }
 
 
+bool
+FHoudiniNode::CreateObjectPackers()
+{
+    ObjectPackers.Empty();
+
+    for(TObjectIterator<UClass> It; It; ++It)
+    {
+        UClass* Class = *It;
+
+        if(Class->HasAnyClassFlags(CLASS_Abstract))
+        {
+            continue;
+        }
+
+        if(Class->IsChildOf(UHoudiniNodeObjectPacker::StaticClass()))
+        {
+            UHoudiniNodeObjectPacker* ObjectPacker = NewObject<UHoudiniNodeObjectPacker>(GetTransientPackage(), Class, NAME_None, RF_Public | RF_Transactional);
+            if(ObjectPacker)
+            {
+                UClass* SupportedClass = ObjectPacker->GetSupportedClass();
+                if(SupportedClass)
+                {
+                    ObjectPackers.Add(SupportedClass, ObjectPacker);
+                }
+            }
+        }
+    }
+
+    return ObjectPackers.Num() > 0;
+}
+
+
 const TArray<UHoudiniNodeGenerator*>&
 FHoudiniNode::GetGenerators() const
 {
     return Generators;
+}
+
+
+const TMap<UClass*, UHoudiniNodeObjectPacker*>&
+FHoudiniNode::GeObjectPackers() const
+{
+    return ObjectPackers;
 }
 
 

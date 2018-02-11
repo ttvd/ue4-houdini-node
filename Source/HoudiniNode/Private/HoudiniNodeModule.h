@@ -6,6 +6,7 @@ class MOT_Director;
 class OP_Network;
 
 class UHoudiniNodeGenerator;
+class UHoudiniNodeObjectPacker;
 class FReferenceCollector;
 class UMaterialInterface;
 
@@ -39,6 +40,9 @@ public:
     //! Retrieve the list of available generators.
     const TArray<UHoudiniNodeGenerator*>& GetGenerators() const;
 
+    //! Retrieve the list of available object packers.
+    const TMap<UClass*, UHoudiniNodeObjectPacker*>& GeObjectPackers() const;
+
 public:
 
     //! Return the default material.
@@ -49,6 +53,9 @@ protected:
     //! Create generators.
     bool CreateGenerators();
 
+    //! Create object packers.
+    bool CreateObjectPackers();
+
 protected:
 
     //! MOT director.
@@ -58,6 +65,9 @@ protected:
 
     //! List of available generators.
     TArray<UHoudiniNodeGenerator*> Generators;
+
+    //! Available object packers.
+    TMap<UClass*, UHoudiniNodeObjectPacker*> ObjectPackers;
 
     //! Default material.
     UMaterialInterface* DefaultMaterial;

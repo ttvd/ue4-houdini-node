@@ -2,7 +2,7 @@
 #include "HoudiniNodeObjectPackerClass.generated.h"
 
 
-UCLASS(abstract)
+UCLASS()
 class HOUDININODE_API UHoudiniNodeObjectPackerClass : public UHoudiniNodeObjectPacker
 {
     GENERATED_UCLASS_BODY()

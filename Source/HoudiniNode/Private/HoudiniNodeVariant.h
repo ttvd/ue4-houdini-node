@@ -65,8 +65,25 @@ public:
     //! Return true if this variant is null.
     bool IsNull() const;
 
+    //! Return true if this is an object.
+    bool IsObject() const;
+
+    //! Return true if this is an array type.
+    bool IsArray() const;
+
+    //! Return true if this is a map type.
+    bool IsMap() const;
+
     //! Return true if this is a container type.
     bool IsContainer() const;
+
+public:
+
+    //! Recursively collect all objects.
+    void CollectObjects(TMap<FString, FHoudiniNodeVariant>& Objects) const;
+
+    //! If this is an object type, replace it with object reference.
+    bool ReplaceWithReference();
 
 protected:
 

@@ -15,7 +15,7 @@ public:
 public:
 
     //! Pack this archive into a given byte array.
-    bool Pack(TArray<char>& PackedBuffer) const;
+    bool Pack(TArray<uint8>& PackedBuffer) const;
 
 public:
 

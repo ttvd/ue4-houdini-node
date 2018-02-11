@@ -353,9 +353,30 @@ FHoudiniNodeVariant::IsNull() const
 
 
 bool
+FHoudiniNodeVariant::IsObject() const
+{
+    return VariantType == EHoudiniNodeVariantType::Object;
+}
+
+
+bool
+FHoudiniNodeVariant::IsArray() const
+{
+    return VariantType == EHoudiniNodeVariantType::Array;
+}
+
+
+bool
+FHoudiniNodeVariant::IsMap() const
+{
+    return VariantType == EHoudiniNodeVariantType::Map;
+}
+
+
+bool
 FHoudiniNodeVariant::IsContainer() const
 {
-    if(VariantType == EHoudiniNodeVariantType::Array || VariantType == EHoudiniNodeVariantType::Map)
+    if(IsArray() || IsMap())
     {
         return true;
     }
@@ -865,3 +886,74 @@ FHoudiniNodeVariant::Pack(const FString& String, FMemoryWriter& Writer) const
     }
 }
 
+
+void
+FHoudiniNodeVariant::CollectObjects(TMap<FString, FHoudiniNodeVariant>& Objects) const
+{
+    FMemoryReader Reader(VariantValue, true);
+
+    if(IsObject())
+    {
+        UObject* Object = nullptr;
+        Reader << Object;
+
+        if(Object)
+        {
+            const FString& ObjectPath = Object->GetPathName();
+            Objects.Add(ObjectPath, this);
+        }
+    }
+    else if(IsArray())
+    {
+        TArray<FHoudiniNodeVariant> Array;
+        Reader << Array;
+
+        const int32 ArraySize = Array.Num();
+        for(int32 Idx = 0; Idx < ArraySize; ++Idx)
+        {
+            const FHoudiniNodeVariant& Variant = Array[Idx];
+            Variant.CollectObjects(Objects);
+        }
+    }
+    else if(IsMap())
+    {
+        TMap<FString, FHoudiniNodeVariant> Map;
+        Reader << Map;
+
+        for(TMap<FString, FHoudiniNodeVariant>::TIterator Iter(Map); Iter; ++Iter)
+        {
+            const FHoudiniNodeVariant& Variant = Iter.Value();
+            Variant.CollectObjects(Objects);
+        }
+    }
+}
+
+
+bool
+FHoudiniNodeVariant::ReplaceWithReference()
+{
+    if(!IsObject())
+    {
+        return false;
+    }
+
+    FMemoryReader Reader(VariantValue, true);
+
+    UObject* Object = nullptr;
+    Reader << Object;
+
+    if(Object)
+    {
+        VariantType = EHoudiniNodeVariantType::String;
+        FString String = Object->GetPathName();
+
+        VariantValue.Empty();
+
+        FMemoryWriter Writer(VariantValue, true);
+        Writer << String;
+
+        return true;
+    }
+
+    return false;
+}

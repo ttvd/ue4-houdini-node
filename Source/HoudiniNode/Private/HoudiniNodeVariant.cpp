@@ -942,7 +942,7 @@ FHoudiniNodeVariant::ReplaceWithReference()
     UObject* Object = nullptr;
     Reader << Object;
 
-    if(Object)
+    if(Object && !Object->IsA(AActor::StaticClass()))
     {
         VariantType = EHoudiniNodeVariantType::String;
         FString String = Object->GetPathName();

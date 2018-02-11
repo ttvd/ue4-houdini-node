@@ -15,3 +15,15 @@ UHoudiniNodeObjectPacker::GetSupportedClass() const
 {
     return SupportedClass;
 }
+
+
+bool
+UHoudiniNodeObjectPacker::Encode(TMap<FString, FHoudiniNodeVariant>& ObjectMap, UObject* Object) const
+{
+    if(!Object)
+    {
+        return false;
+    }
+
+    return true;
+}

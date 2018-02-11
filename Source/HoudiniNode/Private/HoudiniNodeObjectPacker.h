@@ -19,7 +19,7 @@ public:
 public:
 
     //! Pack the object of this type.
-    virtual bool Encode(TMap<FString, FHoudiniNodeVariant>& ObjectMap, UObject* Object) const;
+    virtual bool Encode(UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 
 protected:
 

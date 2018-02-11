@@ -136,7 +136,13 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UObjectProperty* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return false;
+    void* ValueAddr = Property->ContainerPtrToValuePtr<void>(Object);
+    UObject* Object = Property->GetObjectPropertyValue(ValueAddr);
+
+    const FString& PropertyName = Property->GetName();
+    //ObjectMap
+
+    return true;
 }
 
 

@@ -64,6 +64,10 @@ private:
 
 private:
 
+    //! Helper function which encodes primitive types.
+    template <typename TType> bool EncodePropertyPrimitive(UProperty* Property, UObject* Object,
+        TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+
     //! Helper function which encodes signed int types.
     template <typename TType> bool EncodePropertySignedInt(UNumericProperty* Property, UObject* Object,
         TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
@@ -76,29 +80,14 @@ private:
 
 template <typename TType>
 bool
-UHoudiniNodeObjectPackerObject::EncodePropertySignedInt(UNumericProperty* Property, UObject* Object,
+UHoudiniNodeObjectPackerObject::EncodePropertyPrimitive(UProperty* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    void* ValueAddr = Property->ContainerPtrToValuePtr<void>(Object);
-    TType Result = (TType) Property->GetSignedIntPropertyValue(ValueAddr);
+    const int32 Offset = Property->GetOffset_ForDebug();
+    TType Value = *((TType*)((const char*) Object) + Offset);
 
     const FString& PropertyName = Property->GetName();
-    ObjectMap.Add(PropertyName, Result);
-
-    return true;
-}
-
-
-template <typename TType>
-bool
-UHoudiniNodeObjectPackerObject::EncodePropertyUnsignedInt(UNumericProperty* Property, UObject* Object,
-    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
-{
-    void* ValueAddr = Property->ContainerPtrToValuePtr<void>(Object);
-    TType Result = (TType) Property->GetUnsignedIntPropertyValue(ValueAddr);
-
-    const FString& PropertyName = Property->GetName();
-    ObjectMap.Add(PropertyName, Result);
+    ObjectMap.Add(PropertyName, Value);
 
     return true;
 }

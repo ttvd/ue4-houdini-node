@@ -67,14 +67,6 @@ private:
     //! Helper function which encodes primitive types.
     template <typename TType> bool EncodePropertyPrimitive(UProperty* Property, UObject* Object,
         TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
-
-    //! Helper function which encodes signed int types.
-    template <typename TType> bool EncodePropertySignedInt(UNumericProperty* Property, UObject* Object,
-        TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
-
-    //! Helper function which encodes unsigned int types.
-    template <typename TType> bool EncodePropertyUnsignedInt(UNumericProperty* Property, UObject* Object,
-        TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 };
 
 

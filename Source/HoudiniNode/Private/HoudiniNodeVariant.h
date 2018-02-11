@@ -82,7 +82,7 @@ public:
     //! Recursively collect all objects.
     void CollectObjects(TMap<FString, FHoudiniNodeVariant>& Objects) const;
 
-    //! If this is an object type, replace it with object reference.
+    //! If this is an object type, replace it with object reference (converts object type to a string).
     bool ReplaceWithReference();
 
 protected:

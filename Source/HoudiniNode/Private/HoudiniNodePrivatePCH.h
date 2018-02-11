@@ -92,4 +92,5 @@
 
 #define HOUDINI_NODE_ATTRIBUTE_ASSIGN_COLLISION_PROFILE                 TEXT("assign_collision_profile")
 
-
+#define HOUDINI_NODE_PACKING_SECTION_OBJECTS                            TEXT("objects")
+#define HOUDINI_NODE_PACKING_SECTION_DATA                               TEXT("data")

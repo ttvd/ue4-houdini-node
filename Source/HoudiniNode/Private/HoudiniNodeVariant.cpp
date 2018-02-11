@@ -19,6 +19,13 @@ operator<<(FArchive& Ar, FHoudiniNodeVariant& Variant)
 }
 
 
+FHoudiniNodeVariant
+FHoudiniNodeVariant::MakeNull()
+{
+    return FHoudiniNodeVariant();
+}
+
+
 FHoudiniNodeVariant::FHoudiniNodeVariant() :
     VariantType(EHoudiniNodeVariantType::Null)
 {

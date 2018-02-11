@@ -140,7 +140,16 @@ UHoudiniNodeObjectPackerObject::EncodeProperty(UObjectProperty* Property, UObjec
     UObject* Object = Property->GetObjectPropertyValue(ValueAddr);
 
     const FString& PropertyName = Property->GetName();
-    //ObjectMap
+
+    if(Object)
+    {
+        TMap<FString, FHoudiniNodeVariant> ObjectMapLocal;
+        // recursively encode.
+    }
+    else
+    {
+        ObjectMap.Add(PropertyName, FHoudiniNodeVariant());
+    }
 
     return true;
 }

@@ -54,6 +54,11 @@ public:
 
 public:
 
+    //! Make a null variant.
+    static FHoudiniNodeVariant MakeNull();
+
+public:
+
     //! Pack variant into a given stream (message pack protocol).
     void Pack(TArray<uint8>& PackedBuffer) const;
 

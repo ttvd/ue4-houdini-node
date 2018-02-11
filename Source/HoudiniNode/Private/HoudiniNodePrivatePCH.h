@@ -11,6 +11,8 @@
 #include "Engine/CollisionProfile.h"
 #include "PhysicsEngine/BodyInstance.h"
 #include "PhysicsEngine/BodySetup.h"
+#include "Serialization/MemoryReader.h"
+#include "Serialization/MemoryWriter.h"
 
 #if WITH_EDITOR
 #include "EditorFramework/AssetImportData.h"

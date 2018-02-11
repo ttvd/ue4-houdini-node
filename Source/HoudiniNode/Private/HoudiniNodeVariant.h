@@ -54,6 +54,11 @@ public:
 
 public:
 
+    //! Pack variant into a given stream (message pack protocol).
+    void Pack(TArray<uint8>& PackedBuffer) const;
+
+public:
+
     //! Return the type of this variant.
     EHoudiniNodeVariantType::Enum GetType() const;
 
@@ -65,9 +70,23 @@ public:
 
 protected:
 
+    //! Helper function used to pack data into a memory writer.
+    void Pack(FMemoryWriter& Writer) const;
+
+    //! Helper function used to pack integer types.
+    void Pack(int64 Value, FMemoryWriter& Writer) const;
+    void Pack(uint64 Value, FMemoryWriter& Writer) const;
+
+    //! Helper function used to pack string types.
+    void Pack(const FString& String, FMemoryWriter& Writer) const;
+
+protected:
+
     //! Type of this variant.
     EHoudiniNodeVariantType::Enum VariantType;
 
     //! Variant value.
     TArray<uint8> VariantValue;
 };
+
+

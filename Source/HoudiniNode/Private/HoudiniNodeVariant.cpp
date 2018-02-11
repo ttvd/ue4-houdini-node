@@ -362,3 +362,506 @@ FHoudiniNodeVariant::IsContainer() const
 
     return false;
 }
+
+
+void
+FHoudiniNodeVariant::Pack(TArray<uint8>& PackedBuffer) const
+{
+    TArray<uint8> SerializedBytes;
+    FMemoryWriter Writer(SerializedBytes, true);
+    Writer.SetByteSwapping(true);
+
+    Pack(Writer);
+
+    PackedBuffer.Append(SerializedBytes);
+}
+
+
+void
+FHoudiniNodeVariant::Pack(FMemoryWriter& Writer) const
+{
+    FMemoryReader Reader(VariantValue, true);
+
+    switch(VariantType)
+    {
+        default:
+        case EHoudiniNodeVariantType::Null:
+        {
+            uint8 Code = 0xC0;
+            Writer << Code;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Bool:
+        {
+            bool bResult = false;
+            Reader << bResult;
+
+            if(bResult)
+            {
+                uint8 Code = 0xC3;
+                Writer << Code;
+            }
+            else
+            {
+                uint8 Code = 0xC2;
+                Writer << Code;
+            }
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Int8:
+        {
+            int8 Value = 0;
+            Reader << Value;
+
+            Pack((int64) Value, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Int16:
+        {
+            int16 Value = 0;
+            Reader << Value;
+
+            Pack((int64) Value, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Int32:
+        {
+            int32 Value = 0;
+            Reader << Value;
+
+            Pack((int64) Value, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Int64:
+        {
+            int64 Value = 0;
+            Reader << Value;
+
+            Pack((int64) Value, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::UInt8:
+        {
+            uint8 Value = 0u;
+            Reader << Value;
+
+            Pack((uint64) Value, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::UInt16:
+        {
+            uint16 Value = 0u;
+            Reader << Value;
+
+            Pack((uint64) Value, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::UInt32:
+        {
+            uint32 Value = 0u;
+            Reader << Value;
+
+            Pack((uint64) Value, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::UInt64:
+        {
+            uint64 Value = 0u;
+            Reader << Value;
+
+            Pack((uint64) Value, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Float:
+        {
+            float Value = 0.0f;
+            Reader << Value;
+
+            uint8 Code = 0xCA;
+            Writer << Code << Value;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Double:
+        {
+            double Value = 0.0;
+            Reader << Value;
+
+            uint8 Code = 0xCB;
+            Writer << Code << Value;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::String:
+        {
+            FString String(TEXT(""));
+            Reader << String;
+
+            Pack(String, Writer);
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Vector:
+        {
+            FVector Value = FVector::ZeroVector;
+            Reader << Value;
+
+            uint8 Code = 0x93;
+            Writer << Code << Value.X << Value.Y << Value.Z;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Vector2:
+        {
+            FVector2D Value = FVector2D::ZeroVector;
+            Reader << Value;
+
+            uint8 Code = 0x92;
+            Writer << Code << Value.X << Value.Y;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Vector4:
+        {
+            FVector4 Value(0.0f, 0.0f, 0.0f, 1.0f);
+            Reader << Value;
+
+            uint8 Code = 0x94;
+            Writer << Code << Value.X << Value.Y << Value.Z << Value.W;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Quaternion:
+        {
+            FQuat Value = FQuat::Identity;
+            Reader << Value;
+
+            uint8 Code = 0x94;
+            Writer << Code << Value.X << Value.Y << Value.Z << Value.W;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Rotator:
+        {
+            FRotator Value = FRotator::ZeroRotator;
+            Reader << Value;
+
+            uint8 Code = 0x93;
+            Writer << Code << Value.Pitch << Value.Yaw << Value.Roll;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Transform:
+        {
+            FTransform Transform = FTransform::Identity;
+            Reader << Transform;
+
+            uint8 CodeTransform = 0x93;
+            Writer << CodeTransform;
+
+            {
+                FVector Translation = Transform.GetTranslation();
+
+                uint8 Code = 0x93;
+                Writer << Code << Translation.X << Translation.Y << Translation.Z;
+            }
+
+            {
+                FQuat Rotation = Transform.GetRotation();
+
+                uint8 Code = 0x94;
+                Writer << Code << Rotation.X << Rotation.Y << Rotation.Z << Rotation.W;
+            }
+
+            {
+                FVector Scale = Transform.GetScale3D();
+
+                uint8 Code = 0x93;
+                Writer << Code << Scale.X << Scale.Y << Scale.Z;
+            }
+        }
+
+        case EHoudiniNodeVariantType::Color:
+        {
+            FLinearColor Color = FLinearColor::White;
+            Reader << Color;
+
+            uint8 Code = 0x94;
+            Writer << Code << Color.R << Color.G << Color.B;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Object:
+        {
+            // Implementation missing.
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Box:
+        {
+            FBox Box;
+            Reader << Box;
+
+            uint8 CodeBox = 0x92;
+            Writer << CodeBox;
+
+            {
+                uint8 Code = 0x93;
+                Writer << Code << Box.Min.X << Box.Min.Y << Box.Min.Z;
+            }
+
+            {
+                uint8 Code = 0x93;
+                Writer << Code << Box.Max.X << Box.Max.Y << Box.Max.Z;
+            }
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::BoxSphereBounds:
+        {
+            FBoxSphereBounds Bounds;
+            Reader << Bounds;
+
+            uint8 CodeBounds = 0x93;
+            Writer << CodeBounds;
+
+            {
+                uint8 Code = 0x93;
+                Writer << Code << Bounds.Origin.X << Bounds.Origin << Bounds.Origin.Z;
+            }
+
+            {
+                uint8 Code = 0x93;
+                Writer << Code << Bounds.BoxExtent.X << Bounds.BoxExtent.Y << Bounds.BoxExtent.Z;
+            }
+
+            Writer << Bounds.SphereRadius;
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Array:
+        {
+            TArray<FHoudiniNodeVariant> Array;
+            Reader << Array;
+
+            const int32 ArraySize = Array.Num();
+
+            if(ArraySize > 0)
+            {
+                uint8 Code = 0;
+
+                if(ArraySize < 16)
+                {
+                    Code = 0x90 | ArraySize;
+                }
+                else if(ArraySize < 65536)
+                {
+                    Code = 0xDC;
+                }
+                else
+                {
+                    Code = 0XDD;
+                }
+
+                Writer << Code;
+
+                for(int32 ArrayIdx = 0; ArrayIdx < ArraySize; ++ArrayIdx)
+                {
+                    const FHoudiniNodeVariant& Variant = Array[ArrayIdx];
+                    Variant.Pack(Writer);
+                }
+            }
+            else
+            {
+                uint8 Code = 0xC0;
+                Writer << Code;
+            }
+
+            break;
+        }
+
+        case EHoudiniNodeVariantType::Map:
+        {
+            TMap<FString, FHoudiniNodeVariant> Map;
+            Reader << Map;
+
+            const int32 MapSize = Map.Num();
+
+            if(MapSize > 0)
+            {
+                uint8 Code = 0;
+
+                if(MapSize < 16)
+                {
+                    Code = 0x80 | MapSize;
+                }
+                else if(MapSize < 65536)
+                {
+                    Code = 0xDE;
+                }
+                else
+                {
+                    Code = 0XDF;
+                }
+
+                Writer << Code;
+
+                for(TMap<FString, FHoudiniNodeVariant>::TIterator Iter(Map); Iter; ++Iter)
+                {
+                    const FString& String = Iter.Key();
+                    const FHoudiniNodeVariant& Variant = Iter.Value();
+
+                    Pack(String, Writer);
+                    Variant.Pack(Writer);
+                }
+            }
+            else
+            {
+                uint8 Code = 0xC0;
+                Writer << Code;
+            }
+
+            break;
+        }
+    }
+}
+
+
+void
+FHoudiniNodeVariant::Pack(int64 Value, FMemoryWriter& Writer) const
+{
+    if(Value >= 0)
+    {
+        Pack((uint64) Value, Writer);
+    }
+    else
+    {
+        if(Value >= -32)
+        {
+            int8 ValueCast = (int8) Value;
+            Writer << ValueCast;
+        }
+        else if(Value >= -128)
+        {
+            uint8 Code = 0xD0;
+            int8 ValueCast = (int8) Value;
+
+            Writer << Code << ValueCast;
+        }
+        else if(Value >= -32768)
+        {
+            uint8 Code = 0xD1;
+            int16 ValueCast = (int16) Value;
+
+            Writer << Code << ValueCast;
+        }
+        else if(Value >= -2147483648LL)
+        {
+            uint8 Code = 0xD2;
+            int32 ValueCast = (int32) Value;
+
+            Writer << Code << ValueCast;
+        }
+        else
+        {
+            uint8 Code = 0xD3;
+            Writer << Code << Value;
+        }
+    }
+}
+
+
+void
+FHoudiniNodeVariant::Pack(uint64 Value, FMemoryWriter& Writer) const
+{
+    if(Value < 128u)
+    {
+        uint8 ValueCast = (uint8) Value;
+        Writer << ValueCast;
+    }
+    else if(Value < 256u)
+    {
+        uint8 Code = 0xCC;
+        uint8 ValueCast = (uint8) Value;
+
+        Writer << Code << ValueCast;
+    }
+    else if(Value < 65536u)
+    {
+        uint8 Code = 0xCD;
+        uint16 ValueCast = (uint16) Value;
+
+        Writer << Code << ValueCast;
+    }
+    else if(Value < 4294967296uLL)
+    {
+        uint8 Code = 0xCE;
+        uint32 ValueCast = (uint32) Value;
+
+        Writer << Code << ValueCast;
+    }
+    else
+    {
+        uint8 Code = 0xCF;
+        Writer << Code << Value;
+    }
+}
+
+
+void
+FHoudiniNodeVariant::Pack(const FString& String, FMemoryWriter& Writer) const
+{
+    std::string Value = TCHAR_TO_UTF8(*String);
+    const int32 ValueSize = Value.size();
+
+    if(ValueSize > 0)
+    {
+        if(ValueSize < 32)
+        {
+            uint8 Code = 0xA0 | ValueSize;
+        }
+        else if(ValueSize < 256)
+        {
+            uint8 Code = 0xD9;
+        }
+        else if(ValueSize < 65536)
+        {
+            uint8 Code = 0xDA;
+        }
+        else
+        {
+            uint8 Code = 0xDB;
+        }
+
+        Writer.Serialize(&Value[0], ValueSize);
+    }
+    else
+    {
+        uint8 Code = 0xC0;
+        Writer << Code;
+    }
+}
+

@@ -42,7 +42,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UByteProperty* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return EncodePropertyUnsignedInt<uint8>(Property, Object, ObjectMap);
+    return EncodePropertyPrimitive<uint8>(Property, Object, ObjectMap);
 }
 
 
@@ -50,7 +50,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UInt8Property* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return EncodePropertySignedInt<int8>(Property, Object, ObjectMap);
+    return EncodePropertyPrimitive<int8>(Property, Object, ObjectMap);
 }
 
 
@@ -58,7 +58,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UInt16Property* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return EncodePropertySignedInt<int16>(Property, Object, ObjectMap);
+    return EncodePropertyPrimitive<int16>(Property, Object, ObjectMap);
 }
 
 
@@ -66,7 +66,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UIntProperty* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return EncodePropertySignedInt<int32>(Property, Object, ObjectMap);
+    return EncodePropertyPrimitive<int32>(Property, Object, ObjectMap);
 }
 
 
@@ -74,7 +74,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UInt64Property* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return EncodePropertySignedInt<int64>(Property, Object, ObjectMap);
+    return EncodePropertyPrimitive<int64>(Property, Object, ObjectMap);
 }
 
 
@@ -82,7 +82,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt16Property* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return EncodePropertyUnsignedInt<uint16>(Property, Object, ObjectMap);
+    return EncodePropertyPrimitive<uint16>(Property, Object, ObjectMap);
 }
 
 
@@ -90,7 +90,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt32Property* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return EncodePropertyUnsignedInt<uint32>(Property, Object, ObjectMap);
+    return EncodePropertyPrimitive<uint32>(Property, Object, ObjectMap);
 }
 
 
@@ -98,7 +98,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt64Property* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return EncodePropertyUnsignedInt<uint64>(Property, Object, ObjectMap);
+    return EncodePropertyPrimitive<uint64>(Property, Object, ObjectMap);
 }
 
 
@@ -106,7 +106,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UFloatProperty* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return false;
+    return EncodePropertyPrimitive<float>(Property, Object, ObjectMap);
 }
 
 
@@ -114,7 +114,7 @@ bool
 UHoudiniNodeObjectPackerObject::EncodeProperty(UDoubleProperty* Property, UObject* Object,
     TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
-    return false;
+    return EncodePropertyPrimitive<double>(Property, Object, ObjectMap);
 }
 
 

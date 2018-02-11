@@ -196,7 +196,7 @@ UHoudiniNodeComponent::GetScratchSpaceValueAtOffset(uint32 Offset, TType& Value)
 
     if(EntrySize <= 4)
     {
-        FMemory::Memcpy((void*) &Values[0], (const void*) Position, Bytes);
+        FMemory::Memcpy((void*) &Value, (const void*) Position, Bytes);
     }
     else
     {

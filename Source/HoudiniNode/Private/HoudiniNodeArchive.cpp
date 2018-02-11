@@ -15,20 +15,53 @@ FHoudiniNodeArchive::~FHoudiniNodeArchive()
 
 
 bool
-FHoudiniNodeArchive::Pack(TArray<char>& PackedBuffer) const
+FHoudiniNodeArchive::Pack(TArray<uint8>& PackedBuffer) const
 {
     PackedBuffer.Empty();
 
-    for(int32 VariantIdx = 0; VariantIdx < Buffer.Num(); ++VariantIdx)
-    {
-        const FHoudiniNodeVariant& Variant = Buffer[VariantIdx];
+    TMap<FString, FHoudiniNodeVariant> MainMap;
 
-        if(Variant.IsNull())
+    // Find all objects, so that we can create an object map.
+    {
+        TMap<FString, FHoudiniNodeVariant> Objects;
+
+        for(int32 VariantIdx = 0; VariantIdx < Buffer.Num(); ++VariantIdx)
         {
-            
+            const FHoudiniNodeVariant& Variant = Buffer[VariantIdx];
+            Variant.CollectObjects(Objects);
         }
 
+        FHoudiniNodeVariant ObjectMap(Objects);
+        MainMap.Add("objects", ObjectMap);
     }
+
+    // Create the main data segment.
+    {
+        TArray<FHoudiniNodeVariant> Objects;
+
+        for(int32 VariantIdx = 0; VariantIdx < Buffer.Num(); ++VariantIdx)
+        {
+            const FHoudiniNodeVariant& Variant = Buffer[VariantIdx];
+
+            if(Variant.IsObject())
+            {
+                FHoudiniNodeVariant VariantObject(Variant);
+                VariantObject.ReplaceWithReference();
+
+                Objects.Add(VariantObject);
+            }
+            else
+            {
+                Objects.Add(Variant);
+            }
+        }
+
+        FHoudiniNodeVariant ObjectArray(Objects);
+        MainMap.Add("data", ObjectArray);
+    }
+
+    FHoudiniNodeVariant MainMapVariant(MainMap);
+    MainMapVariant.Pack(PackedBuffer);
 
     return true;
 }

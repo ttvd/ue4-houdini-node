@@ -10,7 +10,7 @@ UHoudiniNodeObjectPackerObject::UHoudiniNodeObjectPackerObject(const FObjectInit
 
 
 bool
-UHoudiniNodeObjectPackerObject::Encode(TMap<FString, FHoudiniNodeVariant>& ObjectMap, UObject* Object) const
+UHoudiniNodeObjectPackerObject::Encode(UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     if(!Object)
     {
@@ -22,7 +22,7 @@ UHoudiniNodeObjectPackerObject::Encode(TMap<FString, FHoudiniNodeVariant>& Objec
     UProperty* Property = dynamic_cast<UProperty*>(ObjectClass->Children);
     while(Property)
     {
-        EncodeProperty(Property);
+        EncodeProperty(Property, Object, ObjectMap);
         Property = dynamic_cast<UProperty*>(Property->Next);
     }
 
@@ -31,140 +31,179 @@ UHoudiniNodeObjectPackerObject::Encode(TMap<FString, FHoudiniNodeVariant>& Objec
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UProperty* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(UProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UByteProperty* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(UByteProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    return EncodePropertyUnsignedInt<uint8>(Property, Object, ObjectMap);
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UInt8Property* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    return EncodePropertySignedInt<int8>(Property, Object, ObjectMap);
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UInt16Property* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    return EncodePropertySignedInt<int16>(Property, Object, ObjectMap);
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UIntProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    return EncodePropertySignedInt<int32>(Property, Object, ObjectMap);
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UInt64Property* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    return EncodePropertySignedInt<int64>(Property, Object, ObjectMap);
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt16Property* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    return EncodePropertyUnsignedInt<uint16>(Property, Object, ObjectMap);
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt32Property* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    return EncodePropertyUnsignedInt<uint32>(Property, Object, ObjectMap);
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt64Property* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    return EncodePropertyUnsignedInt<uint64>(Property, Object, ObjectMap);
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UFloatProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UInt8Property* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(UDoubleProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UInt16Property* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(UBoolProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    void* ValueAddr = Property->ContainerPtrToValuePtr<void>(Object);
+    bool bBoolValue = Property->GetPropertyValue(ValueAddr);
+
+    const FString& PropertyName = Property->GetName();
+    ObjectMap.Add(PropertyName, bBoolValue);
+
+    return true;
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UObjectProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UIntProperty* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(UClassProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UInt64Property* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(UNameProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    void* ValueAddr = Property->ContainerPtrToValuePtr<void>(Object);
+    const FName& Name = Property->GetPropertyValue(ValueAddr);
+    const FString& String = Name.ToString();
+
+    const FString& PropertyName = Property->GetName();
+    ObjectMap.Add(PropertyName, String);
+
+    return true;
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UStrProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    void* ValueAddr = Property->ContainerPtrToValuePtr<void>(Object);
+    const FString& String = Property->GetPropertyValue(ValueAddr);
+
+    const FString& PropertyName = Property->GetName();
+    ObjectMap.Add(PropertyName, String);
+
+    return true;
+}
+
+
+bool
+UHoudiniNodeObjectPackerObject::EncodeProperty(UArrayProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt16Property* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(UMapProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt32Property* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(USetProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }
 
 
 bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UUInt64Property* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UFloatProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UDoubleProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UBoolProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UObjectProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UClassProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UNameProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UStrProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UArrayProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UMapProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(USetProperty* Property) const
-{
-    return false;
-}
-
-
-bool
-UHoudiniNodeObjectPackerObject::EncodeProperty(UStructProperty* Property) const
+UHoudiniNodeObjectPackerObject::EncodeProperty(UStructProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     return false;
 }

@@ -18,7 +18,7 @@ UHoudiniNodeObjectPacker::GetSupportedClass() const
 
 
 bool
-UHoudiniNodeObjectPacker::Encode(TMap<FString, FHoudiniNodeVariant>& ObjectMap, UObject* Object) const
+UHoudiniNodeObjectPacker::Encode(UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
 {
     if(!Object)
     {

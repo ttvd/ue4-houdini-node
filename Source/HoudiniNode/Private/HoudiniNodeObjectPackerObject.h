@@ -31,34 +31,74 @@ class HOUDININODE_API UHoudiniNodeObjectPackerObject : public UHoudiniNodeObject
 public:
 
     //! Pack the object of this type.
-    virtual bool Encode(TMap<FString, FHoudiniNodeVariant>& ObjectMap, UObject* Object) const;
+    virtual bool Encode(UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 
 private:
 
     //! Property conversion functions.
-    bool EncodeProperty(UProperty* Property) const;
+    bool EncodeProperty(UProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 
-    bool EncodeProperty(UByteProperty* Property) const;
-    bool EncodeProperty(UInt8Property* Property) const;
-    bool EncodeProperty(UInt16Property* Property) const;
-    bool EncodeProperty(UIntProperty* Property) const;
-    bool EncodeProperty(UInt64Property* Property) const;
-    bool EncodeProperty(UUInt16Property* Property) const;
-    bool EncodeProperty(UUInt32Property* Property) const;
-    bool EncodeProperty(UUInt64Property* Property) const;
-    bool EncodeProperty(UFloatProperty* Property) const;
-    bool EncodeProperty(UDoubleProperty* Property) const;
-    bool EncodeProperty(UBoolProperty* Property) const;
+    bool EncodeProperty(UByteProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UInt8Property* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UInt16Property* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UIntProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UInt64Property* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UUInt16Property* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UUInt32Property* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UUInt64Property* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UFloatProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UDoubleProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UBoolProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 
-    bool EncodeProperty(UObjectProperty* Property) const;
-    bool EncodeProperty(UClassProperty* Property) const;
+    bool EncodeProperty(UObjectProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UClassProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 
-    bool EncodeProperty(UNameProperty* Property) const;
-    bool EncodeProperty(UStrProperty* Property) const;
+    bool EncodeProperty(UNameProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UStrProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 
-    bool EncodeProperty(UArrayProperty* Property) const;
-    bool EncodeProperty(UMapProperty* Property) const;
-    bool EncodeProperty(USetProperty* Property) const;
+    bool EncodeProperty(UArrayProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(UMapProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+    bool EncodeProperty(USetProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 
-    bool EncodeProperty(UStructProperty* Property) const;
+    bool EncodeProperty(UStructProperty* Property, UObject* Object, TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+
+private:
+
+    //! Helper function which encodes signed int types.
+    template <typename TType> bool EncodePropertySignedInt(UNumericProperty* Property, UObject* Object,
+        TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
+
+    //! Helper function which encodes unsigned int types.
+    template <typename TType> bool EncodePropertyUnsignedInt(UNumericProperty* Property, UObject* Object,
+        TMap<FString, FHoudiniNodeVariant>& ObjectMap) const;
 };
+
+
+template <typename TType>
+bool
+UHoudiniNodeObjectPackerObject::EncodePropertySignedInt(UNumericProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    void* ValueAddr = Property->ContainerPtrToValuePtr<void>(Object);
+    TType Result = (TType) Property->GetSignedIntPropertyValue(ValueAddr);
+
+    const FString& PropertyName = Property->GetName();
+    ObjectMap.Add(PropertyName, Result);
+
+    return true;
+}
+
+
+template <typename TType>
+bool
+UHoudiniNodeObjectPackerObject::EncodePropertyUnsignedInt(UNumericProperty* Property, UObject* Object,
+    TMap<FString, FHoudiniNodeVariant>& ObjectMap) const
+{
+    void* ValueAddr = Property->ContainerPtrToValuePtr<void>(Object);
+    TType Result = (TType) Property->GetUnsignedIntPropertyValue(ValueAddr);
+
+    const FString& PropertyName = Property->GetName();
+    ObjectMap.Add(PropertyName, Result);
+
+    return true;
+}

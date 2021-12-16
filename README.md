@@ -1,3 +1,1 @@
-## Houdini Node Effort
-  
-
+## Houdini Node is an old experiment at bypassing Houdini Engine and using HDK directly.

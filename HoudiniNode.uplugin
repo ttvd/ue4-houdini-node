@@ -1,0 +1,28 @@
+{
+	"FileVersion" : 3,
+
+	"FriendlyName" : "Houdini Node",
+	"Version" : 1,
+	"VersionName" : "1.0",
+	"CreatedBy" : "Mykola Konyk.",
+	"CreatedByURL" : "http://www.github.com/ttvd",
+	"Description" : "Houdini Node for Unreal Engine.",
+	"Category" : "Procedural",
+	"EnabledByDefault" : true,
+
+	"Modules" :
+	[
+		{
+			"Name" : "HoudiniNode",
+			"Type" : "Runtime",
+			"WhitelistPlatforms" : [ "Win64" ]
+		},
+		{
+			"Name" : "HoudiniNodeEditor",
+			"Type" : "Editor",
+			"WhitelistPlatforms" : [ "Win64" ]
+		}
+	],
+
+	"CanContainContent" : true
+}
